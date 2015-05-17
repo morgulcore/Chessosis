@@ -2,10 +2,10 @@ package chessosisnbproject.chessosisnbproject;
 
 /**
  *
- * @author henrik
+ * @author Henrik Lindberg
  */
 public class ChessosisNBProject {
+
     public static void main( String[] args ) {
-        System.out.println("Hello, world!");
     }
 }
