@@ -33,3 +33,27 @@ I suppose my NetBeans project is now set up correctly. At least the were no more
 I registered for labtool. I suppose my work on Chessosis can and will be monitored by someone from the computer science department from now on. That is the general idea, anyway. Not that I don't realize that the repository is public; in principle, anyone on the Internet can inspect my work.
 
 After completing this entry I'm going to write the topic specification, or whatever "aihemäärittely" is in English.
+
+## 2015-05-17 | Hours worked: 8
+
+I've done a lot of reading about chess programming today. The first thing I have really had to consider about my chess program is how to represent the chess board along with its pieces as data. Bitboards (64-bit integers treated as a sort of a bit array) seem like a good choice. Each bit in a bitboard corresponds to a certain square on the chessboard (e.g., E4), and the bitboard is used to deliver information about the game. Ultimately it's all about using bitboards as a way to express a set of squares, such as {E4,E5,D4,D5}. A lot of very useful information about the status of a chess game can be expressed with a few bitboards. The standard starting position serves as a basic example of this. Here's a representation of it using both standard set notation and bitboards.
+
+* White pawns: {A2,B2,C2,D2,E2,F2,G2,H2} 0x000000000000ff00L
+* White knights: {B1,G1}                 0x0000000000000042L
+* White bishops: {C1,F1}                 0x0000000000000024L
+* White rooks: {A1,H1}                   0x0000000000000081L
+* White queen: {D1}                      0x0000000000000008L
+* White king: {E1}                       0x0000000000000010L
+* Black pawns: {A7,B7,C7,D7,E7,F7,G7,H7} 0x00ff000000000000L
+* Black knights: {B8,G8}                 0x4200000000000000L
+* Black bishops: {C8,F8}                 0x2400000000000000L
+* Black rooks: {A8,H8}                   0x8100000000000000L
+* Black queen: {D8}                      0x0800000000000000L
+* Black king: {E8}                       0x1000000000000000L
+
+A tool for working on bitboards: http://cinnamonchess.altervista.org/bitboard_calculator/Calc.html
+
+I created a Java enum type called Square.java for Chessosis. It defines the most basic building blocks for my bitboard-based approach: the mappings between square names and bit indices. For example, square F8 is mapped to bit 0x2000000000000000L in the layout I'm using.
+
+I also created a few JUnit tests for Square.java. I think I'm more or less done with working on that particular enum.
+
