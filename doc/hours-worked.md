@@ -61,3 +61,10 @@ I also created a few JUnit tests for Square.java. I think I'm more or less done 
 
 I created the class ConstantSquareSet along with JUnit tests for it. The javadoc and other comments in the class describe what it's all about. At some point I have to work on the JUnit tests of the class as they violate the rule of non-copy-paste-coding. Even so, I consider the tests rather thorough.
 
+I have done many other things today on the project. It would be inconvenient and counter-productive to document all of them in detail here. Let's just say that I've added a few more classes and am trying to figure out how I should get started in making them work together. My near-future goal is making the program smart enough to determine the legal moves in simple chess game positions. I'm going to start with a position with just the kings left on the board with the white king on E1 and the black on E8, and with White's turn to move. There are five legal moves in this position.
+
+The king can only ever move to one of its surrounding squares (apart from castling). This made me think that it would be good to have some method that would return the surrounding squares of any particular square. For example `findSurroundingSquares(E4)` would return the set {D5,E5,F5,F4,F3,E3,D3,D4} or the equivalent bitboard 0x0000001c141c0000L. I'm in the middle of working on the details of implementing the method.
+
+No doubt there is need for methods with a similar idea as what findSurroundingSquares has. I mean a situation where I place, let's say, a queen or a knight on some particular square of an empty chessboard. The methods I'm talking about would compute the squares where the piece can move to. No doubt such methods would be useful in generating the legal move list in real-game situations, too.
+
+I need to define more constant square sets or bitboards in ConstantSquareSet.java such as diagonals, the four corner squares and the edges of the chessboard.

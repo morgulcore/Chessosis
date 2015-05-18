@@ -158,4 +158,29 @@ public class SquareTest {
         // result variable.
         assertEquals( 0xffffffffffffffffL, result );
     }
+
+    /**
+     * Tests method Square.bitIndexToSquareName.
+     * <p>
+     * The correct order of the enum constants is also verified, so
+     * they are helpful in this test.
+     */
+    @Test
+    // validBitIndexToSquareNameMappings
+    public void validBitIndexToSquareNameMappings() {
+        int index = -1;
+        for ( Square square : Square.values() ) {
+            index++;
+            assertEquals( square.toString(), Square.bitIndexToSquareName( index ) );
+        }
+        assertEquals( 63, index );
+
+        /*
+         int expectedEnumConstantOrdinal = -1;
+         for ( Square square : Square.values() ) {
+         ++expectedEnumConstantOrdinal;
+         assertEquals( expectedEnumConstantOrdinal, square.ordinal() );
+         }
+         */
+    }
 }

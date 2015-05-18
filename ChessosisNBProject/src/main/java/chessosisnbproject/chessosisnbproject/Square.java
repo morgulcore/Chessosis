@@ -4,10 +4,10 @@ package chessosisnbproject.chessosisnbproject;
  * Holds the bitboard representations of the 64 squares of the chessboard.
  * <p>
  * Type Square consists of 64 enum constants that each hold a unique bitboard
- * value with a single bit set. This bit and the constant name
- * create a mapping between a chessboard square and a bit index.
- * The mappings I've used are as follows (index 00 corresponds to the
- * least significant bit, index 63 to the most significant):
+ * value with a single bit set. This bit and the constant name create a mapping
+ * between a chessboard square and a bit index. The mappings I've used are as
+ * follows (index 00 corresponds to the least significant bit, index 63 to the
+ * most significant):
  * <p>
  * <pre>
  *   +---------------------------------------+
@@ -30,13 +30,13 @@ package chessosisnbproject.chessosisnbproject;
  *     A    B    C    D    E    F    G    H
  * </pre>
  * <p>
- * Note that the mappings described in the diagram should be considered
- * an implementation detail of the Square type. No other class or part
- * of Chessosis (apart from the JUnit tests) should rely on these particular
- * mappings being in effect. As long as this requirement is adhered to,
- * it should be possible to change the mappings into something else without
- * having to modify any other part of Chessosis.
- * 
+ * Note that the mappings described in the diagram should be considered an
+ * implementation detail of the Square type. No other class or part of Chessosis
+ * (apart from the JUnit tests) should rely on these particular mappings being
+ * in effect. As long as this requirement is adhered to, it should be possible
+ * to change the mappings into something else without having to modify any other
+ * part of Chessosis.
+ *
  * @author Henrik Lindberg
  */
 public enum Square {
@@ -120,10 +120,40 @@ public enum Square {
 
     /**
      * Accessor method for the enum constants.
-     * 
+     *
      * @return The enum constant's bitboard property.
      */
     public long getSquareBit() {
         return this.squareBit;
+    }
+
+    // ====================
+    // == Static methods ==
+    // ====================
+    
+    /**
+     * Determine the square name from the bitboard bit index.
+     *
+     * @param index An index between 0 and 63.
+     * @return The square name that corresponds to the bit index.
+     */
+    public static String bitIndexToSquareName( int index ) {
+        // Strings generated with the following bash command:
+        // squares="$( for i in {1..8}; do echo {A..H}"$i"; done | tr ' ' '\n' )"
+        // for s in $squares; do
+        //     echo "$s" | sed 's/^/"/' | sed 's/$/", /' | tr -d '\n'
+        // done >output.txt
+
+        String[] squareNames
+            = { "A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1",
+                "A2", "B2", "C2", "D2", "E2", "F2", "G2", "H2",
+                "A3", "B3", "C3", "D3", "E3", "F3", "G3", "H3",
+                "A4", "B4", "C4", "D4", "E4", "F4", "G4", "H4",
+                "A5", "B5", "C5", "D5", "E5", "F5", "G5", "H5",
+                "A6", "B6", "C6", "D6", "E6", "F6", "G6", "H6",
+                "A7", "B7", "C7", "D7", "E7", "F7", "G7", "H7",
+                "A8", "B8", "C8", "D8", "E8", "F8", "G8", "H8" };
+
+        return squareNames[ index ];
     }
 }
