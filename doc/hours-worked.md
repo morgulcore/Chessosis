@@ -57,3 +57,7 @@ I created a Java enum type called Square.java for Chessosis. It defines the most
 
 I also created a few JUnit tests for Square.java. I think I'm more or less done with working on that particular enum.
 
+## 2015-05-18 | Hours worked: 8
+
+I created the class ConstantSquareSet along with JUnit tests for it. The javadoc and other comments in the class describe what it's all about. At some point I have to work on the JUnit tests of the class as they violate the rule of non-copy-paste-coding. Even so, I consider the tests rather thorough.
+
