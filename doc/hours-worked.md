@@ -69,7 +69,7 @@ No doubt there is need for methods with a similar idea as what findSurroundingSq
 
 I need to define more constant square sets or bitboards in ConstantSquareSet.java such as diagonals, the four corner squares and the edges of the chessboard.
 
-## 2015-05-27 | Hours worked: ?
+## 2015-05-27 | Hours worked: 8
 
 I created the file doc/notes.md and added the first entry to it on the mapping of square names to bit indices.
 
