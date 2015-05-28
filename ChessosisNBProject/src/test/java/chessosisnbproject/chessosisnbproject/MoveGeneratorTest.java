@@ -41,8 +41,7 @@ public class MoveGeneratorTest {
         for ( int i = 1; i <= 6; i++ ) {
             // Moving on the six files (b-file to g-file)
             for ( int j = 1; j <= 6; j++ ) {
-                String squareName = Square.bitIndexToSquareName( bitIndex );
-                Square square = Square.valueOf( squareName );
+                Square square = bitIndexToSquareEnum( bitIndex );
                 assertEquals(
                     bitPattern, MoveGenerator.surroundingSquares( square ) );
                 bitPattern <<= 1;
@@ -54,5 +53,31 @@ public class MoveGeneratorTest {
             bitPattern <<= 2;
             bitIndex += 2;
         }
+    }
+
+    /**
+     * Tests method surroundingSquares with the four corner squares.
+     */
+    @Test
+    public void surroundingSquaresWorksOnCornerSquares() {
+        long ssA1 = A2 | B2 | B1, // Surrounding squares of A1, etc.
+            ssA8 = A7 | B7 | B8,
+            ssH1 = H2 | G2 | G1,
+            ssH8 = H7 | G7 | G8;
+        // Squares A1, A8, H1, H8, respectively
+        int[] bitIndices = { 0, 56, 7, 63 };
+
+        for ( int i = 0; i < bitIndices.length; i++ ) {
+            assertEquals( ssA1, MoveGenerator.surroundingSquares(
+                bitIndexToSquareEnum( i ) ) ); // A1
+        }
+    }
+
+    // ============================
+    // == Private helper methods ==
+    // ============================
+    private static Square bitIndexToSquareEnum( int bitIndex ) {
+        String squareName = Square.bitIndexToSquareName( bitIndex );
+        return Square.valueOf( squareName );
     }
 }

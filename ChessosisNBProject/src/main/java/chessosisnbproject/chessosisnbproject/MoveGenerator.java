@@ -9,12 +9,12 @@ import static chessosisnbproject.chessosisnbproject.ConstantSquareSet.*;
 public class MoveGenerator {
 
     public static long surroundingSquares( Square square ) {
-        return surroundingSquaresOfNonEdgeSquares( square );
-    }
-
-    private static long surroundingSquaresOfNonEdgeSquares( Square square ) {
-        // As the square is not on the edge of the board, we know there are
-        // eight surrounding squares.
+        // After processing this string array will always contain
+        // eight square strings (e.g., "A1"). If parameter square
+        // is on the edge of the board, part of the strings will
+        // refer to invalid squares such as "H9".
+        String[] fakeAndRealSquareStrings;
+        
         Square[] theEightSurroundingSquares
             = { null, null, null, null, null, null, null, null };
         int index = 0; // Used and incremented within the for loops
