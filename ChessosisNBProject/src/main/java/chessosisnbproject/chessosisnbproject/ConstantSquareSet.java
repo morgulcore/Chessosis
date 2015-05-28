@@ -20,10 +20,10 @@ public class ConstantSquareSet {
     // squares="$( for i in {1..8}; do echo {A..H}"$i"; done | tr ' ' '\n' )"
     // for s in $squares; do echo "${s} = Square.${s}.getSquareBit(),"; done
     //
-    // The chessboard squares as long constant variables. Note that they
-    // are private. Otherwise they might get confused with the enum type
-    // Square constants.
-    private static final long A1 = Square.A1.getSquareBit(),
+    /**
+     * ___SOME JAVADOC HERE, PLEASE___
+     */
+    public static final long A1 = Square.A1.getSquareBit(),
         B1 = Square.B1.getSquareBit(),
         C1 = Square.C1.getSquareBit(),
         D1 = Square.D1.getSquareBit(),

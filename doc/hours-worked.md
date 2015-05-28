@@ -71,13 +71,15 @@ I need to define more constant square sets or bitboards in ConstantSquareSet.jav
 
 ## 2015-05-27 | Hours worked: ?
 
-I created the file doc/notes.md and added the first entry in it on the mapping of square names to bit indices.
+I created the file doc/notes.md and added the first entry to it on the mapping of square names to bit indices.
 
 I created the static method `Square.bitIndexToBitboard( int index )`. I'm not sure how useful it will be. The test I wrote for the method turned out to be quite complicated, and unnecessarily so. Work smart, not hard :(
 
 Created...
 * static method `Square.squareNameToBitIndex` along with JUnit test `validSquareNameToBitIndexMappings`
-* static method `MoveGenerator.surroundingSquares( Square square )`
+* static method `MoveGenerator.surroundingSquares( Square square )` along with the first JUnit test for it
+* ...and a lot of other stuff
 
-I made the square constants (e.g., A1) in ConstantSquareSet private. The reason for this is that I don't want to confuse them (or have them confused) with the enum Square constants. The other constans declared in ConstantSquareSet are still public.
+My JUnit test `surroundingSquaresWorksOnNonEdgeSquares` is interesting because it tests `surroundingSquares` by computing the same set of results but in a different manner. I think the test method does the job in a more elegant manner. Well, maybe I'll swap the program logic of the test method with the tested at some point.
 
+There's so much to do.
