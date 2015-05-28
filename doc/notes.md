@@ -10,6 +10,6 @@ Whether I'll actually go by this ideal I don't know -- sticking to ideals is at 
 
 ## Hex representations of three long values
 
-* ffffffffffffffff is -1 in decimal
-* 8000000000000000 is Long.MIN_VALUE
-* 7fffffffffffffff is Long.MAX_VALUE
+* `ffffffffffffffff` is -1 in decimal
+* `8000000000000000` is Long.MIN_VALUE
+* `7fffffffffffffff` is Long.MAX_VALUE
