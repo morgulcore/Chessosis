@@ -19,13 +19,11 @@ public class ConstantSquareSet {
     // The bash command used to generate most of the squares declaration:
     // squares="$( for i in {1..8}; do echo {A..H}"$i"; done | tr ' ' '\n' )"
     // for s in $squares; do echo "${s} = Square.${s}.getSquareBit(),"; done
-    /**
-     * The chessboard squares as long constant variables.
-     * <p>
-     * It's much more convenient referring to the squares just by their name
-     * rather than with something like "Square.A1.getSquareBit()".
-     */
-    public static final long A1 = Square.A1.getSquareBit(),
+    //
+    // The chessboard squares as long constant variables. Note that they
+    // are private. Otherwise they might get confused with the enum type
+    // Square constants.
+    private static final long A1 = Square.A1.getSquareBit(),
         B1 = Square.B1.getSquareBit(),
         C1 = Square.C1.getSquareBit(),
         D1 = Square.D1.getSquareBit(),
@@ -106,7 +104,7 @@ public class ConstantSquareSet {
 
     /**
      * Ranks are the rows of the chessboard.
-     *
+     * <p>
      * For example, rank 1 (the first rank) equals the set
      * {A1,B1,C1,D1,E1,F1,G1,H1}.
      */
@@ -118,4 +116,24 @@ public class ConstantSquareSet {
         RANK_6 = A6 | B6 | C6 | D6 | E6 | F6 | G6 | H6,
         RANK_7 = A7 | B7 | C7 | D7 | E7 | F7 | G7 | H7,
         RANK_8 = A8 | B8 | C8 | D8 | E8 | F8 | G8 | H8;
+
+    /**
+     * The edge of the board.
+     * <p>
+     * The edge of the board includes all squares from FILE_A and FILE_H
+     * as well as RANK_1 and RANK_8.
+     */
+    public static final long EDGE = FILE_A | FILE_H | RANK_1 | RANK_8;
+
+    /**
+     * The empty board.
+     * <p>
+     * A board with no bits set (all 64 bits equal to zero).
+     */
+    public static final long EMPTY_BOARD = 0;
+
+    /**
+     * Omniboard, the opposite of the empty board.
+     */
+    public static final long OMNIBOARD = ~EMPTY_BOARD;
 }

@@ -68,3 +68,16 @@ The king can only ever move to one of its surrounding squares (apart from castli
 No doubt there is need for methods with a similar idea as what findSurroundingSquares has. I mean a situation where I place, let's say, a queen or a knight on some particular square of an empty chessboard. The methods I'm talking about would compute the squares where the piece can move to. No doubt such methods would be useful in generating the legal move list in real-game situations, too.
 
 I need to define more constant square sets or bitboards in ConstantSquareSet.java such as diagonals, the four corner squares and the edges of the chessboard.
+
+## 2015-05-27 | Hours worked: ?
+
+I created the file doc/notes.md and added the first entry in it on the mapping of square names to bit indices.
+
+I created the static method `Square.bitIndexToBitboard( int index )`. I'm not sure how useful it will be. The test I wrote for the method turned out to be quite complicated, and unnecessarily so. Work smart, not hard :(
+
+Created...
+* static method `Square.squareNameToBitIndex` along with JUnit test `validSquareNameToBitIndexMappings`
+* static method `MoveGenerator.surroundingSquares( Square square )`
+
+I made the square constants (e.g., A1) in ConstantSquareSet private. The reason for this is that I don't want to confuse them (or have them confused) with the enum Square constants. The other constans declared in ConstantSquareSet are still public.
+

@@ -29,13 +29,6 @@ package chessosisnbproject.chessosisnbproject;
  *   +---------------------------------------+
  *     A    B    C    D    E    F    G    H
  * </pre>
- * <p>
- * Note that the mappings described in the diagram should be considered an
- * implementation detail of the Square type. No other class or part of Chessosis
- * (apart from the JUnit tests) should rely on these particular mappings being
- * in effect. As long as this requirement is adhered to, it should be possible
- * to change the mappings into something else without having to modify any other
- * part of Chessosis.
  *
  * @author Henrik Lindberg
  */
@@ -107,7 +100,7 @@ public enum Square {
     E8( 0x1000000000000000L ),
     F8( 0x2000000000000000L ),
     G8( 0x4000000000000000L ),
-    H8( 0x8000000000000000L );
+    H8( 0x8000000000000000L ); // Long.MIN_VALUE
 
     private final long squareBit;
 
@@ -130,7 +123,6 @@ public enum Square {
     // ====================
     // == Static methods ==
     // ====================
-    
     /**
      * Determine the square name from the bitboard bit index.
      *
@@ -155,5 +147,48 @@ public enum Square {
                 "A8", "B8", "C8", "D8", "E8", "F8", "G8", "H8" };
 
         return squareNames[ index ];
+    }
+
+    /**
+     * Does the opposite of bitIndexToSquareName.
+     *
+     * @param squareName The square name.
+     * @return The bit index.
+     */
+    public static int squareNameToBitIndex( String squareName ) {
+        final long BITBOARD = Square.valueOf( squareName ).getSquareBit();
+        long leftShiftingBit = 1;
+        int bitIndex;
+
+        for ( bitIndex = 0;; bitIndex++ ) {
+            if ( BITBOARD == leftShiftingBit ) {
+                break;
+            }
+            // Shift the set bit left a single position
+            leftShiftingBit <<= 1;
+        }
+        return bitIndex;
+    }
+
+    /**
+     * Returns the bitboard that corresponds to a particular bit index.
+     *
+     * @param index The bit index for a 64-bit integer (an int between 0 and 63).
+     * @return A bitboard with a single bit set (or 0 with an invalid index).
+     */
+    public static long bitIndexToBitboard( int index ) {
+
+        if ( index < 0 || index > 63 ) {
+            return 0;
+        }
+
+        long bitboard = 0x0000000000000001L;
+
+        for ( int counter = 0; counter < index; counter++ ) {
+            // Shift the set bit left a single position
+            bitboard <<= 1;
+        }
+
+        return bitboard;
     }
 }
