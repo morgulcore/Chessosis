@@ -1,7 +1,5 @@
 package chessosisnbproject.chessosisnbproject;
 
-import static chessosisnbproject.chessosisnbproject.ConstantSquareSet.*;
-
 /**
  *
  * @author Henrik Lindberg
@@ -56,11 +54,11 @@ public class MoveGenerator {
     }
 
     private static long squareArrayToBitboard( Square[] squares ) {
-        long bitboard = EMPTY_BOARD;
+        long bitboard = CSS.EMPTY_BOARD;
         // Bitwise OR the individual square bitboard together
         for ( int i = 0; i < squares.length; i++ ) {
             if ( squares[ i ] != null ) {
-                bitboard |= squares[ i ].getSquareBit();
+                bitboard |= squares[ i ].bit();
             }
         }
         return bitboard;

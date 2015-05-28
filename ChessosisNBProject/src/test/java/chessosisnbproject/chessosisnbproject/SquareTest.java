@@ -1,5 +1,6 @@
 package chessosisnbproject.chessosisnbproject;
 
+import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -15,12 +16,11 @@ public class SquareTest {
      */
     @Test
     public void correctNumberOfSquareConstants() {
-        Square[] values = Square.values();
-        assertEquals( 64, values.length );
+        assertEquals( 64, Square.values().length );
     }
 
     /**
-     * Checks that the constant names are correct and in the right order.
+     * Checks that the constant names are correct and are in the right order.
      * <p>
      * The first constant name should be A1, the last H8. The test first
      * concatenates the constant names as a single string and then does a string
@@ -53,8 +53,6 @@ public class SquareTest {
      */
     @Test
     public void squareBitsArePowersOfTwo() {
-        System.out.println( "getSquareBit" );
-
         int exponent = -1;
         for ( Square square : Square.values() ) {
             // exponent will have values between 0 and 63, inclusive,
@@ -71,10 +69,10 @@ public class SquareTest {
                 // maximum value, so the expression
                 // (long) Math.pow( 2, 63 ) would give a misleading
                 // result.
-                assertEquals( Long.MIN_VALUE, square.getSquareBit() );
+                assertEquals( Long.MIN_VALUE, square.bit() );
             } else {
                 assertEquals(
-                    (long) Math.pow( 2, exponent ), square.getSquareBit() );
+                    (long) Math.pow( 2, exponent ), square.bit() );
             }
         }
     }
@@ -89,70 +87,70 @@ public class SquareTest {
             // Produced with the command
             // for i in {1..8}; do echo Square.{A..H}$i.getSquareBit; done | \
             // tr ' ' '\n' | sed 's/$/() |/'
-            = Square.A1.getSquareBit()
-            | Square.B1.getSquareBit()
-            | Square.C1.getSquareBit()
-            | Square.D1.getSquareBit()
-            | Square.E1.getSquareBit()
-            | Square.F1.getSquareBit()
-            | Square.G1.getSquareBit()
-            | Square.H1.getSquareBit()
-            | Square.A2.getSquareBit()
-            | Square.B2.getSquareBit()
-            | Square.C2.getSquareBit()
-            | Square.D2.getSquareBit()
-            | Square.E2.getSquareBit()
-            | Square.F2.getSquareBit()
-            | Square.G2.getSquareBit()
-            | Square.H2.getSquareBit()
-            | Square.A3.getSquareBit()
-            | Square.B3.getSquareBit()
-            | Square.C3.getSquareBit()
-            | Square.D3.getSquareBit()
-            | Square.E3.getSquareBit()
-            | Square.F3.getSquareBit()
-            | Square.G3.getSquareBit()
-            | Square.H3.getSquareBit()
-            | Square.A4.getSquareBit()
-            | Square.B4.getSquareBit()
-            | Square.C4.getSquareBit()
-            | Square.D4.getSquareBit()
-            | Square.E4.getSquareBit()
-            | Square.F4.getSquareBit()
-            | Square.G4.getSquareBit()
-            | Square.H4.getSquareBit()
-            | Square.A5.getSquareBit()
-            | Square.B5.getSquareBit()
-            | Square.C5.getSquareBit()
-            | Square.D5.getSquareBit()
-            | Square.E5.getSquareBit()
-            | Square.F5.getSquareBit()
-            | Square.G5.getSquareBit()
-            | Square.H5.getSquareBit()
-            | Square.A6.getSquareBit()
-            | Square.B6.getSquareBit()
-            | Square.C6.getSquareBit()
-            | Square.D6.getSquareBit()
-            | Square.E6.getSquareBit()
-            | Square.F6.getSquareBit()
-            | Square.G6.getSquareBit()
-            | Square.H6.getSquareBit()
-            | Square.A7.getSquareBit()
-            | Square.B7.getSquareBit()
-            | Square.C7.getSquareBit()
-            | Square.D7.getSquareBit()
-            | Square.E7.getSquareBit()
-            | Square.F7.getSquareBit()
-            | Square.G7.getSquareBit()
-            | Square.H7.getSquareBit()
-            | Square.A8.getSquareBit()
-            | Square.B8.getSquareBit()
-            | Square.C8.getSquareBit()
-            | Square.D8.getSquareBit()
-            | Square.E8.getSquareBit()
-            | Square.F8.getSquareBit()
-            | Square.G8.getSquareBit()
-            | Square.H8.getSquareBit();
+            = Square.A1.bit()
+            | Square.B1.bit()
+            | Square.C1.bit()
+            | Square.D1.bit()
+            | Square.E1.bit()
+            | Square.F1.bit()
+            | Square.G1.bit()
+            | Square.H1.bit()
+            | Square.A2.bit()
+            | Square.B2.bit()
+            | Square.C2.bit()
+            | Square.D2.bit()
+            | Square.E2.bit()
+            | Square.F2.bit()
+            | Square.G2.bit()
+            | Square.H2.bit()
+            | Square.A3.bit()
+            | Square.B3.bit()
+            | Square.C3.bit()
+            | Square.D3.bit()
+            | Square.E3.bit()
+            | Square.F3.bit()
+            | Square.G3.bit()
+            | Square.H3.bit()
+            | Square.A4.bit()
+            | Square.B4.bit()
+            | Square.C4.bit()
+            | Square.D4.bit()
+            | Square.E4.bit()
+            | Square.F4.bit()
+            | Square.G4.bit()
+            | Square.H4.bit()
+            | Square.A5.bit()
+            | Square.B5.bit()
+            | Square.C5.bit()
+            | Square.D5.bit()
+            | Square.E5.bit()
+            | Square.F5.bit()
+            | Square.G5.bit()
+            | Square.H5.bit()
+            | Square.A6.bit()
+            | Square.B6.bit()
+            | Square.C6.bit()
+            | Square.D6.bit()
+            | Square.E6.bit()
+            | Square.F6.bit()
+            | Square.G6.bit()
+            | Square.H6.bit()
+            | Square.A7.bit()
+            | Square.B7.bit()
+            | Square.C7.bit()
+            | Square.D7.bit()
+            | Square.E7.bit()
+            | Square.F7.bit()
+            | Square.G7.bit()
+            | Square.H7.bit()
+            | Square.A8.bit()
+            | Square.B8.bit()
+            | Square.C8.bit()
+            | Square.D8.bit()
+            | Square.E8.bit()
+            | Square.F8.bit()
+            | Square.G8.bit()
+            | Square.H8.bit();
 
         // At this point all bits should be set in the 64-bit
         // result variable.
@@ -160,7 +158,7 @@ public class SquareTest {
     }
 
     /**
-     * Tests both SquareNameToBitIndex and BitIndexToSquareName.
+     * Inverse function test on SquareNameToBitIndex and BitIndexToSquareName.
      * <p>
      * The methods do opposite things so they should cancel each other's
      * effect. Therefore, something like
@@ -168,20 +166,26 @@ public class SquareTest {
      * should evaluate to "A1".
      */
     @Test
-    public void validSquareNameToBitIndexMappings() {
+    public void bitIndexSquareNameInverseFunctionTest() {
+        // First test: f( g( x ) ) == x
         for ( Square square : Square.values() ) {
             assertEquals(
                 square.toString(),
                 Square.bitIndexToSquareName(
                     Square.squareNameToBitIndex( square.toString() ) ) );
         }
+        // Second test: g( f( x ) ) == x
+        for ( int i = 0; i < 64; i++ ) {
+            assertEquals( i, Square.squareNameToBitIndex(
+                Square.bitIndexToSquareName( i ) ) );
+        }
     }
 
     /**
      * Tests method Square.bitIndexToSquareName.
      * <p>
-     * The correct order of the enum constants is also verified, so
-     * they are helpful in this test.
+     * The correct order of the enum constants was or will also be verified,
+     * so they are helpful in this test.
      */
     @Test
     public void validBitIndexToSquareNameMappings() {
@@ -192,35 +196,23 @@ public class SquareTest {
                 Square.bitIndexToSquareName( index ) );
         }
         assertEquals( 63, index );
-
-        /*
-         int expectedEnumConstantOrdinal = -1;
-         for ( Square square : Square.values() ) {
-         ++expectedEnumConstantOrdinal;
-         assertEquals( expectedEnumConstantOrdinal, square.ordinal() );
-         }
-         */
     }
 
-    /*
-     No point in testing Square.bitIndexToSquareName( int index ) with an
-     invalid index value. Doing so would generate an ArrayIndexOutOfBoundException
-     @Test
-     public void bitIndexToSquareNameWithInvalidArgs() {}
-     */
     /**
-     * Tests method bitIndexToBitboard.
+     * Tests method bitIndexToSquareBit.
      * <p>
      * The test works by first generating the one-bit-set bitboards (2^n,
      * where n between 0 and 63, inclusive) as an array of strings. They
      * are then converted into their actual long values and compared to
-     * the actual return value of bitIndexToBitboard.
+     * the actual return value of bitIndexToSquareBit.
      * <p>
      * The test method should be divided into smaller functions. I will do
      * that if and when time permits.
+     *
+     * @throws Exception In case of an invalid bit index value.
      */
     @Test
-    public void validBitIndexToBitboardMappings() {
+    public void validBitIndexToBitboardMappings() throws Exception {
         String[] bitboardStrings = new String[ 64 ];
         char[] eightBytesAsHex = "0000000000000000".toCharArray();
         // Should be 16 to start with. Note that this is not an off-by-one
@@ -260,11 +252,51 @@ public class SquareTest {
         for ( int i = 0; i <= 62; i++ ) {
             // Convert the hexadecimal String to a long
             long expectedValue = Long.valueOf( bitboardStrings[ i ], 16 );
-            assertEquals( expectedValue, Square.bitIndexToBitboard( i ) );
+            assertEquals( expectedValue, Square.bitIndexToSquareBit( i ) );
         }
         // When the most significant bit is the one that is set, the
         // comparison must be done manually. Note that Long.MIN_VALUE
         // is 0x8000000000000000 in hex.
-        assertEquals( Long.MIN_VALUE, Square.bitIndexToBitboard( 63 ) );
+        assertEquals( Long.MIN_VALUE, Square.bitIndexToSquareBit( 63 ) );
+    }
+
+    /**
+     * Verifies that validSquareBit returns true in all cases it should.
+     */
+    @Test
+    public void validSquareBitReturnsTrueWhenItShould() {
+        for ( Square square : Square.values() ) {
+            assertTrue( Square.validSquareBit( square.bit() ) );
+        }
+    }
+
+    /**
+     * Tests validSquareBit with random longs.
+     * <p>
+     * It's extremely unlikely that any of the random values would be a
+     * square bit so all of the return values should be false.
+     */
+    @Test
+    public void validSquareBitReturnsFalseWhenItShould() {
+        // Let's get the random number generator started.
+        Random random = new Random();
+
+        for ( int i = 1; i <= 10000; i++ ) {
+            assertFalse( Square.validSquareBit( random.nextLong() ) );
+        }
+    }
+
+    /**
+     * Inverse function test on bitIndexToSquareBit and squareBitToBitIndex.
+     *
+     * @throws Exception Thrown in squareBitToBitIndex.
+     */
+    @Test
+    public void bitIndexSquareBitInverseFunctionTest() throws Exception {
+        for ( Square square : Square.values() ) {
+            assertEquals( square.bit(), Square.bitIndexToSquareBit(
+                Square.squareBitToBitIndex( square.bit() ) ) );
+
+        }
     }
 }

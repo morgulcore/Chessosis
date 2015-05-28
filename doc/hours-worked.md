@@ -83,3 +83,18 @@ Created...
 My JUnit test `surroundingSquaresWorksOnNonEdgeSquares` is interesting because it tests `surroundingSquares` by computing the same set of results but in a different manner. I think the test method does the job in a more elegant manner. Well, maybe I'll swap the program logic of the test method with the tested at some point.
 
 There's so much to do.
+
+## 2015-05-28 | Hours worked: 10
+
+I've been doing various things with Chessosis today only to discover that I have some issues with its basic design. Therefore I'm going to make a few changes during the evening as documented below.
+
+* Renaming class ConstantSquareSet to CSS and removing static imports of the class from other files. From now on I'll refer to the constants with the prefix, I mean like CSS.E4 or CSS.EDGE rather than E4 or EDGE.
+* The square bits of CSS (constants A1, A2, etc.) are now initialized explicitly rather than with a call to enum Square's method getSquareBit.
+* I updated CSS's javadoc. The diagram of the square name to bit index mappings is now at the beginning of CSS.
+* In Square.java, the enum constants are no longer initialized with the explicit long values. Rather, the CSS bit square constants are used for the job.
+* Renamed Square's method getSquareBit to bit.
+* Renamed bitIndexToBitboard to bitIndexToSquareBit.
+* Created an inverse function method for bitIndexToSquareBit: squareBitToBitIndex
+* Worked on the tests in SquareTest.java.
+
+I no longer consider the square name to bit index mappings something that should be hidden from most parts of the program. Many parts of Chessosis will depend on the mappings being like in the diagram in CSS's javadoc.

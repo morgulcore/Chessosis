@@ -1,6 +1,5 @@
 package chessosisnbproject.chessosisnbproject;
 
-import static chessosisnbproject.chessosisnbproject.ConstantSquareSet.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -33,7 +32,8 @@ public class MoveGeneratorTest {
      */
     @Test
     public void surroundingSquaresWorksOnNonEdgeSquares() {
-        long bitPattern = A1 | B1 | C1 | A2 | C2 | A3 | B3 | C3;
+        long bitPattern = CSS.A1 | CSS.B1 | CSS.C1 | CSS.A2
+            | CSS.C2 | CSS.A3 | CSS.B3 | CSS.C3;
         // Used in the call to Square.bitIndexToSquareName.
         int bitIndex = 9;
 
@@ -60,10 +60,10 @@ public class MoveGeneratorTest {
      */
     @Test
     public void surroundingSquaresWorksOnCornerSquares() {
-        long ssA1 = A2 | B2 | B1, // Surrounding squares of A1, etc.
-            ssA8 = A7 | B7 | B8,
-            ssH1 = H2 | G2 | G1,
-            ssH8 = H7 | G7 | G8;
+        long ssA1 = CSS.A2 | CSS.B2 | CSS.B1, // Surrounding squares of A1, etc.
+            ssA8 = CSS.A7 | CSS.B7 | CSS.B8,
+            ssH1 = CSS.H2 | CSS.G2 | CSS.G1,
+            ssH8 = CSS.H7 | CSS.G7 | CSS.G8;
         // Squares A1, A8, H1, H8, respectively
         int[] bitIndices = { 0, 56, 7, 63 };
 
