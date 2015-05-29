@@ -101,6 +101,10 @@ I no longer consider the square name to bit index mappings something that should
 
 ## 2015-05-29 | Hours worked: -
 
-I added a class called SUM which is Static Utility Methods for short. It's a sort of a general purpose toolbox and contains public static methods that are likely to be used by many other classes. The first two methods I added to the class are `bitboardToSquareSet` and `squareSetToBitboard`.
+I added a class called SUM which is Static Utility Methods for short. It's a sort of a general purpose toolbox and contains public static methods that are likely to be used by many other classes. The first two methods I added to the class are `bitboardToSquareSet` and `squareSetToBitboard` (so far they don't contain any actual program logic).
 
 SUM does not and will not contain any non-static members.
+
+I moved method validSquareBit from Square to SUM along with its tests (SquareTest to SUMTest). I intend to move more static methods into class SUM.
+
+[A few hours later.] I created many static utility methods for class SUM. I also created JUnit tests for them. They seem to work. However, I am still to create the methods I mentioned before, `bitboardToSquareSet` and `squareSetToBitboard`. Now having the helper methods I need, I think I'll code their program logic and JUnit tests next. After that I might actually get some work done on MoveGenerator.surroundingSquares().

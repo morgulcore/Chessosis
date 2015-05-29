@@ -15,7 +15,6 @@ package chessosisnbproject.chessosisnbproject;
  * name to bit index mappings used in Chessosis are as follows (index 00
  * corresponds to the least significant bit of a bitboard, index 63 to the
  * most significant bit).
- * <p>
  * <pre>
  *   +---------------------------------------+
  * 8 | 56 | 57 | 58 | 59 | 60 | 61 | 62 | 63 |

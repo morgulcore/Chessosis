@@ -177,7 +177,7 @@ public enum Square {
     public static int squareBitToBitIndex( long squareBit ) throws Exception {
         // A square bit (bitboard) has exactly one bit set. Any other bitboard
         // value will cause an Exception to be thrown.
-        if ( !validSquareBit( squareBit ) ) {
+        if ( !SUM.validSquareBit( squareBit ) ) {
             throw new Exception( "squareBit: " + squareBit );
         }
 
@@ -193,24 +193,5 @@ public enum Square {
         }
 
         return bitIndex;
-    }
-
-    /**
-     * Determines whether a bitboard is a square bit.
-     * <p>
-     * A square bit (bitboard) has exactly one bit set. In other words,
-     * its a value 2^n where n is between 0 and 63.
-     *
-     *@param bitboard The bitboard to examine.
-     *@return True when bitboard is a square bit.
-     */
-    public static boolean validSquareBit( long bitboard ) {
-        for ( Square square : Square.values() ) {
-            if ( square.bit() == bitboard ) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

@@ -13,3 +13,8 @@ Whether I'll actually go by this ideal I don't know -- sticking to ideals is at 
 * `ffffffffffffffff` is -1 in decimal
 * `8000000000000000` is Long.MIN_VALUE
 * `7fffffffffffffff` is Long.MAX_VALUE
+
+## Something about EnumSet...
+
+https://weblogs.java.net/blog/mkarg/archive/2010/01/03/fun-enumset
+http://javarevisited.blogspot.com/2014/03/how-to-use-enumset-in-java-with-example.html

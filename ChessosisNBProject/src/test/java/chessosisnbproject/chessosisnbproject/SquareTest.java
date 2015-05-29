@@ -1,6 +1,5 @@
 package chessosisnbproject.chessosisnbproject;
 
-import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -258,32 +257,6 @@ public class SquareTest {
         // comparison must be done manually. Note that Long.MIN_VALUE
         // is 0x8000000000000000 in hex.
         assertEquals( Long.MIN_VALUE, Square.bitIndexToSquareBit( 63 ) );
-    }
-
-    /**
-     * Verifies that validSquareBit returns true in all cases it should.
-     */
-    @Test
-    public void validSquareBitReturnsTrueWhenItShould() {
-        for ( Square square : Square.values() ) {
-            assertTrue( Square.validSquareBit( square.bit() ) );
-        }
-    }
-
-    /**
-     * Tests validSquareBit with random longs.
-     * <p>
-     * It's extremely unlikely that any of the random values would be a
-     * square bit so all of the return values should be false.
-     */
-    @Test
-    public void validSquareBitReturnsFalseWhenItShould() {
-        // Let's get the random number generator started.
-        Random random = new Random();
-
-        for ( int i = 1; i <= 10000; i++ ) {
-            assertFalse( Square.validSquareBit( random.nextLong() ) );
-        }
     }
 
     /**
