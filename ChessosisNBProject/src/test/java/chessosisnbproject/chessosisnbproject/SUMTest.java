@@ -13,10 +13,29 @@ import static org.junit.Assert.*;
 public class SUMTest {
 
     /**
-     * Test of bitboardToSquareSet method, of class SUM.
+     * Tests bitboardToSquareSet() with the binary number sequence
+     * (0, 1, 11, 111, ...) where the last value has all 64 bits set.
+     * Part one of the test checks the square set sizes.
+     *
+     * @throws Exception might be thrown in squareBitToSquare()
      */
     @Test
-    public void testBitboardToSquareSet() {
+    public void testBitboardToSquareSetWithBitPatternOfIncreasingSetBitsPartOne()
+        throws Exception {
+        long bitPattern = 0;
+
+        // Testing with a null bitboard to start with
+        assertEquals( 0, SUM.bitboardToSquareSet( bitPattern ).size() );
+
+        // Indicates the number of set bits
+        int bitCounter = 0;
+        for ( Square square : Square.values() ) {
+            // The bitwise OR'ing "adds" to bitPattern one bit at a time
+            bitPattern |= square.bit();
+            bitCounter++;
+            assertEquals( bitCounter,
+                SUM.bitboardToSquareSet( bitPattern ).size() );
+        }
     }
 
     /**
@@ -34,7 +53,7 @@ public class SUMTest {
     @Test
     public void squareBitToSquareWorksWithValidInput() throws Exception {
         long leftShiftingBit = 1;
-        
+
         for ( Square square : Square.values() ) {
             assertEquals( square, SUM.squareBitToSquare( leftShiftingBit ) );
             leftShiftingBit <<= 1;
@@ -60,7 +79,7 @@ public class SUMTest {
     public void validSquareBitReturnsFalseWhenItShould() {
         // Let's get the random number generator started.
         Random random = new Random();
-        
+
         for ( int i = 1; i <= 10000; i++ ) {
             assertFalse( SUM.validSquareBit( random.nextLong() ) );
         }
@@ -76,7 +95,7 @@ public class SUMTest {
     public void splitBitboardIntoSetOfSquareBitsRandomInputTestOne() {
         Random random = new Random();
         Set<Long> setOfBitboards;
-        
+
         for ( int i = 1; i <= 10000; i++ ) {
             setOfBitboards = SUM.splitBitboardIntoSetOfSquareBits(
                 random.nextLong() );
@@ -98,7 +117,7 @@ public class SUMTest {
 
         // Testing with a null bitboard to start with
         assertEquals( bitPattern, SUM.numberOfSetBits( bitPattern ) );
-        
+
         int bitCounter = 0;
         for ( Square square : Square.values() ) {
             // The bitwise OR'ing "adds" to bitPattern one bit at a time
@@ -117,7 +136,7 @@ public class SUMTest {
     @Test
     public void splitBitboardIntoSetOfSquareBitsRandomInputTestTwo() {
         Random random = new Random();
-        
+
         for ( int i = 1; i <= 10000; i++ ) {
             long randomBitboard = random.nextLong();
             Set<Long> setOfBitboards

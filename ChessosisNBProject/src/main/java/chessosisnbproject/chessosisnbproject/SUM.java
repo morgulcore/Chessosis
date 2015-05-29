@@ -24,9 +24,25 @@ public class SUM {
      *
      * @param bitboard the Java long to convert
      * @return a Square EnumSet
+     * @throws Exception might be thrown in squareBitToSquare()
      */
-    public static EnumSet<Square> bitboardToSquareSet( long bitboard ) {
-        return null;
+    public static EnumSet<Square> bitboardToSquareSet( long bitboard )
+        throws Exception {
+        // Extract the individual square bits from the bitboard
+        Set<Long> setOfSquareBits
+            = splitBitboardIntoSetOfSquareBits( bitboard );
+
+        // This creates an empty EnumSet
+        EnumSet<Square> squareSet = EnumSet.noneOf( Square.class );
+
+        // Convert the square bits to Square constants and add them
+        // to the EnumSet
+        for ( Long squareBit : setOfSquareBits ) {
+            Square square = squareBitToSquare( squareBit );
+            squareSet.add( square );
+        }
+
+        return squareSet;
     }
 
     /**

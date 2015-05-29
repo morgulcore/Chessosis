@@ -1,6 +1,6 @@
 package chessosisnbproject.chessosisnbproject;
 
-import java.util.Set;
+import java.util.EnumSet;
 
 /**
  *
@@ -9,14 +9,11 @@ import java.util.Set;
 public class ChessosisNBProject {
 
     public static void main( String[] args ) throws Exception {
-        /*
-        Set<Long> result = SUM.splitBitboardIntoSetOfSquareBits( CSS.FILE_A );
-        System.out.println( "Set size: " + result.size() );
-        for( Long bitboard : result ) {
-            System.out.print( SUM.squareBitToSquare( bitboard ) + " " );
+        EnumSet<Square> squareSet = SUM.bitboardToSquareSet( 72624976668147840L );
+        System.out.println( "Square set size: " + squareSet.size() );
+        for(Square square: squareSet) {
+            System.out.print( square + " " );
         }
         System.out.println( "" );
-        */
-        System.out.println( "Set bits: " + SUM.numberOfSetBits( 255 ) );
     }
 }
