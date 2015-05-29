@@ -298,5 +298,9 @@ public class SquareTest {
                 Square.squareBitToBitIndex( square.bit() ) ) );
 
         }
+        for ( int i = 0; i < 64; i++ ) {
+            assertEquals( i, Square.squareBitToBitIndex(
+                Square.bitIndexToSquareBit( i ) ) );
+        }
     }
 }

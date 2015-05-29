@@ -98,3 +98,9 @@ I've been doing various things with Chessosis today only to discover that I have
 * Worked on the tests in SquareTest.java.
 
 I no longer consider the square name to bit index mappings something that should be hidden from most parts of the program. Many parts of Chessosis will depend on the mappings being like in the diagram in CSS's javadoc.
+
+## 2015-05-29 | Hours worked: -
+
+I added a class called SUM which is Static Utility Methods for short. It's a sort of a general purpose toolbox and contains public static methods that are likely to be used by many other classes. The first two methods I added to the class are `bitboardToSquareSet` and `squareSetToBitboard`.
+
+SUM does not and will not contain any non-static members.
