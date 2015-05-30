@@ -111,5 +111,6 @@ I moved method validSquareBit from Square to SUM along with its tests (SquareTes
 
 ## 2015-05-30 | Hours worked: -
 
-I have completed my work on `SUM.bitboardToSquareSet()` and `SUM.squareSetToBitboard()` both what comes to the methods themselves and their JUnit tests. I now have the tools to fluently and reliably convert between the two ways a set of squares can be expressed in Chessosis. The names of the methods are of course a bit misleading as a bitboard IS a set of squares or a means to represent such a set, anyway. "Square set" in the method names refers to a set of Square enum constants.
+I have completed my work on `SUM.bitboardToSquareSet()` and `SUM.squareSetToBitboard()` both what comes to the methods themselves and their JUnit tests. I now have the tools to fluently and reliably convert between the two ways a set of squares can be expressed in Chessosis. The names of the methods are of course a bit misleading as a bitboard IS a set of squares or a means to represent such a set, anyway. "Square set" in the method names refers to a set of Square enum constants. I also updated Square's javadoc.
 
+I moved the remaining static methods in enum Square into a class called Junkyard (I'm assuming its name falls into the category of "self-documenting"). I also made the tests for CSS more concise. I don't think constant data requires a lot of code for its testing. Even so, it's good to have some tests for CSS. Nothing can be trusted to work correctly in Chessosis if CSS contains inconsistent data.

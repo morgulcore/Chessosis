@@ -79,10 +79,80 @@ public class SUMTest {
     }
 
     /**
-     * Test of squareSetToBitboard method, of class SUM.
+     * Tests squareSetToBitboard() with a few square sets. As there are 2^64
+     * unique square sets, this is certainly not an ideal approach to testing
+     * the method.
+     *
+     * @throws Exception might be thrown in squareSetToBitboard()
      */
     @Test
-    public void testSquareSetToBitboard() {
+    public void quickAndDirtyTestingOnSquareSetToBitboard() throws Exception {
+        // This creates an empty EnumSet
+        EnumSet<Square> emptySet = EnumSet.noneOf( Square.class );
+        assertEquals( CSS.EMPTY_BOARD, SUM.squareSetToBitboard( emptySet ) );
+        // The set that contains all squares
+        EnumSet<Square> fullSet = EnumSet.allOf( Square.class );
+        assertEquals( CSS.OMNIBOARD, SUM.squareSetToBitboard( fullSet ) );
+        // The single square E4
+        EnumSet<Square> squareE4 = EnumSet.of( Square.E4 );
+        assertEquals( CSS.E4, SUM.squareSetToBitboard( squareE4 ) );
+        // The edge(s) of the board (including the corner squares)
+        EnumSet<Square> edge = EnumSet.of(
+            Square.A1, Square.A2, Square.A3, Square.A4, Square.A5, Square.A6,
+            Square.A7, Square.A8, Square.H1, Square.H2, Square.H3, Square.H4,
+            Square.H5, Square.H6, Square.H7, Square.H8, Square.B1, Square.C1,
+            Square.D1, Square.E1, Square.F1, Square.G1, Square.B8, Square.C8,
+            Square.D8, Square.E8, Square.F8, Square.G8
+        );
+        assertEquals( CSS.EDGE, SUM.squareSetToBitboard( edge ) );
+    }
+
+    /**
+     * Verifies that bitboardToSquareSet() and squareSetToBitboard() are
+     * inverse functions. In general this sort of a test consists of two
+     * parts: f(g(x)) == x and g(f(x)) == x
+     *
+     * @throws Exception
+     */
+    @Test
+    public void inverseFunctionTestOnBitboardToSquareSetAndSquareSetToBitboard()
+        throws Exception {
+        assertTrue( inverseFunctionTestPartOne() && inverseFunctionTestPartTwo() );
+    }
+
+    // Part one of the inverse function test: f(g(x)) == x
+    private boolean inverseFunctionTestPartOne() throws Exception {
+        Random random = new Random();
+        long randomBitboard = random.nextLong();
+
+        return randomBitboard
+            == SUM.squareSetToBitboard( SUM.bitboardToSquareSet( randomBitboard ) );
+    }
+
+    // Part two of the inverse function test: g(f(x)) == x
+    private boolean inverseFunctionTestPartTwo() throws Exception {
+
+        EnumSet<Square> randomSquareSet = generateRandomSquareSet();
+        EnumSet<Square> squareSetReturned
+            = SUM.bitboardToSquareSet( SUM.squareSetToBitboard( randomSquareSet ) );
+        return randomSquareSet.equals( squareSetReturned );
+    }
+
+    private static EnumSet<Square> generateRandomSquareSet() {
+        // This creates an empty EnumSet
+        EnumSet<Square> squareSet = EnumSet.noneOf( Square.class );
+        Random random = new Random();
+
+        // Generate the random square set. It has 16 elements *on average*.
+        for ( Square square : Square.values() ) {
+            // There's a 25 % chance that the square will be added to the set as
+            // nextInt() will return 0, 1, 2 or 3, all with equal probability.
+            if ( random.nextInt( 4 ) == 0 ) {
+                squareSet.add( square );
+            }
+        } // Done generating the random square set
+
+        return squareSet;
     }
 
     /**

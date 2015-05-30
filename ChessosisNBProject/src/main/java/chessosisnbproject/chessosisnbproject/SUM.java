@@ -52,9 +52,26 @@ public class SUM {
      *
      * @param squareSet the Square EnumSet to convert
      * @return a bitboard
+     * @throws Exception in case the parameter receives null
      */
-    public static long squareSetToBitboard( EnumSet<Square> squareSet ) {
-        return 0;
+    public static long squareSetToBitboard( EnumSet<Square> squareSet )
+        throws Exception {
+        // Allowing the method to be called with a null argument would
+        // make no sense.
+        if ( squareSet == null ) {
+            throw new Exception( "squareSet: " + squareSet ); // squareSet: null
+        } else if ( squareSet.isEmpty() ) {
+            return CSS.EMPTY_BOARD;
+        }
+
+        long bitboard = 0;
+
+        for ( Square square : squareSet ) {
+            // Doing a sequence of bitwise OR operations
+            bitboard |= square.bit();
+        }
+
+        return bitboard;
     }
 
     /**

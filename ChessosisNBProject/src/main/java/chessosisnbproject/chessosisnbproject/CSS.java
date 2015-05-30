@@ -107,9 +107,8 @@ public class CSS {
         H8 = 0x8000000000000000L; // Long.MIN_VALUE
 
     /**
-     * Files are the columns of the chessboard.
-     * <p>
-     * For example, file F consists of the squares F1-F8.
+     * Files are the columns of the chessboard. For example, file F
+     * consists of the squares F1-F8.
      */
     public static final long FILE_A = A1 | A2 | A3 | A4 | A5 | A6 | A7 | A8,
         FILE_B = B1 | B2 | B3 | B4 | B5 | B6 | B7 | B8,
@@ -121,10 +120,8 @@ public class CSS {
         FILE_H = H1 | H2 | H3 | H4 | H5 | H6 | H7 | H8;
 
     /**
-     * Ranks are the rows of the chessboard.
-     * <p>
-     * For example, rank 1 (the first rank) equals the set
-     * {A1,B1,C1,D1,E1,F1,G1,H1}.
+     * Ranks are the rows of the chessboard. For example, rank 1 (the first
+     * rank) equals the set {A1,B1,C1,D1,E1,F1,G1,H1}.
      */
     public static final long RANK_1 = A1 | B1 | C1 | D1 | E1 | F1 | G1 | H1,
         RANK_2 = A2 | B2 | C2 | D2 | E2 | F2 | G2 | H2,
@@ -136,17 +133,14 @@ public class CSS {
         RANK_8 = A8 | B8 | C8 | D8 | E8 | F8 | G8 | H8;
 
     /**
-     * The edge of the board.
-     * <p>
-     * The edge of the board includes all squares from FILE_A and FILE_H
+     * The edge of the board. It includes all squares from FILE_A and FILE_H
      * as well as RANK_1 and RANK_8.
      */
     public static final long EDGE = FILE_A | FILE_H | RANK_1 | RANK_8;
 
     /**
-     * The empty board.
-     * <p>
-     * A board with no bits set (all 64 bits equal to zero).
+     * The empty board, i.e., a board with no bits set (all 64 bits
+     * equal to zero).
      */
     public static final long EMPTY_BOARD = 0;
 
