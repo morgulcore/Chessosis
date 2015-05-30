@@ -1,5 +1,6 @@
 package chessosisnbproject.chessosisnbproject;
 
+import java.util.EnumSet;
 import java.util.Random;
 import java.util.Set;
 import org.junit.Test;
@@ -35,6 +36,45 @@ public class SUMTest {
             bitCounter++;
             assertEquals( bitCounter,
                 SUM.bitboardToSquareSet( bitPattern ).size() );
+        }
+    }
+
+    /**
+     * Part 2 of the test with the bit sequence (1, 11, 111, ...). In
+     * the test the bit sequence is translated into a "sequence of sequences"
+     * ( (A1), (A1,B1), (A1,B1,C1), ... ). In the final square sequence all
+     * 64 squares are listed in the order defined in enum type Square
+     * (assuming bitboardToSquareSet() is doing its job). The test works
+     * by checking the ordinals of the enum constants against a reference
+     * counter.
+     *
+     * @throws Exception might be thrown in squareBitToSquare()
+     */
+    @Test
+    public void testBitboardToSquareSetWithBitPatternOfIncreasingSetBitsPartTwo()
+        throws Exception {
+        long bitPattern = 0;
+
+        // Number of iterations: 64
+        for ( Square squareOfBoard : Square.values() ) {
+            // The bitwise OR'ing "adds" to bitPattern one bit at a time
+            bitPattern |= squareOfBoard.bit();
+
+            int expectedOrdinal = 0;
+            // Note that in this test bitboardToSquareSet() does not get called
+            // with bitPattern equal to zero. There seems to be no point in
+            // doing that.
+            EnumSet<Square> squareSet = SUM.bitboardToSquareSet( bitPattern );
+
+            // Number of iterations: between 1 and 64
+            for ( Square squareOfSet : squareSet ) {
+                // On EnumSet's method public final int ordinal():
+                // "Returns the ordinal of this enumeration constant (its
+                // position in its enum declaration, where the initial constant
+                // is assigned an ordinal of zero)."
+                assertEquals( expectedOrdinal, squareOfSet.ordinal() );
+                expectedOrdinal++;
+            }
         }
     }
 

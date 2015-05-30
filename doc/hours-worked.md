@@ -99,7 +99,7 @@ I've been doing various things with Chessosis today only to discover that I have
 
 I no longer consider the square name to bit index mappings something that should be hidden from most parts of the program. Many parts of Chessosis will depend on the mappings being like in the diagram in CSS's javadoc.
 
-## 2015-05-29 | Hours worked: -
+## 2015-05-29 | Hours worked: 8
 
 I added a class called SUM which is Static Utility Methods for short. It's a sort of a general purpose toolbox and contains public static methods that are likely to be used by many other classes. The first two methods I added to the class are `bitboardToSquareSet` and `squareSetToBitboard` (so far they don't contain any actual program logic).
 
@@ -108,3 +108,8 @@ SUM does not and will not contain any non-static members.
 I moved method validSquareBit from Square to SUM along with its tests (SquareTest to SUMTest). I intend to move more static methods into class SUM.
 
 [A few hours later.] I created many static utility methods for class SUM. I also created JUnit tests for them. They seem to work. However, I am still to create the methods I mentioned before, `bitboardToSquareSet` and `squareSetToBitboard`. Now having the helper methods I need, I think I'll code their program logic and JUnit tests next. After that I might actually get some work done on MoveGenerator.surroundingSquares().
+
+## 2015-05-30 | Hours worked: -
+
+I have completed my work on `SUM.bitboardToSquareSet()` and `SUM.squareSetToBitboard()` both what comes to the methods themselves and their JUnit tests. I now have the tools to fluently and reliably convert between the two ways a set of squares can be expressed in Chessosis. The names of the methods are of course a bit misleading as a bitboard IS a set of squares or a means to represent such a set, anyway. "Square set" in the method names refers to a set of Square enum constants.
+
