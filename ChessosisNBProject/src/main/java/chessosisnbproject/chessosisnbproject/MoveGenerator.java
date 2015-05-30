@@ -1,66 +1,139 @@
 package chessosisnbproject.chessosisnbproject;
 
+import java.util.EnumSet;
+
 /**
  *
  * @author Henrik Lindberg
  */
 public class MoveGenerator {
 
-    public static long surroundingSquares( Square square ) {
-        // After processing this string array will always contain
-        // eight square strings (e.g., "A1"). If parameter square
-        // is on the edge of the board, part of the strings will
-        // refer to invalid squares such as "H9".
-        String[] fakeAndRealSquareStrings;
-        
-        Square[] theEightSurroundingSquares
-            = { null, null, null, null, null, null, null, null };
-        int index = 0; // Used and incremented within the for loops
-        char fileOfSquare = square.toString().substring( 0, 1 ).charAt( 0 );
-        char rankOfSquare = square.toString().substring( 1 ).charAt( 0 );
-
-        // Example situation with Square.B2:
-        // | A3 | B3 | C3 |
-        // |--------------|
-        // | A2 | B2 | C2 |
-        // |--------------|
-        // | A1 | B1 | C1 |
-        // Iterate through three files, for example files A, B and C
-        for ( int file = fileOfSquare - 1; file <= fileOfSquare + 1; file++ ) {
-            // The two conditions: Square parameter is on the A or H files
-            if ( (char) file < 'A' || (char) file > 'H' ) {
-                continue;
-            }
-            // Iterate through three ranks, for example ranks 1, 2 and 3
-            for ( int rank = rankOfSquare - 1; rank <= rankOfSquare + 1; rank++ ) {
-                // The two conditions: Square parameter is on the ranks 1 or 8
-                if ( (char) rank < '1' || (char) rank < '1' ) {
-                    continue;
-                }
-                // Don't add the square itself to the list of
-                // surrounding squares
-                if ( file == fileOfSquare && rank == rankOfSquare ) {
-                    continue;
-                }
-                String squareString = Character.toString( (char) file )
-                    + Character.toString( (char) rank );
-                theEightSurroundingSquares[ index ]
-                    = Square.valueOf( squareString );
-                index++;
-            }
+    /**
+     * Returns the surrounding squares of its Square parameter. Surrounding
+     * squares are the squares to which a king can move to from a particular
+     * square. Note that the size of the set returned by the method is always
+     * either 3, 5 or 8 depending on where the Square argument is located
+     * on the board (corners, edges or elsewhere).
+     *
+     * @param square any square on the board
+     * @return a set of squares
+     * @throws Exception
+     */
+    public static EnumSet<Square> surroundingSquares( Square square )
+        throws Exception {
+        // The square is a corner square
+        if ( ( square.bit() & CSS.CORNER_SQUARES ) != 0 ) {
+            return surroundingSquaresOfCorners( square );
+        } // The square is on the edge of the board
+        else if ( ( square.bit() & CSS.EDGE ) != 0 ) {
+            return surroundingSquaresOfSquaresOnEdge( square );
         }
+        // Still here, so the square is one of the 36 non-edge squares
 
-        return squareArrayToBitboard( theEightSurroundingSquares );
+        return null;
     }
 
-    private static long squareArrayToBitboard( Square[] squares ) {
-        long bitboard = CSS.EMPTY_BOARD;
-        // Bitwise OR the individual square bitboard together
-        for ( int i = 0; i < squares.length; i++ ) {
-            if ( squares[ i ] != null ) {
-                bitboard |= squares[ i ].bit();
-            }
+    private static EnumSet<Square> surroundingSquaresOfCorners( Square square )
+        throws Exception {
+        EnumSet<Square> ss; // surrounding squares
+
+        switch ( square ) {
+            case A1:
+                ss = SUM.bitboardToSquareSet( CSS.A2 | CSS.B2 | CSS.B1 );
+                break;
+            case A8:
+                ss = SUM.bitboardToSquareSet( CSS.A7 | CSS.B7 | CSS.B8 );
+                break;
+            case H1:
+                ss = SUM.bitboardToSquareSet( CSS.H2 | CSS.G2 | CSS.G1 );
+                break;
+            case H8:
+                ss = SUM.bitboardToSquareSet( CSS.G8 | CSS.G7 | CSS.H7 );
+                break;
+            // Should be (made) impossible
+            default:
+                ss = null;
+                break;
         }
-        return bitboard;
+
+        return ss;
     }
+
+    private static EnumSet<Square> surroundingSquaresOfSquaresOnEdge(
+        Square square ) throws Exception {
+        // Square on 1st rank
+        if ( ( square.bit() & CSS.RANK_1 ) != 0 ) {
+            return surroundingSquaresOfSquaresOnRank1( square );
+        } // Square on 8th rank
+        else if ( ( square.bit() & CSS.RANK_8 ) != 0 ) {
+            return surroundingSquaresOfSquaresOnRank8( square );
+        } // Square on a-file
+        else if ( true ) {
+
+        }
+        // Square must be on h-file
+
+        return null;
+    }
+
+    // ___Should be called only from surroundingSquaresOfSquaresOnEdge()___
+    //
+    // The diagram below is meant to illustrate how the method works. The
+    // numbers on top are the square indices, and below are the corresponding
+    // square names. The asterisk indicates the square itself (the method
+    // parameter), the X's mark set bits in the bitboard and the rest of the
+    // cells are unset bits (zeroes). It's important to observe that this
+    // pattern applies in finding the surrounding squares of any of the
+    // squares B1 to G1.
+    //
+    //  10  09  08  07  06  05  04  03  02  01  00
+    // +-------------------------------------------+
+    // | X | X | X |   |   |   |   |   | X | * | X |
+    // +-------------------------------------------+
+    //  C2  B2  A2  H1  G1  F1  E1  D1  C1  B1  A1
+    // << direction of left-shifts
+    //
+    private static EnumSet<Square> surroundingSquaresOfSquaresOnRank1(
+        Square square ) throws Exception {
+        long minus1, plus1, plus7, plus8, plus9;
+        minus1 = plus1 = plus7 = plus8 = plus9 = square.bit();
+
+        // The five surrounding squares (square bits) are shifted to their
+        // correct positions
+        minus1 >>>= 1;
+        plus1 <<= 1; // Must use unsigned version of the right-shift operator
+        plus7 <<= 7;
+        plus8 <<= 8;
+        plus9 <<= 9;
+
+        return SUM.bitboardToSquareSet(
+            minus1 | plus1 | plus7 | plus8 | plus9 );
+    }
+
+    // ___Should be called only from surroundingSquaresOfSquaresOnEdge()___
+    //
+    //  58  57  56  55  54  53  52  51  50  49  48
+    // +-------------------------------------------+
+    // | X | * | X |   |   |   |   |   | X | X | X |
+    // +-------------------------------------------+
+    //  C8  B8  A8  H7  G7  F7  E7  D7  C7  B7  A7
+    // << direction of left-shifts
+    //
+    private static EnumSet<Square> surroundingSquaresOfSquaresOnRank8(
+        Square square ) throws Exception {
+        long plus1, minus1, minus7, minus8, minus9;
+        plus1 = minus1 = minus7 = minus8 = minus9 = square.bit();
+
+        plus1 <<= 1;
+        minus1 >>>= 1;
+        minus7 >>>= 7;
+        minus8 >>>= 8;
+        minus9 >>>= 9;
+
+        return SUM.bitboardToSquareSet(
+            plus1 | minus1 | minus7 | minus8 | minus9 );
+    }
+
+    //surroundingSquaresOfSquaresOnFileA
+    //surroundingSquaresOfSquaresOnFileH
 }

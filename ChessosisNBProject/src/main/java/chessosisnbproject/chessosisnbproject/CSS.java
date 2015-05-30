@@ -148,4 +148,9 @@ public class CSS {
      * Omniboard, the opposite of the empty board.
      */
     public static final long OMNIBOARD = ~EMPTY_BOARD;
+
+    /**
+     * The chessboard has four corner squares.
+     */
+    public static final long CORNER_SQUARES = A1 | A8 | H1 | H8;
 }
