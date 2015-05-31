@@ -116,3 +116,7 @@ I have completed my work on `SUM.bitboardToSquareSet()` and `SUM.squareSetToBitb
 I moved the remaining static methods in enum Square into a class called Junkyard (I'm assuming its name falls into the category of "self-documenting"). I also made the tests for CSS more concise. I don't think constant data requires a lot of code for its testing. Even so, it's good to have some tests for CSS. Nothing can be trusted to work correctly in Chessosis if CSS contains inconsistent data.
 
 Having now a set of useful and well-tested tools in class SUM, I returned back to my work on `MoveGenerator.surroundingSquares()`. I simply deleted most of the code I had written a few days ago, made a fresh start. So far the method seems to work on the corner squares and also non-corner squares on the 1st and 8th rank. I think my new implementation of the method is turning out to be rather elegant.
+
+## 2015-05-31 | Hours worked: -
+
+`MoveGenerator.surroundingSquares()` is now fully implemented and fairly well tested. This is a major milestone.
