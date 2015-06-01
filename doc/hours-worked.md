@@ -117,6 +117,19 @@ I moved the remaining static methods in enum Square into a class called Junkyard
 
 Having now a set of useful and well-tested tools in class SUM, I returned back to my work on `MoveGenerator.surroundingSquares()`. I simply deleted most of the code I had written a few days ago, made a fresh start. So far the method seems to work on the corner squares and also non-corner squares on the 1st and 8th rank. I think my new implementation of the method is turning out to be rather elegant.
 
-## 2015-05-31 | Hours worked: -
+## 2015-05-31 | Hours worked: 8
 
 `MoveGenerator.surroundingSquares()` is now fully implemented and fairly well tested. This is a major milestone.
+
+I spent the rest of the day doing a code review on https://github.com/mikkoka/keskustelujarjestaja
+
+## 2015-06-01 | Hours worked: -
+
+I intend to create methods similar to `surroundingSquares()` for each chess piece (apart from pawns, I think). These methods will be named as follows:
+
+* `rooksSquares()`
+* `bishopsSquares()`
+* `queensSquares()`
+* `knightsSquares()`
+
+It is because of this intended naming scheme that I decided to add an alias for surroundingSquares(): `kingsSquares()`. Simply renaming the method didn't seem appealing, as the documentation I've written constantly and consistently uses the term of surrounding squares. Anyway, from now on calling kingsSquares() is preferable to calling surroundingSquares() directly.

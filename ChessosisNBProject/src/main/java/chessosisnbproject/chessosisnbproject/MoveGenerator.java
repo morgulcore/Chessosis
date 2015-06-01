@@ -10,6 +10,20 @@ import java.util.EnumSet;
 public class MoveGenerator {
 
     /**
+     * An alias for surroundingSquares(), added for the sake of consistency.
+     * Similar name, similar basic idea: kingsSquares(), queensSquares(),
+     * rooksSquares(), knightsSquares(), bishopsSquares().
+     *
+     * @param square any square on the board
+     * @return a set of squares
+     * @throws Exception
+     */
+    public static EnumSet<Square> kingsSquares( Square square )
+        throws Exception {
+        return surroundingSquares( square );
+    }
+
+    /**
      * Returns the surrounding squares of its Square parameter. Surrounding
      * squares are the squares to which a king can move from a particular
      * square. Note that the size of the set returned by the method is always

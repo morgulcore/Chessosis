@@ -6,131 +6,88 @@ package chessosisnbproject.chessosisnbproject;
  */
 public class Position {
 
-    // The 12 squares sets (SS's, bitboards) that correspond to the
-    // different types of pieces of the game.
-    private final long whitePawnSS, whiteBishopSS, whiteKnightSS,
-        whiteRookSS, whiteQueenSS, whiteKingSS,
-        blackPawnSS, blackBishopSS, blackKnightSS,
-        blackRookSS, blackQueenSS, blackKingSS;
+    // The 12 fundamental bitboards that correspond to the different
+    // types of chessmen (chess pieces) on the board.
+    private final long whitePawnBB, whiteBishopBB, whiteKnightBB,
+        whiteRookBB, whiteQueenBB, whiteKingBB,
+        blackPawnBB, blackBishopBB, blackKnightBB,
+        blackRookBB, blackQueenBB, blackKingBB;
 
     // Indicates who's turn it is to move
-    private final boolean whitesTurn;
-    
-    // Sometimes needed to check the legality of an en passant capture.
-    private Position previousPosition;
+    private final Color turn;
 
-    // Perhaps there should be an array of Positions here representing
-    // the legal moves.
-    // --No, I think that is not necessary.
-    public Position( long whitePawnSS, long whiteBishopSS, long whiteKnightSS,
-        long whiteRookSS, long whiteQueenSS, long whiteKingSS,
-        long blackPawnSS, long blackBishopSS, long blackKnightSS,
-        long blackRookSS, long blackQueenSS, long blackKingSS,
-        boolean whitesTurn ) {
-        // Initialize white pieces
-        this.whitePawnSS = whitePawnSS;
-        this.whiteBishopSS = whiteBishopSS;
-        this.whiteKnightSS = whiteKnightSS;
-        this.whiteRookSS = whiteRookSS;
-        this.whiteQueenSS = whiteQueenSS;
-        this.whiteKingSS = whiteKingSS;
-        // Initialize black pieces
-        this.blackPawnSS = blackPawnSS;
-        this.blackBishopSS = blackBishopSS;
-        this.blackKnightSS = blackKnightSS;
-        this.blackRookSS = blackRookSS;
-        this.blackQueenSS = blackQueenSS;
-        this.blackKingSS = blackKingSS;
-        this.whitesTurn = whitesTurn;
+    public Position( long whitePawnBB, long whiteBishopBB, long whiteKnightBB,
+        long whiteRookBB, long whiteQueenBB, long whiteKingBB,
+        long blackPawnBB, long blackBishopBB, long blackKnightBB,
+        long blackRookBB, long blackQueenBB, long blackKingBB,
+        Color turn ) {
+        // Initialize white chessmen
+        this.whitePawnBB = whitePawnBB;
+        this.whiteBishopBB = whiteBishopBB;
+        this.whiteKnightBB = whiteKnightBB;
+        this.whiteRookBB = whiteRookBB;
+        this.whiteQueenBB = whiteQueenBB;
+        this.whiteKingBB = whiteKingBB;
+        // Initialize black chessmen
+        this.blackPawnBB = blackPawnBB;
+        this.blackBishopBB = blackBishopBB;
+        this.blackKnightBB = blackKnightBB;
+        this.blackRookBB = blackRookBB;
+        this.blackQueenBB = blackQueenBB;
+        this.blackKingBB = blackKingBB;
+        // Initialize turn
+        this.turn = turn;
     }
 
-    public long getWhitePawnSS() {
-        return 0;
+    public long whitePawns() {
+        return this.whitePawnBB;
     }
 
-    public long getWhiteBishopSS() {
-        return 0;
+    public long whiteBishops() {
+        return this.whiteBishopBB;
     }
 
-    public long getWhiteKnightSS() {
-        return 0;
+    public long whiteKnights() {
+        return this.whiteKnightBB;
     }
 
-    public long getWhiteRookSS() {
-        return 0;
+    public long whiteRooks() {
+        return this.whiteRookBB;
     }
 
-    public long getWhiteQueenSS() {
-        return 0;
+    public long whiteQueen() {
+        return this.whiteQueenBB;
     }
 
-    public long getWhiteKingSS() {
-        return 0;
+    public long whiteKing() {
+        return this.whiteKingBB;
     }
 
-    public long getBlackPawnSS() {
-        return 0;
+    public long blackPawns() {
+        return this.blackPawnBB;
     }
 
-    public long getBlackBishopSS() {
-        return 0;
+    public long blackBishops() {
+        return this.blackBishopBB;
     }
 
-    public long getBlackKnightSS() {
-        return 0;
+    public long blackKnights() {
+        return this.blackKnightBB;
     }
 
-    public long getBlackRookSS() {
-        return 0;
+    public long blackRooks() {
+        return this.blackRookBB;
     }
 
-    public long getBlackQueenSS() {
-        return 0;
+    public long blackQueen() {
+        return this.blackQueenBB;
     }
 
-    public long getBlackKingSS() {
-        return 0;
+    public long blackKing() {
+        return this.blackKingBB;
     }
 
-    public boolean whitesTurn() {
-        return this.whitesTurn;
+    public Color turn() {
+        return this.turn;
     }
-
-    /*
-     public void setWhitePawnSS() {
-     }
-
-     public void setWhiteBishopSS() {
-     }
-
-     public void setWhiteKnightSS() {
-     }
-
-     public void setWhiteRookSS() {
-     }
-
-     public void setWhiteQueenSS() {
-     }
-
-     public void setWhiteKingSS() {
-     }
-
-     public void setBlackPawnSS() {
-     }
-
-     public void setBlackBishopSS() {
-     }
-
-     public void setBlackKnightSS() {
-     }
-
-     public void setBlackRookSS() {
-     }
-
-     public void setBlackQueenSS() {
-     }
-
-     public void setBlackKingSS() {
-     }
-     */
 }
