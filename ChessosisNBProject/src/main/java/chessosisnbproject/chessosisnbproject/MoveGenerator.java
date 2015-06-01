@@ -16,59 +16,75 @@ public class MoveGenerator {
         // The set of Moves is empty to start with
         Set<Move> moves = new LinkedHashSet<>();
 
-        moves.addAll( kingsMoveGenerator( position ) );
+        long chessmenOfSideToMoveBB;
+        if ( position.turn() == Color.WHITE ) {
+            chessmenOfSideToMoveBB = position.whiteChessmen();
+        } else {
+            chessmenOfSideToMoveBB = position.blackChessmen();
+        }
+        EnumSet<Square> chessmenOfSideToMove
+            = SUM.bitboardToSquareSet( chessmenOfSideToMoveBB );
+
+        for ( Square chessman : chessmenOfSideToMove ) {
+            EnumSet<Square> chessmansDestSquares
+                = potentialDestSquares( chessman, position );
+            // Chessman is a king
+            if ( ( chessman.bit() & position.whiteKing() ) != 0
+                || ( chessman.bit() & position.blackKing() ) != 0 ) {
+                // Set difference
+                chessmansDestSquares.removeAll(
+                    squaresUnderAttack( position ) );
+            }
+            moves.addAll( generateMoveSetForChessman( chessman, chessmansDestSquares ) );
+        }
 
         return moves;
     }
 
-    private static Set<Move> kingsMoveGenerator( Position position )
+    private static EnumSet<Square> potentialDestSquares(
+        Square chessman, Position position ) throws Exception {
+        // The chessman is a king
+        if ( ( chessman.bit() & position.whiteKing() ) != 0
+            || ( chessman.bit() & position.blackKing() ) != 0 ) {
+            return kingsSquares( chessman );
+        }
+
+        return null;
+    }
+
+    private static EnumSet<Square> squaresUnderAttack( Position position )
         throws Exception {
-        // Indicates where the king is. The value depends also on who's
-        // turn it is
-        long kingsSquareBB
-            // Using Java's conditional operator
-            = ( position.turn() == Color.WHITE )
-                ? position.whiteKing() : position.blackKing();
-        // Conversion to enum Square
-        Square kingsSquare = SUM.squareBitToSquare( kingsSquareBB );
+        EnumSet<Square> squaresUnderAttack = EnumSet.noneOf( Square.class );
+        long chessmenOfSideNotToMoveBB;
+        if ( position.turn() == Color.WHITE ) {
+            chessmenOfSideNotToMoveBB = position.blackChessmen();
+        } else {
+            chessmenOfSideNotToMoveBB = position.whiteChessmen();
+        }
+        EnumSet<Square> chessmenOfSideNotToMove
+            = SUM.bitboardToSquareSet( chessmenOfSideNotToMoveBB );
 
-        // To start with the destination squares include all the possible
-        // squares a king could move to from the current square excluding
-        // the prospect of castling
-        long destSquaresBB = SUM.squareSetToBitboard( kingsSquares( kingsSquare ) );
-
-        EnumSet<Square> enumSetOfSquaresUnderAttack
-            = squaresUnderAttack( position );
-
-        for ( Square square : enumSetOfSquaresUnderAttack ) {
-            // Condition: a potential destination square for the king that
-            // is under attack by the enemy
-            if ( ( square.bit() & destSquaresBB ) != 0 ) {
-                // Remove the square under attack from the set of destination
-                // squares
-                destSquaresBB ^= square.bit();
+        for ( Square chessman : chessmenOfSideNotToMove ) {
+            if ( ( chessman.bit() & position.whiteKing() ) != 0
+                || ( chessman.bit() & position.blackKing() ) != 0 ) {
+                squaresUnderAttack.addAll( kingsSquares( chessman ) );
             }
         }
 
-        return generateMoveSetForChessman(
-            kingsSquare, SUM.bitboardToSquareSet( destSquaresBB ) );
-    }
-
-    private static EnumSet<Square> squaresUnderAttack( Position position ) {
-        return EnumSet.of( Square.D5, Square.E5, Square.F5 );
+        return squaresUnderAttack;
     }
 
     private static Set<Move> generateMoveSetForChessman(
-        Square chessman, EnumSet<Square> setOfDestSquares ) {
+        Square chessman, EnumSet<Square> chessmansDestSquares ) {
         Set<Move> moves = new LinkedHashSet<>();
-        if ( setOfDestSquares.isEmpty() ) {
+        if ( chessmansDestSquares.isEmpty() ) {
             return moves;
         }
 
-        for ( Square destSquare : setOfDestSquares ) {
+        for ( Square destSquare : chessmansDestSquares ) {
             moves.add( new Move( chessman, destSquare ) );
         }
-        
+
         return moves;
     }
 

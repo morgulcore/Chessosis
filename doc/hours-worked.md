@@ -139,3 +139,5 @@ I added a simply enum type `Color` which consists of two constants, BLACK and WH
 I added a class called Move. It's purpose is to represent a legal move in a give position. Initially it will contain only the enum Square fields `from` and `to`. Maybe I'll also override the `toString()` method so that it's to generate a String representation of the move. It seems I'll need to override Object's `equals()` and `hashCode()` methods in class Move. That's because I'm placing Move objects in Sets. This implies testing for equility as sets can't hold duplicate elements.
 
 I have begun my work on `MoveGenerator.moveGenerator( Position position )`, the method that's supposed to discover all the legal moves in the given position.
+
+Too... much... coding...

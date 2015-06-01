@@ -90,4 +90,14 @@ public class Position {
     public Color turn() {
         return this.turn;
     }
+
+    public long whiteChessmen() {
+        return this.whitePawnBB | this.whiteBishopBB | this.whiteKnightBB
+            | this.whiteRookBB | this.whiteQueenBB | this.whiteKingBB;
+    }
+
+    public long blackChessmen() {
+        return this.blackPawnBB | this.blackBishopBB | this.blackKnightBB
+            | this.blackRookBB | this.blackQueenBB | this.blackKingBB;
+    }
 }

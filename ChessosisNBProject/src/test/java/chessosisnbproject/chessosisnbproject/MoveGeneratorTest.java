@@ -115,9 +115,7 @@ public class MoveGeneratorTest {
         for ( Square square : destSquaresOfExpectedMoves ) {
             expectedMoves.add( new Move( Square.E6, square ) );
         }
-        System.out.println( expectedMoves );
-        System.out.println( actualMoves );
-
+        
         assertEquals( expectedMoves, actualMoves );
     }
 
