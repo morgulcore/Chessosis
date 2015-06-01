@@ -18,3 +18,8 @@ Whether I'll actually go by this ideal I don't know -- sticking to ideals is at 
 
 https://weblogs.java.net/blog/mkarg/archive/2010/01/03/fun-enumset
 http://javarevisited.blogspot.com/2014/03/how-to-use-enumset-in-java-with-example.html
+
+## Overriding Object's equals() and hashCode() methods.
+
+"The interface contract for Object requires that if two objects are equal according to equals(), then they must have the same hashCode() value."
+http://www.ibm.com/developerworks/library/j-jtp05273/

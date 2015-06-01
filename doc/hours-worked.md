@@ -123,7 +123,7 @@ Having now a set of useful and well-tested tools in class SUM, I returned back t
 
 I spent the rest of the day doing a code review on https://github.com/mikkoka/keskustelujarjestaja
 
-## 2015-06-01 | Hours worked: -
+## 2015-06-01 | Hours worked: 10
 
 I intend to create methods similar to `surroundingSquares()` for each chess piece (apart from pawns, I think). These methods will be named as follows:
 
@@ -133,3 +133,9 @@ I intend to create methods similar to `surroundingSquares()` for each chess piec
 * `knightsSquares()`
 
 It is because of this intended naming scheme that I decided to add an alias for surroundingSquares(): `kingsSquares()`. Simply renaming the method didn't seem appealing, as the documentation I've written constantly and consistently uses the term of surrounding squares. Anyway, from now on calling kingsSquares() is preferable to calling surroundingSquares() directly.
+
+I added a simply enum type `Color` which consists of two constants, BLACK and WHITE. I will be using the type at least in indicating who's turn it is. I'll likely also express piece color and perhaps also square color with the enum type.
+
+I added a class called Move. It's purpose is to represent a legal move in a give position. Initially it will contain only the enum Square fields `from` and `to`. Maybe I'll also override the `toString()` method so that it's to generate a String representation of the move. It seems I'll need to override Object's `equals()` and `hashCode()` methods in class Move. That's because I'm placing Move objects in Sets. This implies testing for equility as sets can't hold duplicate elements.
+
+I have begun my work on `MoveGenerator.moveGenerator( Position position )`, the method that's supposed to discover all the legal moves in the given position.

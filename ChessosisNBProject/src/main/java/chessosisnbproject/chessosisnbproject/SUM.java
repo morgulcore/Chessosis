@@ -2,6 +2,7 @@ package chessosisnbproject.chessosisnbproject;
 
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -161,5 +162,25 @@ public class SUM {
         } while ( leftShiftingValue != 0 );
 
         return setBitCount;
+    }
+
+    /**
+     * JAVADOC, PLEASE!
+     * Write a test for this method that uses
+     * for(Square square : Square.values()). It calls randomSquare() as many
+     * times as necessary for it to return a value equal to square. Only then
+     * does the loop advance to the next square.
+     *
+     * @return 
+     */
+    public static Square randomSquare() {
+        Random random = new Random();
+
+        char[] randomFileAndRank = {
+            (char) ( 65 + random.nextInt( 8 ) ),
+            (char) ( 49 + random.nextInt( 8 ) ) };
+        String randomSquareString = new String( randomFileAndRank );
+
+        return Square.valueOf( randomSquareString );
     }
 }

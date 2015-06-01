@@ -1,6 +1,9 @@
 package chessosisnbproject.chessosisnbproject;
 
 import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -84,6 +87,38 @@ public class MoveGeneratorTest {
                 assertEquals( 8, squareSet.size() );
             }
         }
+    }
+
+    //
+    // =====================================
+    // == Manual tests of moveGenerator() ==
+    // =====================================
+    //
+    //
+    /**
+     * A minimalist position with white king on E4 and black king on E6; 
+     * Black's turn to move. The correct set of legal moves in the position
+     * is { E6-D6, E6-D7, E6-E7, E6-F7, E6-F6 }.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void manualMoveGeneratorMethodTest001() throws Exception {
+        Position position = new Position(
+            0, 0, 0, 0, 0, CSS.E4, 0, 0, 0, 0, 0, CSS.E6, Color.BLACK );
+        Set<Move> actualMoves = MoveGenerator.moveGenerator( position );
+        Set<Move> expectedMoves = new HashSet<>();
+        EnumSet<Square> destSquaresOfExpectedMoves
+            = EnumSet.of(
+                Square.F7, Square.D6, Square.D7, Square.F6, Square.E7 );
+
+        for ( Square square : destSquaresOfExpectedMoves ) {
+            expectedMoves.add( new Move( Square.E6, square ) );
+        }
+        System.out.println( expectedMoves );
+        System.out.println( actualMoves );
+
+        assertEquals( expectedMoves, actualMoves );
     }
 
     //

@@ -1,6 +1,8 @@
 package chessosisnbproject.chessosisnbproject;
 
 import java.util.EnumSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * All about generating legal moves. Will add more javadoc later.
@@ -8,6 +10,67 @@ import java.util.EnumSet;
  * @author Henrik Lindberg
  */
 public class MoveGenerator {
+
+    public static Set<Move> moveGenerator( Position position )
+        throws Exception {
+        // The set of Moves is empty to start with
+        Set<Move> moves = new LinkedHashSet<>();
+
+        moves.addAll( kingsMoveGenerator( position ) );
+
+        return moves;
+    }
+
+    private static Set<Move> kingsMoveGenerator( Position position )
+        throws Exception {
+        // Indicates where the king is. The value depends also on who's
+        // turn it is
+        long kingsSquareBB
+            // Using Java's conditional operator
+            = ( position.turn() == Color.WHITE )
+                ? position.whiteKing() : position.blackKing();
+        // Conversion to enum Square
+        Square kingsSquare = SUM.squareBitToSquare( kingsSquareBB );
+
+        // To start with the destination squares include all the possible
+        // squares a king could move to from the current square excluding
+        // the prospect of castling
+        long destSquaresBB = SUM.squareSetToBitboard( kingsSquares( kingsSquare ) );
+
+        EnumSet<Square> enumSetOfSquaresUnderAttack
+            = squaresUnderAttack( position );
+
+        for ( Square square : enumSetOfSquaresUnderAttack ) {
+            // Condition: a potential destination square for the king that
+            // is under attack by the enemy
+            if ( ( square.bit() & destSquaresBB ) != 0 ) {
+                // Remove the square under attack from the set of destination
+                // squares
+                destSquaresBB ^= square.bit();
+            }
+        }
+
+        return generateMoveSetForChessman(
+            kingsSquare, SUM.bitboardToSquareSet( destSquaresBB ) );
+    }
+
+    private static EnumSet<Square> squaresUnderAttack( Position position ) {
+        return EnumSet.of( Square.D5, Square.E5, Square.F5 );
+    }
+
+    private static Set<Move> generateMoveSetForChessman(
+        Square chessman, EnumSet<Square> setOfDestSquares ) {
+        Set<Move> moves = new LinkedHashSet<>();
+        if ( setOfDestSquares.isEmpty() ) {
+            return moves;
+        }
+
+        for ( Square destSquare : setOfDestSquares ) {
+            moves.add( new Move( chessman, destSquare ) );
+        }
+        
+        return moves;
+    }
 
     /**
      * An alias for surroundingSquares(), added for the sake of consistency.
