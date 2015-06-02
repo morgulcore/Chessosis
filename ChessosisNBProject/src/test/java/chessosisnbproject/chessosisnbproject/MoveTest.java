@@ -1,26 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package chessosisnbproject.chessosisnbproject;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
+ * JUnit tests for class Move.
  *
  * @author Henrik Lindberg
  */
 public class MoveTest {
 
     /**
+     * First test of overridden equals().
      * "Symmetry: For two references, a and b, a.equals(b) if and only
-     * if b.equals(a)"
+     * if b.equals(a)."
      * http://www.ibm.com/developerworks/library/j-jtp05273/
      */
     @Test
@@ -32,7 +25,9 @@ public class MoveTest {
     }
 
     /**
-     * "Reflexivity: For all non-null references, a.equals(a)"
+     * Second test of overridden equals().
+     * "Reflexivity: For all non-null references, a.equals(a)."
+     * http://www.ibm.com/developerworks/library/j-jtp05273/
      */
     @Test
     public void equalsReflexivityTest() {
@@ -44,7 +39,9 @@ public class MoveTest {
     }
 
     /**
-     * "If a.equals(b) and b.equals(c), then a.equals(c)"
+     * Third test of overridden equals().
+     * "If a.equals(b) and b.equals(c), then a.equals(c)."
+     * http://www.ibm.com/developerworks/library/j-jtp05273/
      */
     @Test
     public void equalsTransitivityTest() {
@@ -63,8 +60,10 @@ public class MoveTest {
     }
 
     /**
+     * Method hashCode() consistency check.
      * "Consistency with hashCode(): Two equal objects must have the same
-     * hashCode() value"
+     * hashCode() value."
+     * http://www.ibm.com/developerworks/library/j-jtp05273/
      */
     @Test
     public void equalsConsistencyWithHashCodeTest() {

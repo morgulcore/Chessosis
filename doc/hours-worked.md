@@ -141,3 +141,9 @@ I added a class called Move. It's purpose is to represent a legal move in a give
 I have begun my work on `MoveGenerator.moveGenerator( Position position )`, the method that's supposed to discover all the legal moves in the given position.
 
 Too... much... coding...
+
+## 2015-06-02 | Hours worked: 8
+
+Most of my work today on Chessosis has involved the static `moveGenerator()` method. I've also written and updated the javadoc and familiarized myself with FEN (Forsyth–Edwards Notation), the means to record chess positions as strings that span less than a line.
+
+I'm considering writing two new methods: `public static boolean squareAttacked( Square s )` and `routeClear( Square s1, Square s2 )` (the names might change). Method squareAttacked() has to do with move generation; a king can never move to an attacked square, be it an empty square or an enemy chessman protected by another chessman. Method routeClear() determines whether or not there's an "obstacle" (chessman) between the Square parameters which have to be on the same file, rank or diagonal.

@@ -138,6 +138,9 @@ public class SUMTest {
         return randomSquareSet.equals( squareSetReturned );
     }
 
+    // Each of the 64 Square constants has a 25 % chance of being included
+    // in the set returned by this method. Therefore the size of the returned
+    // set is on average 16.
     private static EnumSet<Square> generateRandomSquareSet() {
         // This creates an empty EnumSet
         EnumSet<Square> squareSet = EnumSet.noneOf( Square.class );
@@ -254,5 +257,22 @@ public class SUMTest {
             assertEquals( SUM.numberOfSetBits( randomBitboard ),
                 setOfBitboards.size() );
         }
+    }
+
+    /**
+     * Verifies that randomSquare() eventually returns each and every
+     * constant defined in enum type Square. Note that failure in this
+     * test means an infinite loop, not explicit failure as in fail().
+     */
+    @Test
+    public void randomSquareCanReturnAllSquareConstants() {
+        for ( Square square : Square.values() ) {
+            Square randomSquare;
+            do {
+                randomSquare = SUM.randomSquare();
+            } while ( randomSquare != square );
+        }
+
+        assertTrue( true );
     }
 }

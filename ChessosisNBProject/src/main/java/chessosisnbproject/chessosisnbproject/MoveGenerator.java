@@ -5,12 +5,27 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * All about generating legal moves. Will add more javadoc later.
+ * This class is responsible for calculating the possible (legal) moves
+ * for a given position. The means for accomplishing the task is the static
+ * method moveGenerator() which takes a Position object as its single parameter
+ * and returns a set of Move objects each of which represent a possible move.
+ * The class also contains other static methods, many of which are public.
+ * All the methods of the class contribute to the move generation process
+ * and operations in one way or the other.
  *
  * @author Henrik Lindberg
  */
 public class MoveGenerator {
 
+    /**
+     * Generates the set of possible (legal) moves for a given position.
+     * This is one of the fundamental mechanisms of Chessosis. A lot of
+     * effort should and will be invested on testing this method.
+     *
+     * @param position the Position object to examine
+     * @return a set of zero or more Move objects
+     * @throws Exception
+     */
     public static Set<Move> moveGenerator( Position position )
         throws Exception {
         // The set of Moves is empty to start with
@@ -41,6 +56,7 @@ public class MoveGenerator {
         return moves;
     }
 
+    // Discover the potential destination squares of a chessman.
     private static EnumSet<Square> potentialDestSquares(
         Square chessman, Position position ) throws Exception {
         // The chessman is a king
@@ -52,6 +68,9 @@ public class MoveGenerator {
         return null;
     }
 
+    // Finds the squares that are "under attack" by the opposing side, i.e.,
+    // the side who's turn it is *not* to move. A square is under attack by
+    // a chessman if the chessman could move into it.
     private static EnumSet<Square> squaresUnderAttack( Position position )
         throws Exception {
         EnumSet<Square> squaresUnderAttack = EnumSet.noneOf( Square.class );
@@ -74,6 +93,7 @@ public class MoveGenerator {
         return squaresUnderAttack;
     }
 
+    // Generates the set of possible moves for a single chessman
     private static Set<Move> generateMoveSetForChessman(
         Square chessman, EnumSet<Square> chessmansDestSquares ) {
         Set<Move> moves = new LinkedHashSet<>();

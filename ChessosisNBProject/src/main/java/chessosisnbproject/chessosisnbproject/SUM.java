@@ -165,19 +165,17 @@ public class SUM {
     }
 
     /**
-     * JAVADOC, PLEASE!
-     * Write a test for this method that uses
-     * for(Square square : Square.values()). It calls randomSquare() as many
-     * times as necessary for it to return a value equal to square. Only then
-     * does the loop advance to the next square.
+     * Returns a random Square constant.
      *
-     * @return 
+     * @return random Square constant
      */
     public static Square randomSquare() {
         Random random = new Random();
 
         char[] randomFileAndRank = {
+            // Random file
             (char) ( 65 + random.nextInt( 8 ) ),
+            // Random rank
             (char) ( 49 + random.nextInt( 8 ) ) };
         String randomSquareString = new String( randomFileAndRank );
 
