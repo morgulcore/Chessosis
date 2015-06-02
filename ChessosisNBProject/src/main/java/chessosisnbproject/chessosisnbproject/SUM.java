@@ -181,4 +181,56 @@ public class SUM {
 
         return Square.valueOf( randomSquareString );
     }
+
+    /**
+     * Returns the CSS.FILE_? constant that corresponds to the file the
+     * Square parameter is located on.
+     *
+     * @param square the square to operate on
+     * @return one of the CSS.FILE_? constants
+     */
+    public static long fileOfSquare( Square square ) {
+        char file = square.toString().charAt( 0 );
+
+        switch ( file ) {
+            case 'A':
+                return CSS.FILE_A;
+            case 'B':
+                return CSS.FILE_B;
+            case 'C':
+                return CSS.FILE_C;
+            case 'D':
+                return CSS.FILE_D;
+            case 'E':
+                return CSS.FILE_E;
+            case 'F':
+                return CSS.FILE_F;
+            case 'G':
+                return CSS.FILE_G;
+            case 'H':
+                return CSS.FILE_H;
+            default:
+                // Execution should never reach this point
+                return 0;
+        }
+    }
+
+    /**
+     * Returns the CSS.RANK_? constant that corresponds to the rank the
+     * Square parameter is located on.
+     *
+     * @param square the square to operate on
+     * @return one of the CSS.RANK_? constants
+     */
+    public static long rankOfSquare( Square square ) {
+        // The rank characters '1' to '8' have the integer values of 49 to
+        // 56, respectively, being characters in the ASCII set
+        char rankChar = square.toString().charAt( 1 );
+        // Gets a copy on the RANK_? constants packed in a disposable array
+        long[] ranks = CSS.ranks();
+
+        // Much more clever than the switch structure in fileOfSquare(),
+        // wouldn't you agree?
+        return ranks[ rankChar - 49 ];
+    }
 }

@@ -275,4 +275,83 @@ public class SUMTest {
 
         assertTrue( true );
     }
+
+    /**
+     * Tests methods fileOfSquare() by calling it with random Square values.
+     * Quick and dirty testing, I admit.
+     */
+    @Test
+    public void fileOfSquareWorks() {
+        for ( int i = 1; i <= 10000; i++ ) {
+            Square square = SUM.randomSquare();
+            final long fileBB = SUM.fileOfSquare( square );
+
+            if ( fileBB == CSS.FILE_A
+                && square.toString().charAt( 0 ) == 'A' ) {
+                continue;
+            } else if ( fileBB == CSS.FILE_B
+                && square.toString().charAt( 0 ) == 'B' ) {
+                continue;
+            } else if ( fileBB == CSS.FILE_C
+                && square.toString().charAt( 0 ) == 'C' ) {
+                continue;
+            } else if ( fileBB == CSS.FILE_D
+                && square.toString().charAt( 0 ) == 'D' ) {
+                continue;
+            } else if ( fileBB == CSS.FILE_E
+                && square.toString().charAt( 0 ) == 'E' ) {
+                continue;
+            } else if ( fileBB == CSS.FILE_F
+                && square.toString().charAt( 0 ) == 'F' ) {
+                continue;
+            } else if ( fileBB == CSS.FILE_G
+                && square.toString().charAt( 0 ) == 'G' ) {
+                continue;
+            } else if ( fileBB == CSS.FILE_H
+                && square.toString().charAt( 0 ) == 'H' ) {
+                continue;
+            }
+
+            fail();
+        }
+    }
+
+    /**
+     * Tests method rankOfSquare with random Square constant values.
+     */
+    @Test
+    public void rankOfSquareWorks() {
+        for ( int i = 1; i <= 10000; i++ ) {
+            Square square = SUM.randomSquare();
+            final long rankBB = SUM.rankOfSquare( square );
+
+            if ( rankBB == CSS.RANK_1
+                && square.toString().charAt( 1 ) == '1' ) {
+                continue;
+            } else if ( rankBB == CSS.RANK_2
+                && square.toString().charAt( 1 ) == '2' ) {
+                continue;
+            } else if ( rankBB == CSS.RANK_3
+                && square.toString().charAt( 1 ) == '3' ) {
+                continue;
+            } else if ( rankBB == CSS.RANK_4
+                && square.toString().charAt( 1 ) == '4' ) {
+                continue;
+            } else if ( rankBB == CSS.RANK_5
+                && square.toString().charAt( 1 ) == '5' ) {
+                continue;
+            } else if ( rankBB == CSS.RANK_6
+                && square.toString().charAt( 1 ) == '6' ) {
+                continue;
+            } else if ( rankBB == CSS.RANK_7
+                && square.toString().charAt( 1 ) == '7' ) {
+                continue;
+            } else if ( rankBB == CSS.RANK_8
+                && square.toString().charAt( 1 ) == '8' ) {
+                continue;
+            }
+
+            fail();
+        }
+    }
 }

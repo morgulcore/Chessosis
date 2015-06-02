@@ -146,6 +146,52 @@ public class MoveGenerator {
         return surroundingSquaresOfSquaresNotOnEdge( square );
     }
 
+    /**
+     * Calculates the set of squares to which a rook can move to. As an
+     * example, view the following position by pasting this FEN string (sans
+     * quotes) into Chess.com's Analysis Board Editor:
+     * "4k3/8/8/4K3/8/2r1R3/8/8 w - - 0 1". Using that position as the
+     * second argument to accessibleRooksSquares() and CSS.E3 as the first
+     * one, the method would return the square set {E4, E2, E1, C3, D3, F3,
+     * G3, H3}. That's all the squares the rook can move to including the
+     * capture on C3. Note that there doesn't have to be a rook located at
+     * the method's Square parameter; the method will calculate the
+     * accessible rook's squares of any square whether or not there's an
+     * actual rook on it.
+     * <p>
+     * Consider another position: "4k3/8/8/2b5/3R4/4K3/8/8 w - - 0 1" for
+     * which accessibleRooksSquares() -- assuming correct operation --
+     * would return { D8, D7, D6, D5, D3, D2, D1, A4, B4, C4, E4,
+     * F4, G4, H4 }. Yet the rook cannot move anywhere without exposing
+     * the white king to check, i.e., moving the rook is illegal. This
+     * illustrates the fact that the "moves" (destination squares) generated
+     * by the method are pseudo-legal.
+     *
+     * @param square the square of a real or imaginary rook
+     * @return the set of squares where the rook could move to
+     */
+    public static EnumSet<Square> accessibleRooksSquares( Square square,
+        Position position ) {
+        accessibleRooksSquaresEastAndWest( square, position );
+        return null;
+    }
+
+    private static long accessibleRooksSquaresEastAndWest(
+        Square square, Position position ) {
+        final long FILE = SUM.fileOfSquare( square ),
+            RANK = SUM.rankOfSquare( square );
+
+        // First go east, then go west
+        for ( int i = 1; i <= 2; i++ ) {
+            long shiftingBit
+                = ( i == 1 ) ? ( square.bit() >>> 1 ) : ( square.bit() << 1 );
+            while ( ( shiftingBit & RANK ) != 0 ) {
+                // if so and so...
+            }
+        }
+        return 0;
+    }
+
     //
     // =====================================
     // == Private (static) helper methods ==

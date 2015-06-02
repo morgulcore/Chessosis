@@ -39,4 +39,19 @@ public class CSSTest {
     public void allBitsSetInOmniboard() {
         assertEquals( 0xffffffffffffffffL, CSS.OMNIBOARD );
     }
+
+    /**
+     * A quick check on ranks().
+     */
+    @Test
+    public void ranksReturnsConsistentArray() {
+        long[] ranksArray = CSS.ranks();
+        long result = 0;
+        // Each of the ranks in the array is bitwise OR'd to result
+        for ( int i = 0; i < ranksArray.length; i++ ) {
+            result |= ranksArray[ i ];
+        }
+        // All of the bits should now be set in result
+        assertEquals( CSS.OMNIBOARD, result );
+    }
 }

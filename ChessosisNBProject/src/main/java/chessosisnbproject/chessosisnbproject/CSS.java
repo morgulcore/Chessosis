@@ -133,6 +133,17 @@ public class CSS {
         RANK_8 = A8 | B8 | C8 | D8 | E8 | F8 | G8 | H8;
 
     /**
+     * The ranks packed conveniently as an array. The array returned is just
+     * a temporary copy which can be modified as well as discarded.
+     *
+     * @return array of the eight ranks of the board
+     */
+    public static long[] ranks() {
+        return new long[]{
+            RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8 };
+    }
+
+    /**
      * The edge of the board. It includes all squares from FILE_A and FILE_H
      * as well as RANK_1 and RANK_8.
      */
