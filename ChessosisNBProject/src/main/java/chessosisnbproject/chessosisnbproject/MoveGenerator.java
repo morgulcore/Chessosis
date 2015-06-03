@@ -33,9 +33,9 @@ public class MoveGenerator {
 
         long chessmenOfSideToMoveBB;
         if ( position.turn() == Color.WHITE ) {
-            chessmenOfSideToMoveBB = position.whiteChessmen();
+            chessmenOfSideToMoveBB = position.whiteArmy();
         } else {
-            chessmenOfSideToMoveBB = position.blackChessmen();
+            chessmenOfSideToMoveBB = position.blackArmy();
         }
         EnumSet<Square> chessmenOfSideToMove
             = SUM.bitboardToSquareSet( chessmenOfSideToMoveBB );
@@ -76,9 +76,9 @@ public class MoveGenerator {
         EnumSet<Square> squaresUnderAttack = EnumSet.noneOf( Square.class );
         long chessmenOfSideNotToMoveBB;
         if ( position.turn() == Color.WHITE ) {
-            chessmenOfSideNotToMoveBB = position.blackChessmen();
+            chessmenOfSideNotToMoveBB = position.blackArmy();
         } else {
-            chessmenOfSideNotToMoveBB = position.whiteChessmen();
+            chessmenOfSideNotToMoveBB = position.whiteArmy();
         }
         EnumSet<Square> chessmenOfSideNotToMove
             = SUM.bitboardToSquareSet( chessmenOfSideNotToMoveBB );
@@ -123,6 +123,22 @@ public class MoveGenerator {
     }
 
     /**
+     * Returns the rook's squares of the square parameter. The rook's squares
+     * mean the squares to which a rook could move to on an empty board.
+     *
+     * @param square
+     * @return 
+     * @throws java.lang.Exception
+     */
+    public static EnumSet<Square> rooksSquares( Square square ) throws Exception {
+        // XOR'ing the relevant file and rank is all that is needed to produce
+        // the set of rook's squares
+        long rooksSquaresBB
+            = SUM.fileOfSquare( square ) ^ SUM.rankOfSquare( square );
+        return SUM.bitboardToSquareSet( rooksSquaresBB );
+    }
+
+    /**
      * Returns the surrounding squares of its Square parameter. Surrounding
      * squares are the squares to which a king can move from a particular
      * square. Note that the size of the set returned by the method is always
@@ -147,7 +163,7 @@ public class MoveGenerator {
     }
 
     /**
-     * Calculates the set of squares to which a rook can move to. As an
+     * Calculates the set of squares to which a rook could move to. As an
      * example, view the following position by pasting this FEN string (sans
      * quotes) into Chess.com's Analysis Board Editor:
      * "4k3/8/8/4K3/8/2r1R3/8/8 w - - 0 1". Using that position as the
@@ -168,28 +184,96 @@ public class MoveGenerator {
      * by the method are pseudo-legal.
      *
      * @param square the square of a real or imaginary rook
+     * @param position the context of the operation
      * @return the set of squares where the rook could move to
+     * @throws Exception
      */
     public static EnumSet<Square> accessibleRooksSquares( Square square,
-        Position position ) {
-        accessibleRooksSquaresEastAndWest( square, position );
-        return null;
+        Position position ) throws Exception {
+        long accessibleSquaresBB
+            = accessibleRooksSquaresEastAndWest( square, position );
+        return SUM.bitboardToSquareSet( accessibleSquaresBB );
     }
 
+    // Finds the accessible rook's squares on a particular rank
     private static long accessibleRooksSquaresEastAndWest(
         Square square, Position position ) {
-        final long FILE = SUM.fileOfSquare( square ),
-            RANK = SUM.rankOfSquare( square );
+        // A bitboard describing the accessible rook's squares on the
+        // rank of the Square parameter
+        long accessibleSquaresOnRank = 0;
+        // The rank on which the square parameter is located on
+        final long RANK = SUM.rankOfSquare( square );
 
-        // First go east, then go west
+        // Go east on the first iteration of the for loop. "Going east"
+        // means left-shifting a square bit while it is still located
+        // on the rank we are operating on. For example, going east of
+        // square E4 would involve the squares F4, G4 and H4.
+        //
+        // On the second iteration of the for loop, go west. This involves
+        // unsigned right-shifting of the square bit.
         for ( int i = 1; i <= 2; i++ ) {
+            // Set the initial value for the shifting bit. It's either
+            // one bit left or one bit right of the square parameter's bit.
+            // This means it's a square to the right or left of the square
+            // parameter. It can also be a square on a different rank if
+            // the square parameter is one the a- or h-file. The condition
+            // of the inner (while) loop should deal with this situation:
+            // while ( ( shiftingBit & RANK ) != 0 ) { ... }
             long shiftingBit
-                = ( i == 1 ) ? ( square.bit() >>> 1 ) : ( square.bit() << 1 );
-            while ( ( shiftingBit & RANK ) != 0 ) {
-                // if so and so...
-            }
+                = ( i == 1 ) ? ( square.bit() << 1 ) : ( square.bit() >>> 1 );
+            // Doing bitwise OR'ing which is really about a set union operation
+            accessibleSquaresOnRank
+                |= accessibleRooksSquaresEastAndWestInnerLoop(
+                    position, accessibleSquaresOnRank, RANK, shiftingBit, i );
         }
-        return 0;
+        return accessibleSquaresOnRank;
+    }
+
+    // Trying to hide the long and dirty details of
+    // accessibleRooksSquaresEastAndWest()
+    private static long accessibleRooksSquaresEastAndWestInnerLoop(
+        Position position, long accessibleSquaresOnRank, final long RANK,
+        long shiftingBit, int outerLoopCounter ) {
+
+        while ( ( shiftingBit & RANK ) != 0 ) {
+            // Square indicated by the shifting bit is not empty
+            if ( ( shiftingBit & position.bothArmies() ) != 0 ) {
+                // It's either
+                // (1) White's turn with a black chessman blocking the rank
+                // OR
+                // (2) Black's turn with a white chessman blocking the rank
+                if ( ( position.turn() == Color.WHITE
+                    && ( shiftingBit & position.blackArmy() ) != 0 )
+                    || ( position.turn() == Color.BLACK
+                    && ( shiftingBit & position.whiteArmy() ) != 0 ) ) {
+                    // A chessman of the opposing color can be captured,
+                    // thus the square is accessible
+                    accessibleSquaresOnRank |= shiftingBit;
+                }
+                // Start going west (second iteration of the for loop)
+                // or if that has just been done, exit the outer loop.
+                // Note that if the chessman blocking the rank was of
+                // the same color as the side to move, its square was
+                // not added to the set of accessible squares. No
+                // chessman can capture a piece of its own color.
+                break;
+            }
+
+            // Add the empty square indicated by the shifting bit to the
+            // set of accessible squares
+            accessibleSquaresOnRank |= shiftingBit;
+
+            // After that, move the square bit one square left or right on
+            // the rank. The while loop's condition will deal with the
+            // situation where the square bit moves off the rank to the rank
+            // above or below. Moving above the 8th rank or below the 1st
+            // rank will result in shiftingBit becoming equal to zero. The
+            // while condition works in this case, too.
+            shiftingBit = ( outerLoopCounter == 1 )
+                ? ( shiftingBit << 1 ) : ( shiftingBit >>> 1 );
+        } // end while
+
+        return accessibleSquaresOnRank;
     }
 
     //

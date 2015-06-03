@@ -88,6 +88,11 @@ public class MoveGeneratorTest {
             }
         }
     }
+    
+    @Test
+    public void rooksSquaresQuickTest1() {
+        // ___CONTINUE FROM HERE___
+    }
 
     //
     // ======================================
@@ -169,6 +174,9 @@ public class MoveGeneratorTest {
 
         manualMoveGeneratorMethodTestWorkhorse( testPosition, expectedMoves );
     }
+    
+    // Test 004
+    // FEN: 8/8/3r1k2/8/8/3R1K2/8/8 w - - 0 1
 
     //
     // ============================

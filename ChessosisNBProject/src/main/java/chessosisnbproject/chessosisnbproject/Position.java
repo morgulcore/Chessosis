@@ -139,7 +139,7 @@ public class Position {
      *
      * @return a bitboard of all white chessmen
      */
-    public long whiteChessmen() {
+    public long whiteArmy() {
         return this.whitePawnBB | this.whiteBishopBB | this.whiteKnightBB
             | this.whiteRookBB | this.whiteQueenBB | this.whiteKingBB;
     }
@@ -149,8 +149,18 @@ public class Position {
      *
      * @return a bitboard of all black chessmen
      */
-    public long blackChessmen() {
+    public long blackArmy() {
         return this.blackPawnBB | this.blackBishopBB | this.blackKnightBB
             | this.blackRookBB | this.blackQueenBB | this.blackKingBB;
+    }
+
+    /**
+     * Returns the union of the white and black armies, i.e., all chessmen
+     * on the board.
+     *
+     * @return all chessmen on the board
+     */
+    public long bothArmies() {
+        return whiteArmy() | blackArmy();
     }
 }
