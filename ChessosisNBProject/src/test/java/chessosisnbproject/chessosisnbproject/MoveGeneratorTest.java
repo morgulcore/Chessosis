@@ -108,15 +108,14 @@ public class MoveGeneratorTest {
      * that the input for the methods is the same square).
      */
     /*
-    @Test
-    public void accessibleRooksSquaresReturnsSubsetOfRooksSquares() {
-        for ( Square square : Square.values() ) {
-            long resultOfUnion = MoveGenerator.rooksSquares( square )
-                | MoveGenerator.accessibleRooksSquares( square, null );
-        }
-    }
-    */
-
+     @Test
+     public void accessibleRooksSquaresReturnsSubsetOfRooksSquares() {
+     for ( Square square : Square.values() ) {
+     long resultOfUnion = MoveGenerator.rooksSquares( square )
+     | MoveGenerator.accessibleRooksSquares( square, null );
+     }
+     }
+     */
     //
     // ======================================
     // == Manual tests for moveGenerator() ==

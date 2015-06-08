@@ -50,7 +50,8 @@ public class MoveGenerator {
                 chessmansDestSquares.removeAll(
                     squaresUnderAttack( position ) );
             }
-            moves.addAll( generateMoveSetForChessman( chessman, chessmansDestSquares ) );
+            moves.addAll( generateMoveSetForChessman(
+                chessman, chessmansDestSquares ) );
         }
 
         return moves;
@@ -190,14 +191,14 @@ public class MoveGenerator {
      */
     public static EnumSet<Square> accessibleRooksSquares( Square square,
         Position position ) throws Exception {
-        long accessibleSquaresBB
-            = accessibleRooksSquaresEastAndWest( square, position );
+        long accessibleSquaresBB = 0;
         return SUM.bitboardToSquareSet( accessibleSquaresBB );
     }
-
+    
     // Finds the accessible rook's squares on a particular rank
-    private static long accessibleRooksSquaresEastAndWest(
-        Square square, Position position ) {
+    /*
+    private static long accessibleRooksSquaresOuterLoop(
+        Square square, Position position ) throws Exception {
         // A bitboard describing the accessible rook's squares on the
         // rank of the Square parameter
         long accessibleSquaresOnRank = 0;
@@ -211,7 +212,7 @@ public class MoveGenerator {
         //
         // On the second iteration of the for loop, go west. This involves
         // unsigned right-shifting of the square bit.
-        for ( int i = 1; i <= 2; i++ ) {
+        for ( int direction = 1; direction <= 4; direction++ ) {
             // Set the initial value for the shifting bit. It's either
             // one bit left or one bit right of the square parameter's bit.
             // This means it's a square to the right or left of the square
@@ -220,18 +221,39 @@ public class MoveGenerator {
             // of the inner (while) loop should deal with this situation:
             // while ( ( shiftingBit & RANK ) != 0 ) { ... }
             long shiftingBit
-                = ( i == 1 ) ? ( square.bit() << 1 ) : ( square.bit() >>> 1 );
+                = ( direction == 1 ) ? ( square.bit() << 1 ) : ( square.bit() >>> 1 );
+            switch ( direction ) {
+                // North
+                case 1:
+                    shiftingBit <<= 8;
+                    break;
+                // East
+                case 2:
+                    shiftingBit <<= 1;
+                    break;
+                // South
+                case 3:
+                    shiftingBit >>> 
+                    break;
+                // West
+                case 4:
+                    break;
+                default:
+                    throw new Exception(
+                        "Invalid for counter value: " + direction );
+            }
             // Doing bitwise OR'ing which is really about a set union operation
             accessibleSquaresOnRank
-                |= accessibleRooksSquaresEastAndWestInnerLoop(
-                    position, accessibleSquaresOnRank, RANK, shiftingBit, i );
+                |= accessibleRooksSquaresInnerLoop(
+                    position, accessibleSquaresOnRank, RANK, shiftingBit, direction );
         }
         return accessibleSquaresOnRank;
-    }
+    }*/
 
     // Trying to hide the long and dirty details of
     // accessibleRooksSquaresEastAndWest()
-    private static long accessibleRooksSquaresEastAndWestInnerLoop(
+    /*
+    private static long accessibleRooksSquaresInnerLoop(
         Position position, long accessibleSquaresOnRank, final long RANK,
         long shiftingBit, int outerLoopCounter ) {
 
@@ -274,7 +296,7 @@ public class MoveGenerator {
         } // end while
 
         return accessibleSquaresOnRank;
-    }
+    } */
 
     //
     // =====================================

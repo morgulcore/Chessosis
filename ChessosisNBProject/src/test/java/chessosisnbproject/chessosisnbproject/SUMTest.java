@@ -354,4 +354,18 @@ public class SUMTest {
             fail();
         }
     }
+    
+    @Test
+    public void adjacentSquareWorksWithAllSquaresAndDirections() throws Exception {
+        for(Square square : Square.values()) {
+            for( Direction direction : Direction.values() ) {
+                Square squareReturned
+                    = SUM.adjacentSquare( square, direction );
+                if(squareReturned != null) {
+                    System.out.print( squareReturned + " " );
+                }
+            }
+            System.out.println( "" );
+        }
+    }
 }

@@ -233,4 +233,234 @@ public class SUM {
         // wouldn't you agree?
         return ranks[ rankChar - 49 ];
     }
+
+    /**
+     * Each square on the board has at most eight adjacent squares as
+     * illustrated by the following diagram (using E4 as the square for
+     * the method's first parameter).
+     *
+     * <pre>
+     * +--------------+       N
+     * | D5 | E5 | F5 |       ^
+     * |---------------       |
+     * | D4 | E4 | F4 |  W {--+--} E
+     * ----------------       |
+     * | D3 | E3 | F3 |       v
+     * +--------------+       S
+     * </pre>
+     *
+     * View the bitboard index diagram at the beginning of CSS.java to
+     * get an idea on how the method accomplishes its task.
+     *
+     * @param square the square to operate on
+     * @param direction the direction of the adjacent square
+     * @return the adjacent square or null if no such square exists
+     * @throws Exception 
+     */
+    public static Square adjacentSquare( Square square, Direction direction )
+        throws Exception {
+        long adjacentSquareBB; // BB, bitboard
+        switch ( direction ) {
+            case NORTH:
+                adjacentSquareBB = square.bit() << 8;
+                // Moving off the north of the board results in the square
+                // bit becoming equal to zero
+                if ( adjacentSquareBB == 0 ) {
+                    return null;
+                }
+                return SUM.squareBitToSquare( adjacentSquareBB );
+            case EAST:
+                adjacentSquareBB = square.bit() << 1;
+                // If the square bit has just moved off the rank, the bitwise
+                // AND produces zero
+                if ( ( adjacentSquareBB & SUM.rankOfSquare( square ) ) == 0 ) {
+                    return null;
+                }
+                return SUM.squareBitToSquare( adjacentSquareBB );
+            case SOUTH:
+                adjacentSquareBB = square.bit() >>> 8;
+                // Moving off the south of the board results in zero
+                if ( adjacentSquareBB == 0 ) {
+                    return null;
+                }
+                return SUM.squareBitToSquare( adjacentSquareBB );
+            case WEST:
+                adjacentSquareBB = square.bit() >>> 1;
+                // Square bit moves off rank, bitwise AND produces zero
+                if ( ( adjacentSquareBB & SUM.rankOfSquare( square ) ) == 0 ) {
+                    return null;
+                }
+                return SUM.squareBitToSquare( adjacentSquareBB );
+            // Same action for the remaining four cases
+            case NORTHEAST:
+            case NORTHWEST:
+            case SOUTHEAST:
+            case SOUTHWEST:
+                return adjacentSquareOnDiagonal( square, direction );
+            // The default case should be impossible
+            default:
+                throw new Exception(
+                    "Executed supposedly impossible default case of switch" );
+        }
+    }
+
+    // Deals with adjacent squares on diagonals.
+    private static Square adjacentSquareOnDiagonal(
+        Square square, Direction direction ) throws Exception {
+        // Call the private method for dealing with getting the single
+        // diagonal square of a corner square
+        if ( ( square.bit() & CSS.CORNER_SQUARES ) != 0 ) {
+            return adjacentSquareOnDiagonalOfCornerSquare( square, direction );
+        } // The following two if's deal with non-corner squares on rank 1 and 8
+        else if ( ( square.bit() & CSS.RANK_1 ) != 0 ) {
+            return adjacentSquareOnDiagonalOfSquareOnRank1( square, direction );
+        } else if ( ( square.bit() & CSS.RANK_8 ) != 0 ) {
+            return adjacentSquareOnDiagonalOfSquareOnRank8( square, direction );
+        } // The following two if's deal with non-corner squares on file A and H
+        else if ( ( square.bit() & CSS.FILE_A ) != 0 ) {
+            return adjacentSquareOnDiagonalOfSquareOnFileA( square, direction );
+        } else if ( ( square.bit() & CSS.FILE_H ) != 0 ) {
+            return adjacentSquareOnDiagonalOfSquareOnFileH( square, direction );
+        }
+        // The square is not on the edge of the board
+        else {
+            return adjacentSquareOnDiagonalOfSquareNotOnEdge( square, direction );
+        }
+    }
+
+    private static Square adjacentSquareOnDiagonalOfSquareNotOnEdge(
+        Square square, Direction direction) throws Exception {
+        Square squareToReturn = null;
+        
+        switch(direction) {
+            case NORTHEAST:
+                squareToReturn = SUM.squareBitToSquare( square.bit() << 9 );
+                break;
+            case NORTHWEST:
+                squareToReturn = SUM.squareBitToSquare( square.bit() << 7 );
+                break;
+            case SOUTHEAST:
+                squareToReturn = SUM.squareBitToSquare( square.bit() >>> 7 );
+                break;
+            case SOUTHWEST:
+                squareToReturn = SUM.squareBitToSquare( square.bit() >>> 9 );
+                break;
+            // This method cannot return null as we are dealing with a
+            // non-corner square; there are squares in every direction
+            default:
+                throw new Exception(
+                    "Executed forbidden default case of switch with value "
+                        + direction );
+        }
+        
+        return squareToReturn;
+    }
+    
+    // Deals with non-corner squares on the h-file
+    private static Square adjacentSquareOnDiagonalOfSquareOnFileH(
+        Square square, Direction direction ) throws Exception {
+        Square squareToReturn = null;
+        // The assumption is that the square argument is always valid
+        // (is on file H)
+        switch ( direction ) {
+            case NORTHWEST:
+                squareToReturn = SUM.squareBitToSquare( square.bit() << 7 );
+                break;
+            case SOUTHWEST:
+                squareToReturn = SUM.squareBitToSquare( square.bit() << 9 );
+                break;
+        }
+
+        return squareToReturn;
+    }
+
+    // Deals with non-corner squares on the a-file
+    private static Square adjacentSquareOnDiagonalOfSquareOnFileA(
+        Square square, Direction direction ) throws Exception {
+        Square squareToReturn = null;
+        // The assumption is the square argument is always valid (is on
+        // file A)
+        switch ( direction ) {
+            case NORTHEAST:
+                squareToReturn = SUM.squareBitToSquare( square.bit() << 9 );
+                break;
+            case SOUTHEAST:
+                squareToReturn = SUM.squareBitToSquare( square.bit() << 7 );
+                break;
+        }
+
+        return squareToReturn;
+    }
+
+    // Deals with non-corner squares on the eighth rank
+    private static Square adjacentSquareOnDiagonalOfSquareOnRank8(
+        Square square, Direction direction ) throws Exception {
+        Square squareToReturn = null;
+        // It is assumed the square argument is always valid (is on the
+        // eighth rank)
+        switch ( direction ) {
+            case SOUTHEAST:
+                squareToReturn = SUM.squareBitToSquare( square.bit() >>> 7 );
+                break;
+            case SOUTHWEST:
+                squareToReturn = SUM.squareBitToSquare( square.bit() << 9 );
+                break;
+        }
+
+        return squareToReturn;
+    }
+
+    // Deals with non-corner squares on the first rank
+    private static Square adjacentSquareOnDiagonalOfSquareOnRank1(
+        Square square, Direction direction ) throws Exception {
+        Square squareToReturn = null;
+        // It is assumed the square argument is always valid (is on the
+        // first rank)
+        switch ( direction ) {
+            case NORTHEAST:
+                // Moving nine bits towards the most significant bit
+                squareToReturn = SUM.squareBitToSquare( square.bit() << 9 );
+                break;
+            case NORTHWEST:
+                // Moving seven bits
+                squareToReturn = SUM.squareBitToSquare( square.bit() << 7 );
+                break;
+        }
+
+        // A null return value is legal
+        return squareToReturn;
+    }
+
+    // Gets the adjacent diagonal squares of the corner squares
+    private static Square adjacentSquareOnDiagonalOfCornerSquare(
+        Square square, Direction direction ) throws Exception {
+        // Let's assume the square argument is always valid (is a
+        // corner square)
+        Square squareToReturn = null;
+        switch ( square ) {
+            case A1:
+                if ( direction == Direction.NORTHEAST ) {
+                    squareToReturn = Square.B2;
+                }
+                break;
+            case A8:
+                if ( direction == Direction.SOUTHEAST ) {
+                    squareToReturn = Square.B7;
+                }
+                break;
+            case H1:
+                if ( direction == Direction.NORTHWEST ) {
+                    squareToReturn = Square.G2;
+                }
+                break;
+            case H8:
+                if ( direction == Direction.SOUTHWEST ) {
+                    squareToReturn = Square.G7;
+                }
+                break;
+        }
+
+        // Returning null is legal for this method
+        return squareToReturn;
+    }
 }
