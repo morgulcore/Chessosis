@@ -88,11 +88,34 @@ public class MoveGeneratorTest {
             }
         }
     }
-    
+
+    /**
+     * Tests the size of the set returned by rooksSquares(). The size of this
+     * set should be 14 with all Square constant inputs.
+     *
+     * @throws Exception 
+     */
     @Test
-    public void rooksSquaresQuickTest1() {
-        // ___CONTINUE FROM HERE___
+    public void sizeOfRooksSquaresSetEqualTo14() throws Exception {
+        for ( Square square : Square.values() ) {
+            assertEquals( 14, MoveGenerator.rooksSquares( square ).size() );
+        }
     }
+
+    /**
+     * The set of squares returned by accessibleRooksSquares() must in all
+     * cases be a subset of the squares returned by rooksSquares() (provided
+     * that the input for the methods is the same square).
+     */
+    /*
+    @Test
+    public void accessibleRooksSquaresReturnsSubsetOfRooksSquares() {
+        for ( Square square : Square.values() ) {
+            long resultOfUnion = MoveGenerator.rooksSquares( square )
+                | MoveGenerator.accessibleRooksSquares( square, null );
+        }
+    }
+    */
 
     //
     // ======================================
@@ -174,10 +197,9 @@ public class MoveGeneratorTest {
 
         manualMoveGeneratorMethodTestWorkhorse( testPosition, expectedMoves );
     }
-    
+
     // Test 004
     // FEN: 8/8/3r1k2/8/8/3R1K2/8/8 w - - 0 1
-
     //
     // ============================
     // == Private helper methods ==
@@ -190,7 +212,7 @@ public class MoveGeneratorTest {
         throws Exception {
         Set<Move> actualMoves = MoveGenerator.moveGenerator( position );
         Set<Move> expectedMoves = new HashSet<>();
-        
+
         // Construct the set of expected moves from the String array
         for ( String expectedMoveString : expectedMovesSA ) {
             // The move strings are of the form "A1-B1" so they are always
