@@ -1,7 +1,7 @@
 package chessosisnbproject.chessosisnbproject;
 
 /**
- * This is a simple enum type that represents the types of chessmen (pieces)
+ * This is a simple enum type that represents the six types of chessmen
  * available in chess.
  *
  * @author Henrik Lindberg

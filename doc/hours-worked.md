@@ -147,3 +147,11 @@ Too... much... coding...
 Most of my work today on Chessosis has involved the static `moveGenerator()` method. I've also written and updated the javadoc and familiarized myself with FEN (Forsyth–Edwards Notation), the means to record chess positions as strings that span less than a line.
 
 I'm considering writing two new methods: `public static boolean squareAttacked( Square s )` and `routeClear( Square s1, Square s2 )` (the names might change). Method squareAttacked() has to do with move generation; a king can never move to an attacked square, be it an empty square or an enemy chessman protected by another chessman. Method routeClear() determines whether or not there's an "obstacle" (chessman) between the Square parameters which have to be on the same file, rank or diagonal.
+
+## 2015-06-09 | Hours worked: 10
+
+Due to an occupational hazard and a twist of fate I had to depart from my work on Chessosis for almost a week. I realize I am now behind schedule and the weekly deadlines. I do however still have faith in being able to complete the course.
+
+Today I've worked heavily on the MoveGenerator class. I has been quite tricky and frustrating. Even so, I seem to be over the worst of it. Tomorrow I think I can come up with a quick and dirty command line UI. Soon after that I'll start my work on the GUI. I'll also invest as much time as I can in coming up with the diagrams required in the deadlines (class diagram, sequence diagram, and what not).
+
+Now I'll just do some tidying of code and wrapping things up for today.

@@ -236,6 +236,26 @@ public class MoveGeneratorTest {
         manualMoveGeneratorMethodTestWorkhorse( testPosition, expectedMoves );
     }
 
+    /**
+     * FEN: 3r4/8/8/k6q/4K3/8/8/5r2 w - - 0 1
+     *
+     * @throws Exception 
+     */
+    @Test
+    public void manualMoveGeneratorMethodTest006() throws Exception {
+        Position testPosition
+            = new Position(
+                // 0x800000000000020L: bitboard with square bits
+                // CSS.F1 and CSS.D8 set
+                0, 0, 0, 0, 0, CSS.E4,
+                0, 0, 0, 0x800000000000020L, CSS.H5, CSS.A5,
+                Color.WHITE );
+
+        String[] expectedMoves = { "E4-E3" }; // White's only move
+
+        manualMoveGeneratorMethodTestWorkhorse( testPosition, expectedMoves );
+    }
+    
     //
     // ============================
     // == Private helper methods ==

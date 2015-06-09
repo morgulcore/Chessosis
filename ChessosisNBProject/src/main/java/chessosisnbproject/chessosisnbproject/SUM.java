@@ -332,8 +332,8 @@ public class SUM {
             || ( square.bit() & position.blackRooks() ) != 0 ) {
             return Chessman.ROOK;
         } // Queens
-        else if ( ( square.bit() & position.whiteQueen() ) != 0
-            || ( square.bit() & position.blackQueen() ) != 0 ) {
+        else if ( ( square.bit() & position.whiteQueens() ) != 0
+            || ( square.bit() & position.blackQueens() ) != 0 ) {
             return Chessman.QUEEN;
         } // Kings
         else if ( ( square.bit() & position.whiteKing() ) != 0

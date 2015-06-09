@@ -93,7 +93,7 @@ public class Position {
         return this.whiteRookBB;
     }
 
-    public long whiteQueen() {
+    public long whiteQueens() {
         return this.whiteQueenBB;
     }
 
@@ -117,7 +117,7 @@ public class Position {
         return this.blackRookBB;
     }
 
-    public long blackQueen() {
+    public long blackQueens() {
         return this.blackQueenBB;
     }
 
