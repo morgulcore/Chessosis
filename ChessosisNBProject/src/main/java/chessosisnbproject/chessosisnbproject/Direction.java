@@ -13,14 +13,13 @@ public enum Direction {
     NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST;
 
     /**
-     * Return the set of directions conveniently packed as an array.
+     * Return the set of the four cardinal directions conveniently packed
+     * as an array.
      *
-     * @return all of the eight directions
+     * @return the four cardinal directions
      */
-    /*
-    public static Direction[] directionsArray() {
+    public static Direction[] cardinalDirections() {
         return new Direction[]{
-            NORTH, NORTHEAST, EAST, SOUTHEAST,
-            SOUTH, SOUTHWEST, WEST, NORTHWEST };
-    }*/
+            NORTH, EAST, SOUTH, WEST };
+    }
 }

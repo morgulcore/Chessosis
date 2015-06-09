@@ -354,18 +354,95 @@ public class SUMTest {
             fail();
         }
     }
-    
+
+    /**
+     * A comprehensive test for adjacentSquare(). The method is tested with
+     * each of the 64 squares in all directions. The test works by comparing
+     * the set of squares generated in the two for loops to that returned
+     * by MoveGenerator.kingsSquares().
+     *
+     * @throws Exception
+     */
     @Test
-    public void adjacentSquareWorksWithAllSquaresAndDirections() throws Exception {
-        for(Square square : Square.values()) {
-            for( Direction direction : Direction.values() ) {
+    public void adjacentSquareWorksWithAllSquaresAndDirections()
+        throws Exception {
+        // Create empty EnumSet of Squares
+        for ( Square square : Square.values() ) {
+            EnumSet<Square> squareSet = EnumSet.noneOf( Square.class );
+            for ( Direction direction : Direction.values() ) {
                 Square squareReturned
                     = SUM.adjacentSquare( square, direction );
-                if(squareReturned != null) {
-                    System.out.print( squareReturned + " " );
+                if ( squareReturned != null ) {
+                    squareSet.add( squareReturned );
                 }
             }
-            System.out.println( "" );
+            assertEquals( MoveGenerator.kingsSquares( square ), squareSet );
+        }
+    }
+
+    /**
+     * Tests determineTypeOfChessman() with 12 different chessmen, two for
+     * each type (PAWN, BISHOP, etc.). The test succeeds if each of the
+     * chessmen returned is of the expected type.
+     *
+     * FEN: 8/pbnrqk2/8/8/8/8/PBNRQK2/8 w - - 0 1
+     */
+    @Test
+    public void testingDetermineTypeOfChessmanWithTwelveChessmen() {
+        Position testPosition
+            = new Position(
+                CSS.A2, CSS.B2, CSS.C2, CSS.D2, CSS.E2, CSS.F2,
+                CSS.A7, CSS.B7, CSS.C7, CSS.D7, CSS.E7, CSS.F7,
+                Color.WHITE );
+
+        // Squares to loop over; contains 12 squares
+        Square[] squares = { Square.A2, Square.A7, Square.B2, Square.B7,
+            Square.C2, Square.C7, Square.D2, Square.D7,
+            Square.E2, Square.E7, Square.F2, Square.F7 };
+
+        // Contains the six Chessman constants. They should be in the
+        // following order: PAWN, BISHOP, KNIGHT, ROOK, QUEEN, KING
+        Chessman[] theSixChessmenTypes = Chessman.availableChessmanTypes();
+
+        // During the loop, the following index has all the values from
+        // 0 to 11, inclusive
+        int chessmenTypesIndex = 0;
+        for ( Square square : squares ) {
+            // 'chessmenTypesIndex / 2' equals the values from 0 to 5,
+            // inclusive, each one repeated twice. This is due to integer
+            // division.
+            assertEquals( theSixChessmenTypes[ chessmenTypesIndex / 2 ],
+                SUM.determineTypeOfChessman( square, testPosition ) );
+            chessmenTypesIndex++;
+        }
+    }
+
+    /**
+     * Tests determineTypeOfChessman with a particular position to see if
+     * it really returns null on empty squares.
+     *
+     * FEN: 8/pbnrqk2/8/8/8/8/PBNRQK2/8 w - - 0 1
+     *
+     * @throws Exception
+     */
+    @Test
+    public void determineTypeOfChessmanReturnsNullForEmptySquares()
+        throws Exception {
+        Position testPosition
+            = new Position(
+                CSS.A2, CSS.B2, CSS.C2, CSS.D2, CSS.E2, CSS.F2,
+                CSS.A7, CSS.B7, CSS.C7, CSS.D7, CSS.E7, CSS.F7,
+                Color.WHITE );
+
+        // Getting an empty squares BB by flipping zeroes to ones and
+        // vica versa
+        long emptySquaresBB = ~testPosition.bothArmies();
+        EnumSet<Square> emptySquares
+            = SUM.bitboardToSquareSet( emptySquaresBB );
+        // Looping over the 52 empty squares
+        for ( Square square : emptySquares ) {
+            assertEquals( null, SUM.determineTypeOfChessman(
+                square, testPosition ) );
         }
     }
 }

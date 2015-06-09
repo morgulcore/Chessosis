@@ -304,7 +304,51 @@ public class SUM {
         }
     }
 
-    // Deals with adjacent squares on diagonals.
+    /**
+     * Determines the type of chessman located on the given square. Possible
+     * values include PAWN, BISHOP, KNIGHT, ROOK, QUEEN and KING. If the
+     * square parameter is an empty square, the method returns null.
+     *
+     * @param square the square to examine
+     * @param position the context
+     * @return the type of the chessman on the square
+     */
+    public static Chessman determineTypeOfChessman(
+        Square square, Position position ) {
+        // Pawns
+        if ( ( square.bit() & position.whitePawns() ) != 0
+            || ( square.bit() & position.blackPawns() ) != 0 ) {
+            return Chessman.PAWN;
+        } // Bishops
+        else if ( ( square.bit() & position.whiteBishops() ) != 0
+            || ( square.bit() & position.blackBishops() ) != 0 ) {
+            return Chessman.BISHOP;
+        } // Knights
+        else if ( ( square.bit() & position.whiteKnights() ) != 0
+            || ( square.bit() & position.blackKnights() ) != 0 ) {
+            return Chessman.KNIGHT;
+        } // Rooks
+        else if ( ( square.bit() & position.whiteRooks() ) != 0
+            || ( square.bit() & position.blackRooks() ) != 0 ) {
+            return Chessman.ROOK;
+        } // Queens
+        else if ( ( square.bit() & position.whiteQueen() ) != 0
+            || ( square.bit() & position.blackQueen() ) != 0 ) {
+            return Chessman.QUEEN;
+        } // Kings
+        else if ( ( square.bit() & position.whiteKing() ) != 0
+            || ( square.bit() & position.blackKing() ) != 0 ) {
+            return Chessman.KING;
+        }
+        return null;
+    }
+
+    //
+    // ============================
+    // == Private static methods ==
+    // ============================
+    //
+    // The following method deals with adjacent squares on diagonals.
     private static Square adjacentSquareOnDiagonal(
         Square square, Direction direction ) throws Exception {
         // Call the private method for dealing with getting the single
@@ -321,18 +365,17 @@ public class SUM {
             return adjacentSquareOnDiagonalOfSquareOnFileA( square, direction );
         } else if ( ( square.bit() & CSS.FILE_H ) != 0 ) {
             return adjacentSquareOnDiagonalOfSquareOnFileH( square, direction );
-        }
-        // The square is not on the edge of the board
+        } // The square is not on the edge of the board
         else {
             return adjacentSquareOnDiagonalOfSquareNotOnEdge( square, direction );
         }
     }
 
     private static Square adjacentSquareOnDiagonalOfSquareNotOnEdge(
-        Square square, Direction direction) throws Exception {
+        Square square, Direction direction ) throws Exception {
         Square squareToReturn = null;
-        
-        switch(direction) {
+
+        switch ( direction ) {
             case NORTHEAST:
                 squareToReturn = SUM.squareBitToSquare( square.bit() << 9 );
                 break;
@@ -350,25 +393,7 @@ public class SUM {
             default:
                 throw new Exception(
                     "Executed forbidden default case of switch with value "
-                        + direction );
-        }
-        
-        return squareToReturn;
-    }
-    
-    // Deals with non-corner squares on the h-file
-    private static Square adjacentSquareOnDiagonalOfSquareOnFileH(
-        Square square, Direction direction ) throws Exception {
-        Square squareToReturn = null;
-        // The assumption is that the square argument is always valid
-        // (is on file H)
-        switch ( direction ) {
-            case NORTHWEST:
-                squareToReturn = SUM.squareBitToSquare( square.bit() << 7 );
-                break;
-            case SOUTHWEST:
-                squareToReturn = SUM.squareBitToSquare( square.bit() << 9 );
-                break;
+                    + direction );
         }
 
         return squareToReturn;
@@ -385,25 +410,25 @@ public class SUM {
                 squareToReturn = SUM.squareBitToSquare( square.bit() << 9 );
                 break;
             case SOUTHEAST:
-                squareToReturn = SUM.squareBitToSquare( square.bit() << 7 );
+                squareToReturn = SUM.squareBitToSquare( square.bit() >>> 7 );
                 break;
         }
 
         return squareToReturn;
     }
 
-    // Deals with non-corner squares on the eighth rank
-    private static Square adjacentSquareOnDiagonalOfSquareOnRank8(
+    // Deals with non-corner squares on the h-file
+    private static Square adjacentSquareOnDiagonalOfSquareOnFileH(
         Square square, Direction direction ) throws Exception {
         Square squareToReturn = null;
-        // It is assumed the square argument is always valid (is on the
-        // eighth rank)
+        // The assumption is that the square argument is always valid
+        // (is on file H)
         switch ( direction ) {
-            case SOUTHEAST:
-                squareToReturn = SUM.squareBitToSquare( square.bit() >>> 7 );
+            case NORTHWEST:
+                squareToReturn = SUM.squareBitToSquare( square.bit() << 7 );
                 break;
             case SOUTHWEST:
-                squareToReturn = SUM.squareBitToSquare( square.bit() << 9 );
+                squareToReturn = SUM.squareBitToSquare( square.bit() >>> 9 );
                 break;
         }
 
@@ -428,6 +453,24 @@ public class SUM {
         }
 
         // A null return value is legal
+        return squareToReturn;
+    }
+
+    // Deals with non-corner squares on the eighth rank
+    private static Square adjacentSquareOnDiagonalOfSquareOnRank8(
+        Square square, Direction direction ) throws Exception {
+        Square squareToReturn = null;
+        // It is assumed the square argument is always valid (is on the
+        // eighth rank)
+        switch ( direction ) {
+            case SOUTHEAST:
+                squareToReturn = SUM.squareBitToSquare( square.bit() >>> 7 );
+                break;
+            case SOUTHWEST:
+                squareToReturn = SUM.squareBitToSquare( square.bit() >>> 9 );
+                break;
+        }
+
         return squareToReturn;
     }
 

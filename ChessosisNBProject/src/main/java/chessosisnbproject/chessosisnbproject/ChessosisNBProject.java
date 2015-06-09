@@ -7,13 +7,12 @@ package chessosisnbproject.chessosisnbproject;
 public class ChessosisNBProject {
 
     public static void main( String[] args ) throws Exception {
-        System.out.println( SUM.adjacentSquare( Square.E4, Direction.NORTH) );
-        System.out.println( SUM.adjacentSquare( Square.E4, Direction.NORTHEAST) );
-        System.out.println( SUM.adjacentSquare( Square.E4, Direction.EAST) );
-        System.out.println( SUM.adjacentSquare( Square.E4, Direction.SOUTHEAST) );
-        System.out.println( SUM.adjacentSquare( Square.E4, Direction.SOUTH) );
-        System.out.println( SUM.adjacentSquare( Square.E4, Direction.SOUTHWEST) );
-        System.out.println( SUM.adjacentSquare( Square.E4, Direction.WEST) );
-        System.out.println( SUM.adjacentSquare( Square.E4, Direction.NORTHWEST) );
+        Position testPosition
+            = new Position(
+                // White king on G2, black king on B7, White's turn to move
+                0, 0, 0, CSS.E4, 0, CSS.G2, 0, 0, 0, 0, 0, CSS.B7, Color.WHITE );
+        
+        System.out.println( MoveGenerator.accessibleRooksSquares( Square.E4, testPosition) );
+        
     }
 }

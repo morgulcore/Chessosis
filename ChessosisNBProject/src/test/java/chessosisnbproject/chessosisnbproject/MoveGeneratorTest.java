@@ -197,8 +197,29 @@ public class MoveGeneratorTest {
         manualMoveGeneratorMethodTestWorkhorse( testPosition, expectedMoves );
     }
 
-    // Test 004
-    // FEN: 8/8/3r1k2/8/8/3R1K2/8/8 w - - 0 1
+    /**
+     * FEN: 8/8/3r1k2/8/8/3R1K2/8/8 w - - 0 1
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void manualMoveGeneratorMethodTest004() throws Exception {
+        Position testPosition
+            = new Position(
+                // White king on G2, black king on B7, White's turn to move
+                0, 0, 0, CSS.D3, 0, CSS.F3, 0, 0, 0, CSS.D6, 0, CSS.F6, Color.WHITE );
+
+        String[] expectedMoves = {
+            // White king's moves
+            "F3-F4", "F3-G4", "F3-G3", "F3-G2",
+            "F3-F2", "F3-E2", "F3-E3", "F3-E4",
+            // White rook's moves
+            "D3-D4", "D3-D5", "D3-E3", "D3-C3",
+            "D3-B3", "D3-A3", "D3-D2", "D3-D1" };
+
+        manualMoveGeneratorMethodTestWorkhorse( testPosition, expectedMoves );
+    }
+
     //
     // ============================
     // == Private helper methods ==

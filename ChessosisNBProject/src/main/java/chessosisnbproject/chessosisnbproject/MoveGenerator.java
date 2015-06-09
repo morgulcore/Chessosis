@@ -20,7 +20,7 @@ public class MoveGenerator {
     /**
      * Generates the set of possible (legal) moves for a given position.
      * This is one of the fundamental mechanisms of Chessosis. A lot of
-     * effort should and will be invested on testing this method.
+     * effort should and will be invested in testing this method.
      *
      * @param position the Position object to examine
      * @return a set of zero or more Move objects
@@ -191,113 +191,122 @@ public class MoveGenerator {
      */
     public static EnumSet<Square> accessibleRooksSquares( Square square,
         Position position ) throws Exception {
-        long accessibleSquaresBB = 0;
-        return SUM.bitboardToSquareSet( accessibleSquaresBB );
+        EnumSet<Square> squareSet = EnumSet.noneOf( Square.class );
+        for ( Direction direction : Direction.cardinalDirections() ) {
+            Square nextSquare = square;
+            while ( true ) {
+                nextSquare = SUM.adjacentSquare( nextSquare, direction );
+                if ( nextSquare == null ) {
+                    break;
+                }
+                squareSet.add( nextSquare );
+            }
+        }
+
+        return squareSet;
     }
-    
+
     // Finds the accessible rook's squares on a particular rank
     /*
-    private static long accessibleRooksSquaresOuterLoop(
-        Square square, Position position ) throws Exception {
-        // A bitboard describing the accessible rook's squares on the
-        // rank of the Square parameter
-        long accessibleSquaresOnRank = 0;
-        // The rank on which the square parameter is located on
-        final long RANK = SUM.rankOfSquare( square );
+     private static long accessibleRooksSquaresOuterLoop(
+     Square square, Position position ) throws Exception {
+     // A bitboard describing the accessible rook's squares on the
+     // rank of the Square parameter
+     long accessibleSquaresOnRank = 0;
+     // The rank on which the square parameter is located on
+     final long RANK = SUM.rankOfSquare( square );
 
-        // Go east on the first iteration of the for loop. "Going east"
-        // means left-shifting a square bit while it is still located
-        // on the rank we are operating on. For example, going east of
-        // square E4 would involve the squares F4, G4 and H4.
-        //
-        // On the second iteration of the for loop, go west. This involves
-        // unsigned right-shifting of the square bit.
-        for ( int direction = 1; direction <= 4; direction++ ) {
-            // Set the initial value for the shifting bit. It's either
-            // one bit left or one bit right of the square parameter's bit.
-            // This means it's a square to the right or left of the square
-            // parameter. It can also be a square on a different rank if
-            // the square parameter is one the a- or h-file. The condition
-            // of the inner (while) loop should deal with this situation:
-            // while ( ( shiftingBit & RANK ) != 0 ) { ... }
-            long shiftingBit
-                = ( direction == 1 ) ? ( square.bit() << 1 ) : ( square.bit() >>> 1 );
-            switch ( direction ) {
-                // North
-                case 1:
-                    shiftingBit <<= 8;
-                    break;
-                // East
-                case 2:
-                    shiftingBit <<= 1;
-                    break;
-                // South
-                case 3:
-                    shiftingBit >>> 
-                    break;
-                // West
-                case 4:
-                    break;
-                default:
-                    throw new Exception(
-                        "Invalid for counter value: " + direction );
-            }
-            // Doing bitwise OR'ing which is really about a set union operation
-            accessibleSquaresOnRank
-                |= accessibleRooksSquaresInnerLoop(
-                    position, accessibleSquaresOnRank, RANK, shiftingBit, direction );
-        }
-        return accessibleSquaresOnRank;
-    }*/
-
+     // Go east on the first iteration of the for loop. "Going east"
+     // means left-shifting a square bit while it is still located
+     // on the rank we are operating on. For example, going east of
+     // square E4 would involve the squares F4, G4 and H4.
+     //
+     // On the second iteration of the for loop, go west. This involves
+     // unsigned right-shifting of the square bit.
+     for ( int direction = 1; direction <= 4; direction++ ) {
+     // Set the initial value for the shifting bit. It's either
+     // one bit left or one bit right of the square parameter's bit.
+     // This means it's a square to the right or left of the square
+     // parameter. It can also be a square on a different rank if
+     // the square parameter is one the a- or h-file. The condition
+     // of the inner (while) loop should deal with this situation:
+     // while ( ( shiftingBit & RANK ) != 0 ) { ... }
+     long shiftingBit
+     = ( direction == 1 ) ? ( square.bit() << 1 ) : ( square.bit() >>> 1 );
+     switch ( direction ) {
+     // North
+     case 1:
+     shiftingBit <<= 8;
+     break;
+     // East
+     case 2:
+     shiftingBit <<= 1;
+     break;
+     // South
+     case 3:
+     shiftingBit >>> 
+     break;
+     // West
+     case 4:
+     break;
+     default:
+     throw new Exception(
+     "Invalid for counter value: " + direction );
+     }
+     // Doing bitwise OR'ing which is really about a set union operation
+     accessibleSquaresOnRank
+     |= accessibleRooksSquaresInnerLoop(
+     position, accessibleSquaresOnRank, RANK, shiftingBit, direction );
+     }
+     return accessibleSquaresOnRank;
+     }*/
     // Trying to hide the long and dirty details of
     // accessibleRooksSquaresEastAndWest()
     /*
-    private static long accessibleRooksSquaresInnerLoop(
-        Position position, long accessibleSquaresOnRank, final long RANK,
-        long shiftingBit, int outerLoopCounter ) {
+     private static long accessibleRooksSquaresInnerLoop(
+     Position position, long accessibleSquaresOnRank, final long RANK,
+     long shiftingBit, int outerLoopCounter ) {
 
-        while ( ( shiftingBit & RANK ) != 0 ) {
-            // Square indicated by the shifting bit is not empty
-            if ( ( shiftingBit & position.bothArmies() ) != 0 ) {
-                // It's either
-                // (1) White's turn with a black chessman blocking the rank
-                // OR
-                // (2) Black's turn with a white chessman blocking the rank
-                if ( ( position.turn() == Color.WHITE
-                    && ( shiftingBit & position.blackArmy() ) != 0 )
-                    || ( position.turn() == Color.BLACK
-                    && ( shiftingBit & position.whiteArmy() ) != 0 ) ) {
-                    // A chessman of the opposing color can be captured,
-                    // thus the square is accessible
-                    accessibleSquaresOnRank |= shiftingBit;
-                }
-                // Start going west (second iteration of the for loop)
-                // or if that has just been done, exit the outer loop.
-                // Note that if the chessman blocking the rank was of
-                // the same color as the side to move, its square was
-                // not added to the set of accessible squares. No
-                // chessman can capture a piece of its own color.
-                break;
-            }
+     while ( ( shiftingBit & RANK ) != 0 ) {
+     // Square indicated by the shifting bit is not empty
+     if ( ( shiftingBit & position.bothArmies() ) != 0 ) {
+     // It's either
+     // (1) White's turn with a black chessman blocking the rank
+     // OR
+     // (2) Black's turn with a white chessman blocking the rank
+     if ( ( position.turn() == Color.WHITE
+     && ( shiftingBit & position.blackArmy() ) != 0 )
+     || ( position.turn() == Color.BLACK
+     && ( shiftingBit & position.whiteArmy() ) != 0 ) ) {
+     // A chessman of the opposing color can be captured,
+     // thus the square is accessible
+     accessibleSquaresOnRank |= shiftingBit;
+     }
+     // Start going west (second iteration of the for loop)
+     // or if that has just been done, exit the outer loop.
+     // Note that if the chessman blocking the rank was of
+     // the same color as the side to move, its square was
+     // not added to the set of accessible squares. No
+     // chessman can capture a piece of its own color.
+     break;
+     }
 
-            // Add the empty square indicated by the shifting bit to the
-            // set of accessible squares
-            accessibleSquaresOnRank |= shiftingBit;
+     // Add the empty square indicated by the shifting bit to the
+     // set of accessible squares
+     accessibleSquaresOnRank |= shiftingBit;
 
-            // After that, move the square bit one square left or right on
-            // the rank. The while loop's condition will deal with the
-            // situation where the square bit moves off the rank to the rank
-            // above or below. Moving above the 8th rank or below the 1st
-            // rank will result in shiftingBit becoming equal to zero. The
-            // while condition works in this case, too.
-            shiftingBit = ( outerLoopCounter == 1 )
-                ? ( shiftingBit << 1 ) : ( shiftingBit >>> 1 );
-        } // end while
+     // After that, move the square bit one square left or right on
+     // the rank. The while loop's condition will deal with the
+     // situation where the square bit moves off the rank to the rank
+     // above or below. Moving above the 8th rank or below the 1st
+     // rank will result in shiftingBit becoming equal to zero. The
+     // while condition works in this case, too.
+     shiftingBit = ( outerLoopCounter == 1 )
+     ? ( shiftingBit << 1 ) : ( shiftingBit >>> 1 );
+     } // end while
 
-        return accessibleSquaresOnRank;
-    } */
-
+     return accessibleSquaresOnRank;
+     } */
     //
     // =====================================
     // == Private (static) helper methods ==
