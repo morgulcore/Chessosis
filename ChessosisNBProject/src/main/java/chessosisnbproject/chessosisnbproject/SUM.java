@@ -313,7 +313,7 @@ public class SUM {
      * @param position the context
      * @return the type of the chessman on the square
      */
-    public static Chessman determineTypeOfChessman(
+    public static Chessman typeOfChessman(
         Square square, Position position ) {
         // Pawns
         if ( ( square.bit() & position.whitePawns() ) != 0

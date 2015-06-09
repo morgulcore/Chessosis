@@ -206,7 +206,6 @@ public class MoveGeneratorTest {
     public void manualMoveGeneratorMethodTest004() throws Exception {
         Position testPosition
             = new Position(
-                // White king on G2, black king on B7, White's turn to move
                 0, 0, 0, CSS.D3, 0, CSS.F3, 0, 0, 0, CSS.D6, 0, CSS.F6, Color.WHITE );
 
         String[] expectedMoves = {
@@ -214,8 +213,25 @@ public class MoveGeneratorTest {
             "F3-F4", "F3-G4", "F3-G3", "F3-G2",
             "F3-F2", "F3-E2", "F3-E3", "F3-E4",
             // White rook's moves
-            "D3-D4", "D3-D5", "D3-E3", "D3-C3",
-            "D3-B3", "D3-A3", "D3-D2", "D3-D1" };
+            "D3-D4", "D3-D5", "D3-D6",
+            "D3-E3", "D3-C3", "D3-B3",
+            "D3-A3", "D3-D2", "D3-D1" };
+
+        manualMoveGeneratorMethodTestWorkhorse( testPosition, expectedMoves );
+    }
+
+    /**
+     * FEN: 1k1K4/7R/8/8/8/8/8/8 b - - 0 1
+     *
+     * @throws Exception 
+     */
+    @Test
+    public void manualMoveGeneratorMethodTest005() throws Exception {
+        Position testPosition
+            = new Position(
+                0, 0, 0, CSS.H7, 0, CSS.D8, 0, 0, 0, 0, 0, CSS.B8, Color.BLACK );
+
+        String[] expectedMoves = { "B8-A8" }; // Black's only move
 
         manualMoveGeneratorMethodTestWorkhorse( testPosition, expectedMoves );
     }

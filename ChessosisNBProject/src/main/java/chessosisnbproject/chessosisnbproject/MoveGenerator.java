@@ -28,45 +28,104 @@ public class MoveGenerator {
      */
     public static Set<Move> moveGenerator( Position position )
         throws Exception {
-        // The set of Moves is empty to start with
+        EnumSet<Square> chessmenOfSideToMove;
+
+        if ( position.turn() == Color.WHITE ) {
+            chessmenOfSideToMove = SUM.bitboardToSquareSet( position.whiteArmy() );
+        } else {
+            chessmenOfSideToMove = SUM.bitboardToSquareSet( position.blackArmy() );
+        }
+
+        // Returns a set of zero or more Move objects
+        return moveGeneratorMainLoop( position, chessmenOfSideToMove );
+    }
+
+    private static Set<Move> moveGeneratorMainLoop( Position position,
+        EnumSet<Square> chessmenOfSideToMove ) throws Exception {
+        // The set of legal moves in the position is empty to start with
         Set<Move> moves = new LinkedHashSet<>();
 
-        long chessmenOfSideToMoveBB;
-        if ( position.turn() == Color.WHITE ) {
-            chessmenOfSideToMoveBB = position.whiteArmy();
-        } else {
-            chessmenOfSideToMoveBB = position.blackArmy();
-        }
-        EnumSet<Square> chessmenOfSideToMove
-            = SUM.bitboardToSquareSet( chessmenOfSideToMoveBB );
+        // Each chessman's set of possible moves is calculated individually
+        // to begin with. The first step in getting the set of moves for an
+        // individual chessman is getting the destination squares. These
+        // include any square where the chessman can move to.
+        for ( Square chessmansSquare : chessmenOfSideToMove ) {
+            EnumSet<Square> destinationSquares = EnumSet.noneOf( Square.class );
 
-        for ( Square chessman : chessmenOfSideToMove ) {
-            EnumSet<Square> chessmansDestSquares
-                = potentialDestSquares( chessman, position );
             // Chessman is a king
-            if ( ( chessman.bit() & position.whiteKing() ) != 0
-                || ( chessman.bit() & position.blackKing() ) != 0 ) {
-                // Set difference
-                chessmansDestSquares.removeAll(
-                    squaresUnderAttack( position ) );
+            if ( SUM.typeOfChessman( chessmansSquare, position )
+                == Chessman.KING ) {
+                destinationSquares = accessibleKingsSquares(
+                    chessmansSquare, position );
+            } // Chessman is a rook
+            else if ( SUM.typeOfChessman( chessmansSquare, position )
+                == Chessman.ROOK ) {
+                destinationSquares = accessibleRooksSquares(
+                    chessmansSquare, position );
             }
-            moves.addAll( generateMoveSetForChessman(
-                chessman, chessmansDestSquares ) );
-        }
+
+            moves.addAll( generateMoveSetForChessman( chessmansSquare, destinationSquares ) );
+
+        } // end for
 
         return moves;
     }
 
-    // Discover the potential destination squares of a chessman.
-    private static EnumSet<Square> potentialDestSquares(
-        Square chessman, Position position ) throws Exception {
-        // The chessman is a king
-        if ( ( chessman.bit() & position.whiteKing() ) != 0
-            || ( chessman.bit() & position.blackKing() ) != 0 ) {
-            return kingsSquares( chessman );
+    private static EnumSet<Square> accessibleKingsSquares(
+        Square kingsSquare, Position position ) throws Exception {
+        // The initial assumption: all of the king's squares are accessible
+        EnumSet<Square> accessibleKingsSquares = kingsSquares( kingsSquare );
+
+        // The chessmen of the king's own color
+        long kingsOwnMenBB
+            = ( position.turn() == Color.WHITE )
+                ? position.whiteArmy() : position.blackArmy();
+        // Remove the king himself from the list of his servants ("men")
+        kingsOwnMenBB ^= kingsSquare.bit();
+
+        // Loop over the 3, 5 or 8 king's squares
+        for ( Square square : accessibleKingsSquares ) {
+            // The king can't capture one of his own men or move into check
+            if ( ( square.bit() & kingsOwnMenBB ) != 0
+                || squareUnderAttack( square, position ) ) {
+                // Remove the square from the set of accessible ones
+                accessibleKingsSquares.remove( square );
+            }
         }
 
-        return null;
+        return accessibleKingsSquares;
+    }
+
+    private static boolean squareUnderAttack(
+        Square square, Position position ) throws Exception {
+        if ( ( overlappingKingsSquares( position ) & square.bit() ) != 0 ) {
+            return true;
+        }
+        // NEXT THE CASE OF THE ROOKS
+
+        return false;
+    }
+
+    // Returns a bitboard representing the overlapping king's squares
+    // of the two kings
+    private static long overlappingKingsSquares( Position position )
+        throws Exception {
+        // First we get the two squares on which the kings of both
+        // sides reside
+        Square whiteKing = SUM.squareBitToSquare( position.whiteKing() ),
+            blackKing = SUM.squareBitToSquare( position.blackKing() );
+        // Then we get the king's squares of both kings
+        EnumSet<Square> whiteKingsSquares = kingsSquares( whiteKing ),
+            blackKingsSquares = kingsSquares( blackKing );
+        // We continue by converting the two square sets into bitboards
+        long whiteKingsSquaresBB = SUM.squareSetToBitboard( whiteKingsSquares ),
+            blackKingsSquaresBB = SUM.squareSetToBitboard( blackKingsSquares );
+        // Now we can examine whether any of the squares overlap
+
+        long overlappingSquaresOfTheTwoKingsBB
+            = ( whiteKingsSquaresBB & blackKingsSquaresBB );
+
+        return overlappingSquaresOfTheTwoKingsBB;
     }
 
     // Finds the squares that are "under attack" by the opposing side, i.e.,
@@ -196,13 +255,28 @@ public class MoveGenerator {
             Square nextSquare = square;
             while ( true ) {
                 nextSquare = SUM.adjacentSquare( nextSquare, direction );
+                // There's no next square in a particular direction
                 if ( nextSquare == null ) {
                     break;
+                } // White chessman cannot capture another white one
+                else if ( ( position.turn() == Color.WHITE )
+                    && ( position.whiteArmy() & nextSquare.bit() ) != 0 ) {
+                    break;
+                } // Black chessman cannot capture another black one
+                else if ( ( position.turn() == Color.BLACK )
+                    && ( position.blackArmy() & nextSquare.bit() ) != 0 ) {
+                    break;
                 }
+
                 squareSet.add( nextSquare );
+
+                // The square just added to the set contained a chessman
+                // of opposing color
+                if ( ( nextSquare.bit() & position.bothArmies() ) != 0 ) {
+                    break;
+                }
             }
         }
-
         return squareSet;
     }
 
