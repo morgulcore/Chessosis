@@ -1,4 +1,4 @@
-package chessosisnbproject.chessosisnbproject;
+package chessosisnbproject.logic;
 
 /**
  * Class for globally available Constant Square Set data.

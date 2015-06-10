@@ -1,4 +1,4 @@
-package chessosisnbproject.chessosisnbproject;
+package chessosisnbproject.logic;
 
 /**
  * Enum type Square makes it possible to treat the 64 squares of the chessboard

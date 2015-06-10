@@ -1,4 +1,4 @@
-package chessosisnbproject.chessosisnbproject;
+package chessosisnbproject.logic;
 
 /**
  * The instances of class Position contain information about positions.

@@ -1,4 +1,4 @@
-package chessosisnbproject.chessosisnbproject;
+package chessosisnbproject.logic;
 
 import java.util.Objects;
 

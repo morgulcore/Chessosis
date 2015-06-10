@@ -1,4 +1,4 @@
-package chessosisnbproject.chessosisnbproject;
+package chessosisnbproject.logic;
 
 /**
  * A simple enum type for representing chessman and square color as well as
