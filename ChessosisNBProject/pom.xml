@@ -37,12 +37,12 @@
                 <version>1.1.4</version>
                 <configuration>
                     <targetClasses>
-                        <param>chessosisnbproject.chessosisnbproject.*</param>
-                        <param>chessosisnbproject.chessosisnbproject.*</param>
+                        <param>chessosisnbproject.logic.*</param>
+                        <param>chessosisnbproject.data.*</param>
                     </targetClasses>
                     <targetTests>
-                        <param>chessosisnbproject.chessosisnbproject.*</param>
-                        <param>chessosisnbproject.chessosisnbproject.*</param>
+                        <param>chessosisnbproject.logic.*</param>
+                        <param>chessosisnbproject.data.*</param>
                     </targetTests>
                 </configuration>
             </plugin>

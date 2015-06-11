@@ -1,19 +1,20 @@
 package chessosisnbproject.gui;
 
 import chessosisnbproject.data.Square;
-import chessosisnbproject.logic.Position;
+import chessosisnbproject.data.Position;
 import chessosisnbproject.logic.SUM;
 import java.awt.Color;
 import java.awt.GridLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 /**
  *
- * @author henrik
+ * @author Henrik Lindberg
  */
 public class Chessboard extends JPanel {
+
+    private ChessosisGUI chessosisGUIRef;
 
     public Chessboard() {
         super( new GridLayout( 0, 8, 1, 1 ) );
@@ -31,7 +32,21 @@ public class Chessboard extends JPanel {
         }
     }
 
-    public void displayPosition( Position pos ) {
+    public void setChessosisGUIRef( ChessosisGUI ref ) {
+        this.chessosisGUIRef = ref;
+    }
+
+    public ChessosisGUI getChessosisGUIRef() {
+        return this.chessosisGUIRef;
+    }
+
+    public void sendMessage( String message ) {
+        getChessosisGUIRef().sendMessage( message );
+    }
+
+    public void displayPosition() {
+        Position pos
+            = this.getChessosisGUIRef().gameObject().currentPosition();
         String[][] table
             = SUM.unicodeChessSymbolTable( pos );
 
@@ -39,11 +54,10 @@ public class Chessboard extends JPanel {
             for ( int column = 0; column < 8; column++ ) {
                 int index = 8 * row + column;
                 // "Note: This method should be called under AWT tree lock."
-                // http://docs.oracle.com/javase/7/docs/api/java/awt/Container.html#getComponent%28int%29
                 JLabel label = (JLabel) this.getComponent( index );
                 label.setText( table[ row ][ column ] );
+                SquareOnGUI.repaintSquare( label );
             }
         }
-
     }
 }

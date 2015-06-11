@@ -1,4 +1,4 @@
-package chessosisnbproject.logic;
+package chessosisnbproject.data;
 
 import chessosisnbproject.data.CSS;
 import org.junit.Test;

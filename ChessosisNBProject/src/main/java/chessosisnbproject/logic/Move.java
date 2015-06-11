@@ -1,5 +1,6 @@
 package chessosisnbproject.logic;
 
+import chessosisnbproject.data.Position;
 import chessosisnbproject.data.Square;
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package chessosisnbproject.logic;
+package chessosisnbproject.data;
 
 /**
  * This is a simple enum type that represents the six types of chessmen

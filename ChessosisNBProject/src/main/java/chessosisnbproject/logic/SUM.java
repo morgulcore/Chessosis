@@ -1,5 +1,7 @@
 package chessosisnbproject.logic;
 
+import chessosisnbproject.data.Position;
+import chessosisnbproject.data.Chessman;
 import chessosisnbproject.data.Direction;
 import chessosisnbproject.data.CSS;
 import chessosisnbproject.data.Square;
