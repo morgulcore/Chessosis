@@ -155,3 +155,13 @@ Due to an occupational hazard and a twist of fate I had to depart from my work o
 Today I've worked heavily on the MoveGenerator class. I has been quite tricky and frustrating. Even so, I seem to be over the worst of it. Tomorrow I think I can come up with a quick and dirty command line UI. Soon after that I'll start my work on the GUI. I'll also invest as much time as I can in coming up with the diagrams required in the deadlines (class diagram, sequence diagram, and what not).
 
 Now I'll just do some tidying of code and wrapping things up for today.
+
+## 2015-06-10 | Hours worked: 9
+
+I have worked very busily on MoveGenerator and later on on GUI research. I'm writing this on the next day. Yesterday things were too hectic for me to really be able to make a report of my doings (what comes to this course). In retrospect I can say that I was feeling frustrated. I was trying to solve my problems with Chessosis by writing methods. I can't seem to be able to think in classes but rather in methods (perhaps I should switch to programming in C). Anyway, for every method I wrote some new problem came up. Well, I could think of no other solution than to write more and more methods -- methods that would solve the problems I had introduced with my previous methods. It's an interesting recursive pattern. Anyway, I'm happy as for now my cardhouse of methods shows no signs of collapsing.
+
+## 2015-06-10 | Hours worked: 10
+
+I managed to come up with a GUI for Chessosis. At some point I felt it was an impossible task for me but then somehow a solution just started to appear in my mind. My solution, the GUI, is a combination of many ideas and sources mostly from the Internet, all of which I've examined, considered and made variations upon enough to consider them a part of my own knowledge, also. I'll document my studies of creating GUIs in Java at some later point.
+
+Oh, one more thing -- I finally managed to come up with a class diagram, luokkakaavio. I'll update it as needed so that it will remain an accurate graphical representation of the basic structure of Chessosis.
