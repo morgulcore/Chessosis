@@ -1,4 +1,4 @@
-package chessosisnbproject.logic;
+package chessosisnbproject.data;
 
 /**
  * A simple enum type for representing directions on the board. Going north

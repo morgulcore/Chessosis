@@ -1,5 +1,8 @@
 package chessosisnbproject.logic;
 
+import chessosisnbproject.data.Direction;
+import chessosisnbproject.data.CSS;
+import chessosisnbproject.data.Square;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.Random;
@@ -341,6 +344,59 @@ public class SUM {
             return Chessman.KING;
         }
         return null;
+    }
+
+    public static String[][] unicodeChessSymbolTable( Position pos ) {
+        String[][] table = new String[ 8 ][ 8 ];
+        for ( int row = 0; row < 8; row++ ) {
+            for ( int column = 0; column < 8; column++ ) {
+                Square square = tableCellToSquare( row, column );
+                table[ row ][ column ]
+                    = unicodeChessSymbolOfSquare( pos, square );
+            }
+        }
+        return table;
+    }
+
+    private static String unicodeChessSymbolOfSquare(
+        Position pos, Square sq ) {
+
+        if ( ( pos.whiteKing() & sq.bit() ) != 0 ) {
+            return "\u2654";
+        } else if ( ( pos.whiteQueens() & sq.bit() ) != 0 ) {
+            return "\u2655";
+        } else if ( ( pos.whiteRooks() & sq.bit() ) != 0 ) {
+            return "\u2656";
+        } else if ( ( pos.whiteBishops() & sq.bit() ) != 0 ) {
+            return "\u2657";
+        } else if ( ( pos.whiteKnights() & sq.bit() ) != 0 ) {
+            return "\u2658";
+        } else if ( ( pos.whitePawns() & sq.bit() ) != 0 ) {
+            return "\u2659";
+        } else if ( ( pos.blackKing() & sq.bit() ) != 0 ) {
+            return "\u265a";
+        } else if ( ( pos.blackQueens() & sq.bit() ) != 0 ) {
+            return "\u265b";
+        } else if ( ( pos.blackRooks() & sq.bit() ) != 0 ) {
+            return "\u265c";
+        } else if ( ( pos.blackBishops() & sq.bit() ) != 0 ) {
+            return "\u265d";
+        } else if ( ( pos.blackKnights() & sq.bit() ) != 0 ) {
+            return "\u265e";
+        } else if ( ( pos.blackPawns() & sq.bit() ) != 0 ) {
+            return "\u265f";
+        } else {
+            return "";
+        }
+    }
+
+    public static Square tableCellToSquare( int row, int column ) {
+        char file = (char) ( 'A' + column ),
+            rank = (char) ( '8' - row );
+        return Square.valueOf(
+            // Note the string concatenation. This is not about
+            // integer arithmetic.
+            (char) file + "" + (char) rank );
     }
 
     //

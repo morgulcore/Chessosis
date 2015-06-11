@@ -1,5 +1,8 @@
 package chessosisnbproject.logic;
 
+import chessosisnbproject.data.Color;
+import chessosisnbproject.data.Square;
+
 /**
  * The instances of class Position contain information about positions.
  * The instances contain enough such information that they can be used

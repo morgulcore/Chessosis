@@ -1,5 +1,8 @@
 package chessosisnbproject.logic;
 
+import chessosisnbproject.data.Color;
+import chessosisnbproject.data.CSS;
+import chessosisnbproject.data.Square;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;

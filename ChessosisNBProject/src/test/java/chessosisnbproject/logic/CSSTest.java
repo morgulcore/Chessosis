@@ -1,5 +1,6 @@
 package chessosisnbproject.logic;
 
+import chessosisnbproject.data.CSS;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
