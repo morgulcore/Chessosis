@@ -165,3 +165,5 @@ I have worked very busily on MoveGenerator and later on on GUI research. I'm wri
 I managed to come up with a GUI for Chessosis. At some point I felt it was an impossible task for me but then somehow a solution just started to appear in my mind. My solution, the GUI, is a combination of many ideas and sources mostly from the Internet, all of which I've examined, considered and made variations upon enough to consider them a part of my own knowledge, also. I'll document my studies of creating GUIs in Java at some later point.
 
 Oh, one more thing -- I finally managed to come up with a class diagram, luokkakaavio. I'll update it as needed so that it will remain an accurate graphical representation of the basic structure of Chessosis.
+
+In extreme hurry I tried coming up with a sequence diagram. I'll work on it some more in the near future.
