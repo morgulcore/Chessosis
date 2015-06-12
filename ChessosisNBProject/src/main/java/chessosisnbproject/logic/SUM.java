@@ -392,8 +392,8 @@ public class SUM {
         }
     }
 
-    public static Square tableCellToSquare( int row, int column ) {
-        char file = (char) ( 'A' + column ),
+    public static Square tableCellToSquare( int row, int col ) {
+        char file = (char) ( 'A' + col ),
             rank = (char) ( '8' - row );
         return Square.valueOf(
             // Note the string concatenation. This is not about

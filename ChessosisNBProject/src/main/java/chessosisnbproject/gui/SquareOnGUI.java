@@ -5,6 +5,8 @@ import chessosisnbproject.data.Square;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 /**
@@ -25,15 +27,13 @@ public class SquareOnGUI extends JLabel implements MouseListener {
         this.setFont( this.getFont().deriveFont( 55f ) );
         this.setBackground( squareColor() );
         this.setOpaque( true );
-        //this.setPreferredSize( new Dimension(100,100) );
-        //this.addMouseListener( this );
     }
 
-    public static SquareOnGUI activeSquare() {
+    protected static SquareOnGUI activeSquare() {
         return SquareOnGUI.activeSquare;
     }
 
-    private Color squareColor() {
+    protected Color squareColor() {
         return this.darkSquare() ? Color.LIGHT_GRAY : Color.WHITE;
     }
 
@@ -53,7 +53,7 @@ public class SquareOnGUI extends JLabel implements MouseListener {
         getChessboardRef().sendMessage( message );
     }
 
-    public static void repaintSquare( JLabel label ) {
+    public static void repaintSquare( SquareOnGUI label ) {
         SquareOnGUI thisSquare = (SquareOnGUI) label;
         if ( SquareOnGUI.activeSquare() == thisSquare ) {
             thisSquare.setBorder(
@@ -69,9 +69,15 @@ public class SquareOnGUI extends JLabel implements MouseListener {
     public void mouseClicked( MouseEvent e ) {
         // Left mouse button
         if ( e.getButton() == MouseEvent.BUTTON1 ) {
+            getChessboardRef().squaretaker( Chessboard.Task.UNHIGHLIGHT );
             if ( flipOrSetActiveSquare() ) {
-                getChessboardRef().activeSquareSet(
-                    SquareOnGUI.activeSquare() );
+                try {
+                    getChessboardRef().activeSquareSet(
+                        SquareOnGUI.activeSquare() );
+                } catch ( Exception ex ) {
+                    Logger.getLogger( SquareOnGUI.class.getName() ).log(
+                        Level.SEVERE, null, ex );
+                }
             }
         }
     }
@@ -98,23 +104,16 @@ public class SquareOnGUI extends JLabel implements MouseListener {
 
         // There was no active square on the board before the click...
         if ( SquareOnGUI.activeSquare == null ) {
-            /*sendMessage( "Brand new active square: "
-                + this.name() + "\n" );*/
             SquareOnGUI.activeSquare = this;
         } // There was an active square but it was not this square
         else if ( SquareOnGUI.activeSquare != this ) {
             SquareOnGUI formerActiveSquare = SquareOnGUI.activeSquare;
             SquareOnGUI.activeSquare = this;
-            /*sendMessage( "New active square "
-                + SquareOnGUI.activeSquare.name() + ", old was "
-                + formerActiveSquare.name() + "\n" );*/
             SquareOnGUI.repaintSquare( formerActiveSquare );
         } // The active square was clicked
         else {
             SquareOnGUI.activeSquare = null;
             squareActivated = false;
-            /*sendMessage( "The active square was clicked and now equals: "
-                + SquareOnGUI.activeSquare + "\n" );*/
         }
         SquareOnGUI.repaintSquare( this );
 

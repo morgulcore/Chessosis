@@ -1,10 +1,8 @@
 package chessosisnbproject.logic;
 
 import chessosisnbproject.data.Position;
-import chessosisnbproject.data.Chessman;
 import chessosisnbproject.data.Color;
 import chessosisnbproject.data.CSS;
-import chessosisnbproject.data.Square;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -15,26 +13,25 @@ import java.util.Set;
  * @author Henrik Lindberg
  */
 public class Game {
-    
-    private List<Position> history;
-    
-    public Game( /*Position nonStandardStartPos*/ ) {
+
+    private final List<Position> history;
+
+    public Game( /*Position nonStandardStartPos*/) {
         history = new ArrayList<>();
         history.add( testPos1 );
     }
-    
-    public Set<Move> currentMoves() throws Exception {
-        return MoveGenerator.moveGenerator( currentPosition() );
+
+    public Set<Move> getMoves() throws Exception {
+        return MoveGenerator.moveGenerator( getPos() );
     }
 
-    public Position currentPosition() {
+    public Position getPos() {
         return history.get( history.size() - 1 );
     }
 
     /*public Chessman chessmanOnSquare( Square square ) {
-        return SUM.typeOfChessman( square, testPos1 );
-    }*/
-
+     return SUM.typeOfChessman( square, testPos1 );
+     }*/
     public static final Position testPos1
         = new Position(
             0, 0, 0, CSS.D3, 0, CSS.F3,

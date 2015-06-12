@@ -15,7 +15,7 @@ public class ChessosisGUI extends JFrame {
 
     private final JTextArea messageArea;
     private final JMenuBar menuBar;
-    private Game gameObject;
+    private Game game;
     private final Chessboard chessboard;
 
     public ChessosisGUI() {
@@ -44,16 +44,16 @@ public class ChessosisGUI extends JFrame {
         this.messageArea.append( message );
     }
 
-    public void beginGame( Game game ) {
-        this.gameObject = game;
-        chessboard.setChessosisGUIRef( this );
-        chessboard.displayPosition();
-        sendMessage( "Please click on the squares of the board\n"
-            + "Doing so will set or toggle the active square\n\n" );
+    protected void play( Game game ) {
+        this.game = game;
+        chessboard.setGUIRef( this );
+        //chessboard.displayPosition();
+        chessboard.squaretaker( Chessboard.Task.DISPLAY_POS );
+        sendMessage( "Welcome!\n\n" );
     }
 
-    protected Game gameObject() {
-        return this.gameObject;
+    protected Game getGame() {
+        return this.game;
     }
 
     public static void main( String[] args ) {
@@ -68,7 +68,7 @@ public class ChessosisGUI extends JFrame {
                 //chessosisGUI.pack();
                 chessosisGUI.setVisible( true );
 
-                chessosisGUI.beginGame( new Game() );
+                chessosisGUI.play( new Game() );
             }
         } );
     }
