@@ -167,3 +167,8 @@ I managed to come up with a GUI for Chessosis. At some point I felt it was an im
 Oh, one more thing -- I finally managed to come up with a class diagram, luokkakaavio. I'll update it as needed so that it will remain an accurate graphical representation of the basic structure of Chessosis.
 
 In extreme hurry I tried coming up with a sequence diagram. I'll work on it some more in the near future.
+
+## 2015-06-12 | Hours worked: -
+
+I have completed my work on the following classes (including testing and javadoc):
+--Position

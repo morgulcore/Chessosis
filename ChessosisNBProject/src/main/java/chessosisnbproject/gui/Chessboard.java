@@ -40,11 +40,27 @@ public class Chessboard extends JPanel {
         return this.chessosisGUIRef;
     }
 
-    public void sendMessage( String message ) {
+    protected void sendMessage( String message ) {
         getChessosisGUIRef().sendMessage( message );
     }
 
-    public void displayPosition() {
+    protected void activeSquareSet( SquareOnGUI sq ) {
+        Position pos = getChessosisGUIRef().gameObject().currentPosition();
+        long squareBit = sq.name().bit();
+        if( friendlySquareActivated( pos, squareBit ) ) {
+            
+        }
+    }
+
+    // Returns true if the player clicked on a friendly chessman
+    private boolean friendlySquareActivated( Position pos, long bit ) {
+        return ( pos.turn() == chessosisnbproject.data.Color.WHITE
+            && ( ( pos.whiteArmy() & bit ) != 0 ) )
+            || ( pos.turn() == chessosisnbproject.data.Color.BLACK
+            && ( pos.blackArmy() & bit ) != 0 );
+    }
+
+    protected void displayPosition() {
         Position pos
             = this.getChessosisGUIRef().gameObject().currentPosition();
         String[][] table

@@ -69,26 +69,10 @@ public class SquareOnGUI extends JLabel implements MouseListener {
     public void mouseClicked( MouseEvent e ) {
         // Left mouse button
         if ( e.getButton() == MouseEvent.BUTTON1 ) {
-            // There was no active square on the board before the click...
-            if ( SquareOnGUI.activeSquare == null ) {
-                sendMessage( "Brand new active square: "
-                    + this.name() + "\n" );
-                SquareOnGUI.activeSquare = this;
-            } // There was an active square but it was not this square
-            else if ( SquareOnGUI.activeSquare != this ) {
-                SquareOnGUI formerActiveSquare = SquareOnGUI.activeSquare;
-                SquareOnGUI.activeSquare = this;
-                sendMessage( "New active square "
-                    + SquareOnGUI.activeSquare.name() + ", old was "
-                    + formerActiveSquare.name() + "\n" );
-                SquareOnGUI.repaintSquare( formerActiveSquare );
-            } // The active square was clicked
-            else {
-                SquareOnGUI.activeSquare = null;
-                sendMessage( "The active square was clicked and now equals: "
-                    + SquareOnGUI.activeSquare + "\n" );
+            if ( flipOrSetActiveSquare() ) {
+                getChessboardRef().activeSquareSet(
+                    SquareOnGUI.activeSquare() );
             }
-            SquareOnGUI.repaintSquare( this );
         }
     }
 
@@ -106,5 +90,34 @@ public class SquareOnGUI extends JLabel implements MouseListener {
 
     @Override
     public void mouseReleased( MouseEvent e ) {
+    }
+
+    // Returns true if a square was activated
+    private boolean flipOrSetActiveSquare() {
+        boolean squareActivated = true;
+
+        // There was no active square on the board before the click...
+        if ( SquareOnGUI.activeSquare == null ) {
+            /*sendMessage( "Brand new active square: "
+                + this.name() + "\n" );*/
+            SquareOnGUI.activeSquare = this;
+        } // There was an active square but it was not this square
+        else if ( SquareOnGUI.activeSquare != this ) {
+            SquareOnGUI formerActiveSquare = SquareOnGUI.activeSquare;
+            SquareOnGUI.activeSquare = this;
+            /*sendMessage( "New active square "
+                + SquareOnGUI.activeSquare.name() + ", old was "
+                + formerActiveSquare.name() + "\n" );*/
+            SquareOnGUI.repaintSquare( formerActiveSquare );
+        } // The active square was clicked
+        else {
+            SquareOnGUI.activeSquare = null;
+            squareActivated = false;
+            /*sendMessage( "The active square was clicked and now equals: "
+                + SquareOnGUI.activeSquare + "\n" );*/
+        }
+        SquareOnGUI.repaintSquare( this );
+
+        return squareActivated;
     }
 }

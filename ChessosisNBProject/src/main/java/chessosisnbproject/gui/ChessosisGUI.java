@@ -52,7 +52,7 @@ public class ChessosisGUI extends JFrame {
             + "Doing so will set or toggle the active square\n\n" );
     }
 
-    public Game gameObject() {
+    protected Game gameObject() {
         return this.gameObject;
     }
 
