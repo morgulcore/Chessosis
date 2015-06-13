@@ -2,6 +2,7 @@ package chessosisnbproject.gui;
 
 import chessosisnbproject.data.CSS;
 import chessosisnbproject.data.Square;
+import chessosisnbproject.logic.Move;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -45,12 +46,12 @@ public class SquareOnGUI extends JLabel implements MouseListener {
         return this.darkSquare;
     }
 
-    private Chessboard getChessboardRef() {
+    private Chessboard getCBRef() {
         return (Chessboard) this.getParent();
     }
 
     private void sendMessage( String message ) {
-        getChessboardRef().sendMessage( message );
+        getCBRef().sendMessage( message );
     }
 
     public static void repaintSquare( SquareOnGUI label ) {
@@ -69,11 +70,31 @@ public class SquareOnGUI extends JLabel implements MouseListener {
     public void mouseClicked( MouseEvent e ) {
         // Left mouse button
         if ( e.getButton() == MouseEvent.BUTTON1 ) {
-            getChessboardRef().squaretaker( Chessboard.Task.UNHIGHLIGHT );
+            getCBRef().squaretaker( Chessboard.Task.UNHIGHLIGHT );
             if ( flipOrSetActiveSquare() ) {
                 try {
-                    getChessboardRef().activeSquareSet(
+                    getCBRef().activeSquareSet(
                         SquareOnGUI.activeSquare() );
+                } catch ( Exception ex ) {
+                    Logger.getLogger( SquareOnGUI.class.getName() ).log(
+                        Level.SEVERE, null, ex );
+                }
+            }
+        } else if ( e.getButton() == MouseEvent.BUTTON3 ) {
+            if ( activeSquare() == null ) {
+                // __TO-DO HERE__
+                sendMessage(
+                    "Please first select a piece of your own color\n" );
+            } else if ( getCBRef().rightClickedHighlighted( this.name() ) ) {
+                Move move = new Move( activeSquare().name(), this.name() );
+                try {
+                    if ( !getCBRef().getGUIRef().getGame().makeMove( move ) ) {
+                        sendMessage( "ERROR: makeMove() refused to execute "
+                            + move.toString() + "\n" );
+                    }
+                    SquareOnGUI.activeSquare = null;
+                    getCBRef().squaretaker( Chessboard.Task.UNHIGHLIGHT );
+                    getCBRef().squaretaker( Chessboard.Task.DISPLAY_POS );
                 } catch ( Exception ex ) {
                     Logger.getLogger( SquareOnGUI.class.getName() ).log(
                         Level.SEVERE, null, ex );

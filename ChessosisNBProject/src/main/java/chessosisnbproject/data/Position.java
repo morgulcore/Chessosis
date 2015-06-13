@@ -309,6 +309,43 @@ public class Position {
     }
 
     /**
+     Packs the 12 fundamental bitboards into an array and returns it to
+     the caller. Note the 12 int constants for specifying the array indices.
+    
+     @return a long array containing all 12 BB's that express piece placement
+     */
+    public long[] chessmanBBArray() {
+
+        long copyOfWhitePawnBB = this.whitePawnBB,
+            copyOfWhiteBishopBB = this.whiteBishopBB,
+            copyOfWhiteKnightBB = this.whiteKnightBB,
+            copyOfWhiteRookBB = this.whiteRookBB,
+            copyOfWhiteQueenBB = this.whiteQueenBB,
+            copyOfWhiteKingBB = this.whiteKingBB,
+            copyOfBlackPawnBB = this.blackPawnBB,
+            copyOfBlackBishopBB = this.blackBishopBB,
+            copyOfBlackKnightBB = this.blackKnightBB,
+            copyOfBlackRookBB = this.blackRookBB,
+            copyOfBlackQueenBB = this.blackQueenBB,
+            copyOfBlackKingBB = this.blackKingBB;
+
+        return new long[]{ copyOfWhitePawnBB, copyOfWhiteBishopBB,
+            copyOfWhiteKnightBB, copyOfWhiteRookBB,
+            copyOfWhiteQueenBB, copyOfWhiteKingBB,
+            copyOfBlackPawnBB, copyOfBlackBishopBB,
+            copyOfBlackKnightBB, copyOfBlackRookBB,
+            copyOfBlackQueenBB, copyOfBlackKingBB };
+    }
+
+    /**
+     Mainly to be used with the array returned by chessmenBBArray().
+     */
+    public static final int WHITE_PAWNS = 0, WHITE_BISHOPS = 1, WHITE_KNIGHTS = 2,
+        WHITE_ROOKS = 3, WHITE_QUEEN = 4, WHITE_KING = 5,
+        BLACK_PAWNS = 6, BLACK_BISHOPS = 7, BLACK_KNIGHTS = 8,
+        BLACK_ROOKS = 9, BLACK_QUEEN = 10, BLACK_KING = 11;
+
+    /**
      I had this code generated automatically by NetBeans. Overriding hashCode()
      seems to be necessary whenever overriding equals(). This is because it is
      assumed (required) that whenever two objects are equal (according to the

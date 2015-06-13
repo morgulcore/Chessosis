@@ -52,6 +52,13 @@ public class Chessboard extends JPanel {
         }
     }
 
+    protected boolean rightClickedHighlighted( Square name ) {
+        if ( this.highlightedDest == null ) {
+            return false;
+        }
+        return this.highlightedDest.contains( name );
+    }
+
     private int tableCellToIndex( int row, int col ) {
         return 8 * row + col;
     }
@@ -120,7 +127,8 @@ public class Chessboard extends JPanel {
                     case UNHIGHLIGHT:
                         viSq = (SquareOnGUI) this.getComponent( index );
                         viSq.setBackground(
-                            viSq.squareColor());
+                            viSq.squareColor() );
+                        this.highlightedDest = null;
                         break; // end UNHIGHLIGHT
                     default:
                         break;
