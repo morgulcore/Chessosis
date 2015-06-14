@@ -1,5 +1,6 @@
 package chessosisnbproject.logic;
 
+import chessosisnbproject.data.Move;
 import chessosisnbproject.data.Position;
 import chessosisnbproject.data.Color;
 import chessosisnbproject.data.CSS;
@@ -22,11 +23,11 @@ public class Game {
         history = new ArrayList<>();
         history.add( testPos1 );
     }
-    
+
     public static void setDebugMsgRef( ChessosisGUI ref ) {
         debugMsgRef = ref;
     }
-    
+
     public static ChessosisGUI getDebugMsgRef() {
         return debugMsgRef;
     }
@@ -53,7 +54,7 @@ public class Game {
         return true;
     }
 
-    private static Position newPos( Position pos, long fromSB, long toSB )
+    public static Position newPos( Position pos, long fromSB, long toSB )
         throws Exception {
         long[] chessmen = pos.chessmanBBArray();
 
@@ -72,12 +73,12 @@ public class Game {
         } // White captures black piece
         else if ( pos.turn() == Color.WHITE
             && ( toSBPieceIndex >= 6 && toSBPieceIndex <= 11 ) ) {
-            Game.debugMsgRef.sendMessage( "DB: White captured black\n" );
+            //Game.debugMsgRef.sendMessage( "DB: White captured black\n" );
             moveIsCapture = true;
         } // Black captures white piece
         else if ( pos.turn() == Color.BLACK
             && ( toSBPieceIndex >= 0 && toSBPieceIndex <= 5 ) ) {
-            Game.debugMsgRef.sendMessage( "DB: Black captured white\n" );
+            //Game.debugMsgRef.sendMessage( "DB: Black captured white\n" );
             moveIsCapture = true;
         } // Invalid index
         else if ( toSBPieceIndex >= 12 ) {
@@ -133,13 +134,10 @@ public class Game {
         return pieceIndex;
     }
 
-    /*public Chessman chessmanOnSquare( Square square ) {
-     return SUM.typeOfChessman( square, testPos1 );
-     }*/
     public static final Position testPos1
         = new Position(
-            0, 0, 0, CSS.A1 | CSS.H1, 0, CSS.E1,
-            0, 0, 0, CSS.A8 | CSS.H8, 0, CSS.E8,
+            0, 0, CSS.B1 | CSS.G1, CSS.A1 | CSS.H1, 0, CSS.E1,
+            0, 0, CSS.B8 | CSS.G8, CSS.A8 | CSS.H8, 0, CSS.E8,
             Color.WHITE,
             false, false, false, false,
             null, 0, 1 );

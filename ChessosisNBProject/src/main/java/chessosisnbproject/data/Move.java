@@ -1,9 +1,10 @@
-package chessosisnbproject.logic;
+package chessosisnbproject.data;
 
-import chessosisnbproject.data.Position;
-import chessosisnbproject.data.Square;
 import java.util.Objects;
 
+// Javadoc: OK
+// JUnit: OK
+//
 /**
  * Move objects represent possible moves in a particular position. Each move
  * object corresponds to a single move such as E2-E4. When treated as a String
@@ -17,21 +18,48 @@ public class Move {
     // Every move involves a source ("from") and a destination ("to") square
     private final Square fromSquare, toSquare;
 
-    // Each Move object can be made truly unique by specifying the position
-    // in which it was discovered. For now this field is unused, however.
-    private final Position context = null;
+    // Each Move object is made truly unique by specifying the position
+    // in which it was discovered
+    private final Position context;
 
-    public Move( Square fromSquare, Square toSquare ) {
+    /**
+     Initialize a Move object.
+    
+     @param fromSquare source square
+     @param toSquare destination square
+     @param contextPos context position (where the move was discovered)
+     */
+    public Move( Square fromSquare, Square toSquare, Position contextPos ) {
         this.fromSquare = fromSquare;
         this.toSquare = toSquare;
+        this.context = contextPos;
     }
 
+    /**
+     Accessor method.
+    
+     @return source ("from") square
+     */
     public Square from() {
         return this.fromSquare;
     }
 
+    /**
+     Accessor method.
+    
+     @return destination ("to") square
+     */
     public Square to() {
         return this.toSquare;
+    }
+
+    /**
+     Accessor method.
+    
+     @return context position
+     */
+    public Position context() {
+        return this.context;
     }
 
     /**
@@ -57,9 +85,10 @@ public class Move {
      */
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 67 * hash + Objects.hashCode( this.fromSquare );
-        hash = 67 * hash + Objects.hashCode( this.toSquare );
+        int hash = 3;
+        hash = 41 * hash + Objects.hashCode( this.fromSquare );
+        hash = 41 * hash + Objects.hashCode( this.toSquare );
+        hash = 41 * hash + Objects.hashCode( this.context );
         return hash;
     }
 
@@ -87,6 +116,6 @@ public class Move {
         if ( this.toSquare != other.toSquare ) {
             return false;
         }
-        return true;
+        return Objects.equals( this.context, other.context );
     }
 }

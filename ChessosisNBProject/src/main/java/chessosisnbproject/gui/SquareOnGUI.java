@@ -2,7 +2,7 @@ package chessosisnbproject.gui;
 
 import chessosisnbproject.data.CSS;
 import chessosisnbproject.data.Square;
-import chessosisnbproject.logic.Move;
+import chessosisnbproject.data.Move;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -86,7 +86,9 @@ public class SquareOnGUI extends JLabel implements MouseListener {
                 sendMessage(
                     "Please first select a piece of your own color\n" );
             } else if ( getCBRef().rightClickedHighlighted( this.name() ) ) {
-                Move move = new Move( activeSquare().name(), this.name() );
+                Move move = new Move(
+                    activeSquare().name(), this.name(),
+                    getCBRef().getGUIRef().getGame().getPos() );
                 try {
                     if ( !getCBRef().getGUIRef().getGame().makeMove( move ) ) {
                         sendMessage( "ERROR: makeMove() refused to execute "

@@ -1,5 +1,6 @@
 package chessosisnbproject.logic;
 
+import chessosisnbproject.data.Move;
 import chessosisnbproject.data.Position;
 import chessosisnbproject.data.Color;
 import chessosisnbproject.data.CSS;
@@ -260,6 +261,20 @@ public class MoveGeneratorTest {
         manualMoveGeneratorMethodTestWorkhorse( testPosition, expectedMoves );
     }
     
+    // FEN: 1k5R/8/1K6/8/8/8/8/8 b - - 0 1
+    @Test
+    public void manualMoveGeneratorMethodTest007() throws Exception {
+        Position testPosition
+            = new Position(
+                0, 0, 0, CSS.H8, 0, CSS.B6,
+                0, 0, 0, 0, 0, CSS.B8,
+                Color.BLACK );
+
+        String[] expectedMoves = {}; // White's only move
+
+        manualMoveGeneratorMethodTestWorkhorse( testPosition, expectedMoves );
+    }
+    
     //
     // ============================
     // == Private helper methods ==
@@ -288,7 +303,8 @@ public class MoveGeneratorTest {
             expectedMoves.add(
                 new Move(
                     Square.valueOf( fromSquareString ),
-                    Square.valueOf( toSquareString ) ) );
+                    Square.valueOf( toSquareString ),
+                    position ) );
         }
 
         assertEquals( expectedMoves, actualMoves );

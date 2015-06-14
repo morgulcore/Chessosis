@@ -1,5 +1,6 @@
 package chessosisnbproject.logic;
 
+import chessosisnbproject.data.Move;
 import chessosisnbproject.data.Position;
 import chessosisnbproject.data.Chessman;
 import chessosisnbproject.data.Direction;
@@ -28,22 +29,48 @@ public class MoveGenerator {
      * This is one of the fundamental mechanisms of Chessosis. A lot of
      * effort should and will be invested in testing this method.
      *
-     * @param position the Position object to examine
+     * @param pos the Position object to examine
      * @return a set of zero or more Move objects
      * @throws Exception
      */
-    public static Set<Move> moveGenerator( Position position )
+    public static Set<Move> moveGenerator( Position pos )
         throws Exception {
-        EnumSet<Square> chessmenOfSideToMove;
+        EnumSet<Square> piecesOfSideToMove;
 
-        if ( position.turn() == Color.WHITE ) {
-            chessmenOfSideToMove = SUM.bitboardToSquareSet( position.whiteArmy() );
+        if ( pos.turn() == Color.WHITE ) {
+            piecesOfSideToMove = SUM.bitboardToSquareSet( pos.whiteArmy() );
         } else {
-            chessmenOfSideToMove = SUM.bitboardToSquareSet( position.blackArmy() );
+            piecesOfSideToMove = SUM.bitboardToSquareSet( pos.blackArmy() );
         }
 
+        // Generate the pseudo-legal moves for the given position
+        Set<Move> pseudoLegalMoves
+            = moveGeneratorMainLoop( pos, piecesOfSideToMove );
+
+        // Extract the truly legal moves from the set of pseudo-legal moves
+        Set<Move> legalMoves = pseudoLegalToLegal( pseudoLegalMoves );
+
         // Returns a set of zero or more Move objects
-        return moveGeneratorMainLoop( position, chessmenOfSideToMove );
+        return legalMoves;
+    }
+
+    public static Set<Move> pseudoLegalToLegal( Set<Move> moves )
+        throws Exception {
+        // The placement of both kings on the board
+        for ( Move move : moves ) {
+            long placementOfKingsBB
+                = move.context().whiteKing() | move.context().blackKing();
+            // A king is in check if the condition fails
+            if ( ( move.to().bit() & placementOfKingsBB ) == 0 ) {
+                Position posAfterMove = Game.newPos(
+                    move.context(), move.from().bit(), move.to().bit() );
+                long kingSB = ( posAfterMove.turn() == Color.WHITE )
+                    ? posAfterMove.whiteKing() : posAfterMove.blackKing();
+                Square king = SUM.squareBitToSquare( kingSB );
+            }
+        }
+
+        return moves;
     }
 
     /**
@@ -66,14 +93,66 @@ public class MoveGenerator {
      *
      * @param square
      * @return 
-     * @throws java.lang.Exception
+     * @throws Exception
      */
-    public static EnumSet<Square> rooksSquares( Square square ) throws Exception {
+    public static EnumSet<Square> rooksSquares( Square square )
+        throws Exception {
         // XOR'ing the relevant file and rank is all that is needed to produce
         // the set of rook's squares
         long rooksSquaresBB
             = SUM.fileOfSquare( square ) ^ SUM.rankOfSquare( square );
         return SUM.bitboardToSquareSet( rooksSquaresBB );
+    }
+
+    public static EnumSet<Square> knightsSquares( Square square )
+        throws Exception {
+        EnumSet<Square> squareSet = EnumSet.noneOf( Square.class );
+
+        for ( Direction direction : Direction.cardinalDirections() ) {
+            Square nextSquare = square;
+            for ( int i = 1; i <= 2; i++ ) {
+                nextSquare = SUM.adjacentSquare( nextSquare, direction );
+                // There's no next square in a particular direction
+                if ( nextSquare == null ) {
+                    break;
+                } else if ( i == 2 ) {
+                    switch ( direction ) {
+                        case NORTH:
+                        case SOUTH:
+                            if ( SUM.adjacentSquare(
+                                nextSquare, Direction.EAST ) != null ) {
+                                squareSet.add( SUM.squareBitToSquare(
+                                    nextSquare.bit() << 1 ) );
+                            }
+                            if ( SUM.adjacentSquare(
+                                nextSquare, Direction.WEST ) != null ) {
+                                squareSet.add( SUM.squareBitToSquare(
+                                    nextSquare.bit() >>> 1 ) );
+                            }
+                            break;
+                        case EAST:
+                        case WEST:
+                            if ( SUM.adjacentSquare(
+                                nextSquare, Direction.NORTH ) != null ) {
+                                squareSet.add( SUM.squareBitToSquare(
+                                    nextSquare.bit() << 8 ) );
+                            }
+                            if ( SUM.adjacentSquare(
+                                nextSquare, Direction.SOUTH ) != null ) {
+                                squareSet.add( SUM.squareBitToSquare(
+                                    nextSquare.bit() >>> 8 ) );
+                            }
+                            break;
+                        default:
+                            throw new Exception(
+                                "Default case of switch executed: "
+                                + direction );
+                    }
+                }
+            }
+        } // end for
+
+        return squareSet;
     }
 
     /**
@@ -155,6 +234,20 @@ public class MoveGenerator {
                 }
             }
         }
+        return squareSet;
+    }
+
+    public static EnumSet<Square> accessibleKnightsSquares(
+        Square square, Position pos ) throws Exception {
+        EnumSet<Square> squareSet = knightsSquares( square );
+
+        long friendlyPieces
+            = ( pos.turn() == Color.WHITE )
+                ? pos.whiteArmy() : pos.blackArmy();
+        
+        // Set difference: remove friendly pieces from dest squares
+        squareSet.removeAll( SUM.bitboardToSquareSet( friendlyPieces ) );
+
         return squareSet;
     }
 
@@ -362,15 +455,21 @@ public class MoveGenerator {
                 == Chessman.ROOK ) {
                 destinationSquares = accessibleRooksSquares(
                     chessmansSquare, position );
+            } // Chessman is a knight
+            else if ( SUM.typeOfChessman( chessmansSquare, position )
+                == Chessman.KNIGHT ) {
+                destinationSquares = accessibleKnightsSquares(
+                    chessmansSquare, position );
             }
 
-            moves.addAll( generateMoveSetForChessman( chessmansSquare, destinationSquares ) );
+            moves.addAll( generateMoveSetForChessman(
+                chessmansSquare, destinationSquares, position ) );
 
         } // end for
 
         return moves;
     } // end moveGeneratorMainLoop()
-    
+
     private static EnumSet<Square> accessibleKingsSquares(
         Square kingsSquare, Position position ) throws Exception {
         // The initial assumption: all of the king's squares are accessible
@@ -395,7 +494,7 @@ public class MoveGenerator {
 
         return accessibleKingsSquares;
     } // end accessibleKingsSquares()
-    
+
     private static boolean squareInCheck(
         Square square, Position position ) throws Exception {
         if ( ( overlappingKingsSquares( position ) & square.bit() ) != 0 ) {
@@ -406,7 +505,7 @@ public class MoveGenerator {
 
         return false;
     } // end squareInCheck()
-    
+
     // The rook or queen "checking" the square must be on the same rank
     // or file as the square itself. Note the distinction between
     // checking a square and attacking it -- the square-checking chessman
@@ -441,7 +540,7 @@ public class MoveGenerator {
 
         return false;
     } // end squareInCheckByRooksOrQueens()
-    
+
     // Returns a bitboard representing the overlapping king's squares
     // of the two kings
     private static long overlappingKingsSquares( Position position )
@@ -463,17 +562,18 @@ public class MoveGenerator {
 
         return overlappingSquaresOfTheTwoKingsBB;
     } // end overlappingKingsSquares()
-    
+
     // Generates the set of possible moves for a single chessman
     private static Set<Move> generateMoveSetForChessman(
-        Square chessman, EnumSet<Square> chessmansDestSquares ) {
+        Square chessman, EnumSet<Square> chessmansDestSquares,
+        Position contextPos ) {
         Set<Move> moves = new LinkedHashSet<>();
         if ( chessmansDestSquares.isEmpty() ) {
             return moves;
         }
 
         for ( Square destSquare : chessmansDestSquares ) {
-            moves.add( new Move( chessman, destSquare ) );
+            moves.add( new Move( chessman, destSquare, contextPos ) );
         }
 
         return moves;

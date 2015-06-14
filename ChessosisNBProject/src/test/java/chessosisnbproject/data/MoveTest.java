@@ -1,8 +1,10 @@
-package chessosisnbproject.logic;
+package chessosisnbproject.data;
 
-import chessosisnbproject.data.Square;
+import chessosisnbproject.logic.SUM;
+import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 /**
  * JUnit tests for class Move.
@@ -10,6 +12,42 @@ import static org.junit.Assert.*;
  * @author Henrik Lindberg
  */
 public class MoveTest {
+
+    private Move moveObj;
+
+    @Before
+    public void setUp() {
+        Square fromSquare = Square.valueOf( "E2" ),
+            toSquare = Square.valueOf( "E4" );
+        Position standardPos = new Position();
+        moveObj = new Move( fromSquare, toSquare, standardPos );
+    }
+
+    @After
+    public void tearDown() {
+        moveObj = null;
+    }
+
+    @Test
+    public void sourceSquareOK() {
+        assertEquals( Square.E2, moveObj.from() );
+    }
+
+    @Test
+    public void destSquareOK() {
+        assertEquals( Square.E4, moveObj.to() );
+    }
+
+    @Test
+    public void contextPosOK() {
+        assertEquals( new Position(), moveObj.context() );
+    }
+
+    @Test
+    public void toStringOK() {
+        assertEquals(
+            moveObj.from() + "-" + moveObj.to(), moveObj.toString() );
+    }
 
     /**
      * First test of overridden equals().
@@ -20,7 +58,7 @@ public class MoveTest {
     @Test
     public void equalsSymmetryTest() {
         Move rmo = randomMoveObject();
-        Move rmoCopy = new Move( rmo.from(), rmo.to() );
+        Move rmoCopy = new Move( rmo.from(), rmo.to(), null );
 
         assertTrue( rmo.equals( rmoCopy ) && rmoCopy.equals( rmo ) );
     }
@@ -50,8 +88,8 @@ public class MoveTest {
 
         for ( int i = 1; i <= 1000; i++ ) {
             rmo1 = randomMoveObject();
-            rmo2 = new Move( rmo1.from(), rmo1.to() );
-            rmo3 = new Move( rmo2.from(), rmo2.to() );
+            rmo2 = new Move( rmo1.from(), rmo1.to(), null );
+            rmo3 = new Move( rmo2.from(), rmo2.to(), null );
             if ( rmo1.equals( rmo2 )
                 && rmo2.equals( rmo3 ) && rmo1.equals( rmo3 ) ) {
                 continue;
@@ -98,6 +136,6 @@ public class MoveTest {
             toSquare = SUM.randomSquare();
         } while ( toSquare == fromSquare );
 
-        return new Move( fromSquare, toSquare );
+        return new Move( fromSquare, toSquare, null );
     }
 }
