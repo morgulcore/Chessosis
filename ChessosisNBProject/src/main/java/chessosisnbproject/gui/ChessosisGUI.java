@@ -47,7 +47,7 @@ public class ChessosisGUI extends JFrame {
     protected void play( Game game ) {
         this.game = game;
         chessboard.setGUIRef( this );
-        //chessboard.displayPosition();
+        Game.setDebugMsgRef( this );
         chessboard.squaretaker( Chessboard.Task.DISPLAY_POS );
         sendMessage( "Welcome!\n\n" );
     }

@@ -3,6 +3,7 @@ package chessosisnbproject.logic;
 import chessosisnbproject.data.Position;
 import chessosisnbproject.data.Color;
 import chessosisnbproject.data.CSS;
+import chessosisnbproject.gui.ChessosisGUI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -15,10 +16,19 @@ import java.util.Set;
 public class Game {
 
     private final List<Position> history;
+    private static ChessosisGUI debugMsgRef = null;
 
     public Game( /*Position nonStandardStartPos*/) {
         history = new ArrayList<>();
         history.add( testPos1 );
+    }
+    
+    public static void setDebugMsgRef( ChessosisGUI ref ) {
+        debugMsgRef = ref;
+    }
+    
+    public static ChessosisGUI getDebugMsgRef() {
+        return debugMsgRef;
     }
 
     public Set<Move> getMoves() throws Exception {
@@ -62,10 +72,12 @@ public class Game {
         } // White captures black piece
         else if ( pos.turn() == Color.WHITE
             && ( toSBPieceIndex >= 6 && toSBPieceIndex <= 11 ) ) {
+            Game.debugMsgRef.sendMessage( "DB: White captured black\n" );
             moveIsCapture = true;
         } // Black captures white piece
         else if ( pos.turn() == Color.BLACK
             && ( toSBPieceIndex >= 0 && toSBPieceIndex <= 5 ) ) {
+            Game.debugMsgRef.sendMessage( "DB: Black captured white\n" );
             moveIsCapture = true;
         } // Invalid index
         else if ( toSBPieceIndex >= 12 ) {
@@ -126,7 +138,9 @@ public class Game {
      }*/
     public static final Position testPos1
         = new Position(
-            0, 0, 0, CSS.D3, 0, CSS.F3,
-            0, 0, 0, CSS.D6, 0, CSS.F6,
-            Color.WHITE );
+            0, 0, 0, CSS.A1 | CSS.H1, 0, CSS.E1,
+            0, 0, 0, CSS.A8 | CSS.H8, 0, CSS.E8,
+            Color.WHITE,
+            false, false, false, false,
+            null, 0, 1 );
 }

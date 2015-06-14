@@ -27,12 +27,12 @@ public class Chessboard extends JPanel {
         squaretaker( Task.INIT_SQUARES );
     }
 
-    public void setGUIRef( ChessosisGUI ref ) {
+    protected void setGUIRef( ChessosisGUI ref ) {
         this.chessosisGUIRef = ref;
     }
 
     // Get (Chessosis) GUI reference
-    public ChessosisGUI getGUIRef() {
+    protected ChessosisGUI getGUIRef() {
         return this.chessosisGUIRef;
     }
 

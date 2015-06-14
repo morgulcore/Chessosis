@@ -168,7 +168,8 @@ Oh, one more thing -- I finally managed to come up with a class diagram, luokkak
 
 In extreme hurry I tried coming up with a sequence diagram. I'll work on it some more in the near future.
 
-## 2015-06-12 | Hours worked: -
+## 2015-06-14 | Hours worked: 12
 
-I have completed my work on the following classes (including testing and javadoc):
---Position
+I have been working on a daily basis on Chessosis during the last three days. It seems I haven't had the energy left in me to describe the details of my work in this log. I'm suffering from "code fatigue". However, things should get easier from now on as yesterday I got the pieces moving on the board. When I click on a piece, the board lights up with the squares it can move to. That makes it quick and effortless to tell whether the legal moves generation process is really doing its job.
+
+A couple of more days to the demo event, demotilaisuus. Today is also the deadline for the second code review. I should come up with sequence diagrams, javadoc, a user manual, more JUnit tests and good will. To work is every free man's right.
