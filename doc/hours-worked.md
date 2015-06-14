@@ -173,3 +173,19 @@ In extreme hurry I tried coming up with a sequence diagram. I'll work on it some
 I have been working on a daily basis on Chessosis during the last three days. It seems I haven't had the energy left in me to describe the details of my work in this log. I'm suffering from "code fatigue". However, things should get easier from now on as yesterday I got the pieces moving on the board. When I click on a piece, the board lights up with the squares it can move to. That makes it quick and effortless to tell whether the legal moves generation process is really doing its job.
 
 A couple of more days to the demo event, demotilaisuus. Today is also the deadline for the second code review. I should come up with sequence diagrams, javadoc, a user manual, more JUnit tests and good will. To work is every free man's right.
+
+### Bug hunting
+
+Here's an example of how my new GUI makes it easy to spot bugs in the move generation process:
+
+http://s18.postimg.org/awoebicop/screenshot_01.png
+
+The black king is in check by the white rook in H8. The yellow and orange squares around the king mark the ones where the move generator thinks it can legally move to. The move generator has rightly determined that the king cannot move to F8 because it would still be in check there. However, it believes the king could move to D8. In reality the king can't move to either square on the 8th rank.
+
+Here's another problem is Chessosis's legal moves generation process that's easy to spot when one has the luxury of a working GUI:
+
+http://s1.postimg.org/57umsvhdr/screenshot_02.png
+
+It's White's turn to move, and the supposedly legal moves for the rook on E2 are lit up. The move generator thinks the white rook could move off the e-file (move horizontally, that is) even though that would place the king behind it in check. The reality is that the rook on E2 has legal moves only on the e-file.
+
+I suppose the best remedy for these bugs would be to divide the move generation process into two stages. First find the seemingly legal (pseudolegal) moves for each piece and then create the position each of the moves would result in. If the king can be captured in a generated position, the move is illegal.
