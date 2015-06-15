@@ -155,6 +155,74 @@ public class MoveGenerator {
         return squareSet;
     }
 
+    public static EnumSet<Square> pawnsSquares( Square square, Color color )
+        throws Exception {
+        EnumSet<Square> squareSet;
+
+        if ( color == Color.WHITE ) {
+            squareSet = whitePawnsSquares( square );
+        } // Color.BLACK or null
+        else {
+            squareSet = blackPawnsSquares( square );
+        }
+
+        return squareSet;
+    }
+
+    private static EnumSet<Square> whitePawnsSquares( Square square )
+        throws Exception {
+        // A white pawn on the 1st rank is nonsense. If that is the case
+        // anyway, return an empty set.
+        if ( ( square.bit() & CSS.RANK_1 ) != 0 ) {
+            return EnumSet.noneOf( Square.class );
+        }
+
+        EnumSet<Square> squareSet = EnumSet.noneOf( Square.class );
+        if ( ( square.bit() & CSS.RANK_2 ) != 0 ) {
+            long theSquareTwoRanksFwdBB = ( square.bit() << 16 );
+            squareSet.add( SUM.squareBitToSquare( theSquareTwoRanksFwdBB ) );
+        }
+
+        Direction[] dirs
+            = { Direction.NORTHEAST, Direction.NORTH, Direction.NORTHWEST };
+
+        for ( Direction dir : dirs ) {
+            Square sqInDir = SUM.adjacentSquare( square, dir );
+            if ( sqInDir != null ) {
+                squareSet.add( sqInDir );
+            }
+        }
+
+        return squareSet;
+    }
+
+    private static EnumSet<Square> blackPawnsSquares( Square square )
+        throws Exception {
+        // A black pawn on the 8th rank is nonsense. If that is the case
+        // anyway, return an empty set.
+        if ( ( square.bit() & CSS.RANK_8 ) != 0 ) {
+            return EnumSet.noneOf( Square.class );
+        }
+
+        EnumSet<Square> squareSet = EnumSet.noneOf( Square.class );
+        if ( ( square.bit() & CSS.RANK_7 ) != 0 ) {
+            long theSquareTwoRanksFwdBB = ( square.bit() >>> 16 );
+            squareSet.add( SUM.squareBitToSquare( theSquareTwoRanksFwdBB ) );
+        }
+
+        Direction[] dirs
+            = { Direction.SOUTHEAST, Direction.SOUTH, Direction.SOUTHWEST };
+
+        for ( Direction dir : dirs ) {
+            Square sqInDir = SUM.adjacentSquare( square, dir );
+            if ( sqInDir != null ) {
+                squareSet.add( sqInDir );
+            }
+        }
+
+        return squareSet;
+    }
+
     /**
      * Returns the surrounding squares of its Square parameter. Surrounding
      * squares are the squares to which a king can move from a particular
@@ -244,11 +312,20 @@ public class MoveGenerator {
         long friendlyPieces
             = ( pos.turn() == Color.WHITE )
                 ? pos.whiteArmy() : pos.blackArmy();
-        
+
         // Set difference: remove friendly pieces from dest squares
         squareSet.removeAll( SUM.bitboardToSquareSet( friendlyPieces ) );
 
         return squareSet;
+    }
+
+    public static EnumSet<Square> accessiblePawnsSquares(
+        Square square, Position pos ) throws Exception {
+        EnumSet<Square> accessiblePawnsSquares
+            = hostilePawnSquares( square, pos );
+        accessiblePawnsSquares.addAll( peacefulPawnSquares( square, pos ) );
+
+        return accessiblePawnsSquares;
     }
 
     //
@@ -257,6 +334,62 @@ public class MoveGenerator {
     // =====================================
     //
     //
+    private static EnumSet<Square> peacefulPawnSquares(
+        Square sq, Position pos ) throws Exception {
+        EnumSet<Square> peacefulPawnSquares = EnumSet.noneOf( Square.class );
+        Direction[] dirs = { Direction.NORTH, Direction.SOUTH };
+
+        for ( Direction dir : dirs ) {
+            Square sqFwd = SUM.adjacentSquare( sq, dir );
+            if ( sqFwd == null || ( pos.bothArmies() & sqFwd.bit() ) != 0 ) {
+            } else if ( pos.turn() == Color.WHITE
+                && dir == Direction.NORTH ) {
+                peacefulPawnSquares.add( sqFwd );
+                sqFwd = SUM.adjacentSquare( sqFwd, dir );
+                if( (sq.bit() & CSS.RANK_2) != 0
+                    && (sqFwd.bit() & pos.bothArmies() ) == 0) {
+                    peacefulPawnSquares.add( sqFwd );
+                }
+            } else if ( pos.turn() == Color.BLACK
+                && dir == Direction.SOUTH ) {
+                peacefulPawnSquares.add( sqFwd );
+                sqFwd = SUM.adjacentSquare( sqFwd, dir );
+                if( ( sq.bit() & CSS.RANK_7 ) != 0
+                    && (sqFwd.bit() & pos.bothArmies() ) == 0 ) {
+                    peacefulPawnSquares.add( sqFwd );
+                }
+            }
+        }
+
+        return peacefulPawnSquares;
+    }
+
+    private static EnumSet<Square> hostilePawnSquares(
+        Square sq, Position pos ) throws Exception {
+        EnumSet<Square> hostilePawnSquares = EnumSet.noneOf( Square.class );
+
+        Direction[] dirs = { Direction.NORTHEAST, Direction.SOUTHEAST,
+            Direction.SOUTHWEST, Direction.NORTHWEST };
+
+        for ( Direction dir : dirs ) {
+            Square hostileSq = SUM.adjacentSquare( sq, dir );
+            if ( hostileSq == null ) {
+            } else if ( pos.turn() == Color.WHITE
+                && ( hostileSq.bit() & pos.blackArmy() ) != 0
+                && ( dir == Direction.NORTHEAST
+                || dir == Direction.NORTHWEST ) ) {
+                hostilePawnSquares.add( hostileSq );
+            } else if ( pos.turn() == Color.BLACK
+                && ( hostileSq.bit() & pos.whiteArmy() ) != 0
+                && ( dir == Direction.SOUTHEAST
+                || dir == Direction.SOUTHWEST ) ) {
+                hostilePawnSquares.add( hostileSq );
+            }
+        }
+
+        return hostilePawnSquares;
+    }
+
     private static EnumSet<Square> surroundingSquaresOfCorners( Square square )
         throws Exception {
         EnumSet<Square> ss; // surrounding squares
@@ -459,6 +592,10 @@ public class MoveGenerator {
             else if ( SUM.typeOfChessman( chessmansSquare, position )
                 == Chessman.KNIGHT ) {
                 destinationSquares = accessibleKnightsSquares(
+                    chessmansSquare, position );
+            } else if ( SUM.typeOfChessman( chessmansSquare, position )
+                == Chessman.PAWN ) {
+                destinationSquares = accessiblePawnsSquares(
                     chessmansSquare, position );
             }
 

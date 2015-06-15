@@ -135,10 +135,11 @@ public class Game {
     }
 
     public static final Position testPos1
-        = new Position(
-            0, 0, CSS.B1 | CSS.G1, CSS.A1 | CSS.H1, 0, CSS.E1,
-            0, 0, CSS.B8 | CSS.G8, CSS.A8 | CSS.H8, 0, CSS.E8,
+        = new Position();
+        /*= new Position(
+            0xff00L, 0, 0, 0, 0, CSS.E1,
+            0xff000000000000L, 0, 0, 0, 0, CSS.E8,
             Color.WHITE,
             false, false, false, false,
-            null, 0, 1 );
+            null, 0, 1 );*/
 }
