@@ -2,8 +2,7 @@ package chessosisnbproject.logic;
 
 import chessosisnbproject.data.Move;
 import chessosisnbproject.data.Position;
-import chessosisnbproject.data.Color;
-import chessosisnbproject.data.CSS;
+import chessosisnbproject.data.Colour;
 import chessosisnbproject.gui.ChessosisGUI;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +18,9 @@ public class Game {
     private final List<Position> history;
     private static ChessosisGUI debugMsgRef = null;
 
-    public Game( /*Position nonStandardStartPos*/) {
+    public Game() {
         history = new ArrayList<>();
-        history.add( testPos1 );
+        history.add( new Position() ); // Standard starting position
     }
 
     public static void setDebugMsgRef( ChessosisGUI ref ) {
@@ -71,12 +70,12 @@ public class Game {
         // Non-capture move
         if ( toSBPieceIndex == -1 ) {
         } // White captures black piece
-        else if ( pos.turn() == Color.WHITE
+        else if ( pos.turn() == Colour.WHITE
             && ( toSBPieceIndex >= 6 && toSBPieceIndex <= 11 ) ) {
             //Game.debugMsgRef.sendMessage( "DB: White captured black\n" );
             moveIsCapture = true;
         } // Black captures white piece
-        else if ( pos.turn() == Color.BLACK
+        else if ( pos.turn() == Colour.BLACK
             && ( toSBPieceIndex >= 0 && toSBPieceIndex <= 5 ) ) {
             //Game.debugMsgRef.sendMessage( "DB: Black captured white\n" );
             moveIsCapture = true;
@@ -109,7 +108,7 @@ public class Game {
             chessmen[ Position.BLACK_ROOKS ],
             chessmen[ Position.BLACK_QUEEN ],
             chessmen[ Position.BLACK_KING ],
-            ( pos.turn() == Color.WHITE ) ? Color.BLACK : Color.WHITE,
+            ( pos.turn() == Colour.WHITE ) ? Colour.BLACK : Colour.WHITE,
             false, false, false, false,
             null,
             moveIsCapture ? 0 : ( 1 + pos.halfmoveClock() ),
@@ -133,13 +132,4 @@ public class Game {
 
         return pieceIndex;
     }
-
-    public static final Position testPos1
-        = new Position();
-        /*= new Position(
-            0xff00L, 0, 0, 0, 0, CSS.E1,
-            0xff000000000000L, 0, 0, 0, 0, CSS.E8,
-            Color.WHITE,
-            false, false, false, false,
-            null, 0, 1 );*/
 }

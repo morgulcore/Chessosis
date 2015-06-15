@@ -1,9 +1,9 @@
 package chessosisnbproject.logic;
 
 import chessosisnbproject.data.Position;
-import chessosisnbproject.data.Chessman;
+import chessosisnbproject.data.PieceType;
 import chessosisnbproject.data.Direction;
-import chessosisnbproject.data.Color;
+import chessosisnbproject.data.Colour;
 import chessosisnbproject.data.CSS;
 import chessosisnbproject.data.Square;
 import java.util.EnumSet;
@@ -32,7 +32,7 @@ public class SUMTest {
         long bitPattern = 0;
 
         // Testing with a null bitboard to start with
-        assertEquals( 0, SUM.bitboardToSquareSet( bitPattern ).size() );
+        assertEquals( 0, SUM.bitboardToSqSet( bitPattern ).size() );
 
         // Indicates the number of set bits
         int bitCounter = 0;
@@ -41,7 +41,7 @@ public class SUMTest {
             bitPattern |= square.bit();
             bitCounter++;
             assertEquals( bitCounter,
-                SUM.bitboardToSquareSet( bitPattern ).size() );
+                SUM.bitboardToSqSet( bitPattern ).size() );
         }
     }
 
@@ -70,7 +70,7 @@ public class SUMTest {
             // Note that in this test bitboardToSquareSet() does not get called
             // with bitPattern equal to zero. There seems to be no point in
             // doing that.
-            EnumSet<Square> squareSet = SUM.bitboardToSquareSet( bitPattern );
+            EnumSet<Square> squareSet = SUM.bitboardToSqSet( bitPattern );
 
             // Number of iterations: between 1 and 64
             for ( Square squareOfSet : squareSet ) {
@@ -132,7 +132,7 @@ public class SUMTest {
         long randomBitboard = random.nextLong();
 
         return randomBitboard
-            == SUM.squareSetToBitboard( SUM.bitboardToSquareSet( randomBitboard ) );
+            == SUM.squareSetToBitboard( SUM.bitboardToSqSet( randomBitboard ) );
     }
 
     // Part two of the inverse function test: g(f(x)) == x
@@ -140,7 +140,7 @@ public class SUMTest {
 
         EnumSet<Square> randomSquareSet = generateRandomSquareSet();
         EnumSet<Square> squareSetReturned
-            = SUM.bitboardToSquareSet( SUM.squareSetToBitboard( randomSquareSet ) );
+            = SUM.bitboardToSqSet( SUM.squareSetToBitboard( randomSquareSet ) );
         return randomSquareSet.equals( squareSetReturned );
     }
 
@@ -399,7 +399,7 @@ public class SUMTest {
             = new Position(
                 CSS.A2, CSS.B2, CSS.C2, CSS.D2, CSS.E2, CSS.F2,
                 CSS.A7, CSS.B7, CSS.C7, CSS.D7, CSS.E7, CSS.F7,
-                Color.WHITE );
+                Colour.WHITE );
 
         // Squares to loop over; contains 12 squares
         Square[] squares = { Square.A2, Square.A7, Square.B2, Square.B7,
@@ -408,7 +408,7 @@ public class SUMTest {
 
         // Contains the six Chessman constants. They should be in the
         // following order: PAWN, BISHOP, KNIGHT, ROOK, QUEEN, KING
-        Chessman[] theSixChessmenTypes = Chessman.availableChessmanTypes();
+        PieceType[] theSixChessmenTypes = PieceType.availableChessmanTypes();
 
         // During the loop, the following index has all the values from
         // 0 to 11, inclusive
@@ -418,7 +418,7 @@ public class SUMTest {
             // inclusive, each one repeated twice. This is due to integer
             // division.
             assertEquals( theSixChessmenTypes[ chessmenTypesIndex / 2 ],
-                SUM.typeOfChessman( square, testPosition ) );
+                SUM.pieceType( square, testPosition ) );
             chessmenTypesIndex++;
         }
     }
@@ -438,16 +438,16 @@ public class SUMTest {
             = new Position(
                 CSS.A2, CSS.B2, CSS.C2, CSS.D2, CSS.E2, CSS.F2,
                 CSS.A7, CSS.B7, CSS.C7, CSS.D7, CSS.E7, CSS.F7,
-                Color.WHITE );
+                Colour.WHITE );
 
         // Getting an empty squares BB by flipping zeroes to ones and
         // vica versa
         long emptySquaresBB = ~testPosition.bothArmies();
         EnumSet<Square> emptySquares
-            = SUM.bitboardToSquareSet( emptySquaresBB );
+            = SUM.bitboardToSqSet( emptySquaresBB );
         // Looping over the 52 empty squares
         for ( Square square : emptySquares ) {
-            assertEquals( null, SUM.typeOfChessman(
+            assertEquals( null, SUM.pieceType(
                 square, testPosition ) );
         }
     }

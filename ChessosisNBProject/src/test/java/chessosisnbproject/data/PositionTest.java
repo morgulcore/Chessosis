@@ -71,7 +71,7 @@ public class PositionTest {
 
     @Test
     public void activeColorOK() {
-        assertEquals( Color.WHITE, standard.turn() );
+        assertEquals( Colour.WHITE, standard.turn() );
     }
 
     @Test
@@ -172,14 +172,14 @@ public class PositionTest {
     }
 
     private static Position randomPositionObject(
-        boolean makeCopy, int fullmove, Color turn ) {
+        boolean makeCopy, int fullmove, Colour turn ) {
         Random rand = new Random();
 
         int valueForFullmoveNumber
             = makeCopy ? fullmove : ( 1 + rand.nextInt( 1000 ) );
-        Color valueForTurn
+        Colour valueForTurn
             = makeCopy ? turn
-                : ( rand.nextBoolean() ? Color.WHITE : Color.BLACK );
+                : ( rand.nextBoolean() ? Colour.WHITE : Colour.BLACK );
 
         Position randPos = new Position(
             rand.nextLong(),

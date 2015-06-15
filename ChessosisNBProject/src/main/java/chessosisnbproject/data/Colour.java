@@ -6,7 +6,7 @@ package chessosisnbproject.data;
  *
  * @author Henrik Lindberg
  */
-public enum Color {
+public enum Colour {
 
     BLACK, WHITE
 }

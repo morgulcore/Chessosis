@@ -75,9 +75,9 @@ public class Chessboard extends JPanel {
 
     // Returns true if the player clicked on a friendly square (chessman)
     private boolean friendlySquareActivated( Position pos, long sqBit ) {
-        return ( pos.turn() == chessosisnbproject.data.Color.WHITE
+        return ( pos.turn() == chessosisnbproject.data.Colour.WHITE
             && ( ( pos.whiteArmy() & sqBit ) != 0 ) )
-            || ( pos.turn() == chessosisnbproject.data.Color.BLACK
+            || ( pos.turn() == chessosisnbproject.data.Colour.BLACK
             && ( pos.blackArmy() & sqBit ) != 0 );
     }
 

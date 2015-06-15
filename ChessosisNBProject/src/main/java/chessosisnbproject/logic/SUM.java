@@ -1,7 +1,7 @@
 package chessosisnbproject.logic;
 
 import chessosisnbproject.data.Position;
-import chessosisnbproject.data.Chessman;
+import chessosisnbproject.data.PieceType;
 import chessosisnbproject.data.Direction;
 import chessosisnbproject.data.CSS;
 import chessosisnbproject.data.Square;
@@ -32,7 +32,7 @@ public class SUM {
      * @return a Square EnumSet
      * @throws Exception might be thrown in squareBitToSquare()
      */
-    public static EnumSet<Square> bitboardToSquareSet( long bitboard )
+    public static EnumSet<Square> bitboardToSqSet( long bitboard )
         throws Exception {
         // Extract the individual square bits from the bitboard
         Set<Long> setOfSquareBits
@@ -318,32 +318,32 @@ public class SUM {
      * @param position the context
      * @return the type of the chessman on the square
      */
-    public static Chessman typeOfChessman(
+    public static PieceType pieceType(
         Square square, Position position ) {
         // Pawns
         if ( ( square.bit() & position.whitePawns() ) != 0
             || ( square.bit() & position.blackPawns() ) != 0 ) {
-            return Chessman.PAWN;
+            return PieceType.PAWN;
         } // Bishops
         else if ( ( square.bit() & position.whiteBishops() ) != 0
             || ( square.bit() & position.blackBishops() ) != 0 ) {
-            return Chessman.BISHOP;
+            return PieceType.BISHOP;
         } // Knights
         else if ( ( square.bit() & position.whiteKnights() ) != 0
             || ( square.bit() & position.blackKnights() ) != 0 ) {
-            return Chessman.KNIGHT;
+            return PieceType.KNIGHT;
         } // Rooks
         else if ( ( square.bit() & position.whiteRooks() ) != 0
             || ( square.bit() & position.blackRooks() ) != 0 ) {
-            return Chessman.ROOK;
+            return PieceType.ROOK;
         } // Queens
         else if ( ( square.bit() & position.whiteQueens() ) != 0
             || ( square.bit() & position.blackQueens() ) != 0 ) {
-            return Chessman.QUEEN;
+            return PieceType.QUEEN;
         } // Kings
         else if ( ( square.bit() & position.whiteKing() ) != 0
             || ( square.bit() & position.blackKing() ) != 0 ) {
-            return Chessman.KING;
+            return PieceType.KING;
         }
         return null;
     }

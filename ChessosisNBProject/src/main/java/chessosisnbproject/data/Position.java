@@ -32,7 +32,7 @@ public class Position {
         blackRookBB, blackQueenBB, blackKingBB;
 
     // Indicates who's turn it is to move
-    private final Color turn;
+    private final Colour turn;
 
     // Castling rights
     private final boolean whiteCanCastleKingside, whiteCanCastleQueenside,
@@ -87,7 +87,7 @@ public class Position {
         long whiteRookBB, long whiteQueenBB, long whiteKingBB,
         long blackPawnBB, long blackBishopBB, long blackKnightBB,
         long blackRookBB, long blackQueenBB, long blackKingBB,
-        Color turn,
+        Colour turn,
         boolean whiteCanCastleKingside, boolean whiteCanCastleQueenside,
         boolean blackCanCastleKingside, boolean blackCanCastleQueenside,
         Square enPassantTargetSquare,
@@ -141,7 +141,7 @@ public class Position {
             CSS.D8,
             CSS.E8,
             // The rest of the position information
-            Color.WHITE, true, true, true, true, null, 0, 1
+            Colour.WHITE, true, true, true, true, null, 0, 1
         );
     }
 
@@ -170,7 +170,7 @@ public class Position {
         long whiteRookBB, long whiteQueenBB, long whiteKingBB,
         long blackPawnBB, long blackBishopBB, long blackKnightBB,
         long blackRookBB, long blackQueenBB, long blackKingBB,
-        Color turn ) {
+        Colour turn ) {
         // The actual workhorse is the constructor with the complete
         // parameter list. No point in repeating code.
         this(
@@ -239,7 +239,7 @@ public class Position {
      *
      * @return a Color constant, either WHITE or BLACK
      */
-    public Color turn() {
+    public Colour turn() {
         return this.turn;
     }
 

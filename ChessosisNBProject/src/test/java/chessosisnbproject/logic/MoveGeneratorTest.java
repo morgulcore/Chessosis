@@ -2,7 +2,7 @@ package chessosisnbproject.logic;
 
 import chessosisnbproject.data.Move;
 import chessosisnbproject.data.Position;
-import chessosisnbproject.data.Color;
+import chessosisnbproject.data.Colour;
 import chessosisnbproject.data.CSS;
 import chessosisnbproject.data.Square;
 import java.util.EnumSet;
@@ -157,7 +157,8 @@ public class MoveGeneratorTest {
         Position testPosition
             = new Position(
                 // Only the kings left on board; Black's turn
-                0, 0, 0, 0, 0, CSS.E4, 0, 0, 0, 0, 0, CSS.E6, Color.BLACK );
+                // Only the kings left on board; Black's turn
+                0, 0, 0, 0, 0, CSS.E4, 0, 0, 0, 0, 0, CSS.E6, Colour.BLACK );
 
         String[] expectedMoves = {
             "E6-D7", "E6-E7", "E6-F7", "E6-D6", "E6-F6" };
@@ -175,7 +176,8 @@ public class MoveGeneratorTest {
         Position testPosition
             = new Position(
                 // White king on D1, black king on D3, White's turn to move
-                0, 0, 0, 0, 0, CSS.D1, 0, 0, 0, 0, 0, CSS.D3, Color.WHITE );
+                // White king on D1, black king on D3, White's turn to move
+                0, 0, 0, 0, 0, CSS.D1, 0, 0, 0, 0, 0, CSS.D3, Colour.WHITE );
 
         String[] expectedMoves = {
             "D1-C1", "D1-E1" };
@@ -193,7 +195,8 @@ public class MoveGeneratorTest {
         Position testPosition
             = new Position(
                 // White king on G2, black king on B7, White's turn to move
-                0, 0, 0, 0, 0, CSS.G2, 0, 0, 0, 0, 0, CSS.B7, Color.WHITE );
+                // White king on G2, black king on B7, White's turn to move
+                0, 0, 0, 0, 0, CSS.G2, 0, 0, 0, 0, 0, CSS.B7, Colour.WHITE );
 
         String[] expectedMoves = {
             "G2-F3", "G2-G3", "G2-H3", "G2-F2",
@@ -211,7 +214,7 @@ public class MoveGeneratorTest {
     public void manualMoveGeneratorMethodTest004() throws Exception {
         Position testPosition
             = new Position(
-                0, 0, 0, CSS.D3, 0, CSS.F3, 0, 0, 0, CSS.D6, 0, CSS.F6, Color.WHITE );
+                0, 0, 0, CSS.D3, 0, CSS.F3, 0, 0, 0, CSS.D6, 0, CSS.F6, Colour.WHITE );
 
         String[] expectedMoves = {
             // White king's moves
@@ -234,7 +237,7 @@ public class MoveGeneratorTest {
     public void manualMoveGeneratorMethodTest005() throws Exception {
         Position testPosition
             = new Position(
-                0, 0, 0, CSS.H7, 0, CSS.D8, 0, 0, 0, 0, 0, CSS.B8, Color.BLACK );
+                0, 0, 0, CSS.H7, 0, CSS.D8, 0, 0, 0, 0, 0, CSS.B8, Colour.BLACK );
 
         String[] expectedMoves = { "B8-A8" }; // Black's only move
 
@@ -252,9 +255,11 @@ public class MoveGeneratorTest {
             = new Position(
                 // 0x800000000000020L: bitboard with square bits
                 // CSS.F1 and CSS.D8 set
+                // 0x800000000000020L: bitboard with square bits
+                // CSS.F1 and CSS.D8 set
                 0, 0, 0, 0, 0, CSS.E4,
                 0, 0, 0, 0x800000000000020L, CSS.H5, CSS.A5,
-                Color.WHITE );
+                Colour.WHITE );
 
         String[] expectedMoves = { "E4-E3" }; // White's only move
 
@@ -268,7 +273,7 @@ public class MoveGeneratorTest {
             = new Position(
                 0, 0, 0, CSS.H8, 0, CSS.B6,
                 0, 0, 0, 0, 0, CSS.B8,
-                Color.BLACK );
+                Colour.BLACK );
 
         String[] expectedMoves = {}; // White's only move
 
