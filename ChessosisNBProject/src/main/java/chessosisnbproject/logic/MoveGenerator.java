@@ -140,77 +140,9 @@ public class MoveGenerator {
         return pawnDestSquares;
     }
 
-    private static EnumSet<Square> passivePawnDestSqs( // sqs, squares
-        Square sq, Position pos ) throws Exception {
-        EnumSet<Square> peacefulPawnSquares = EnumSet.noneOf( Square.class );
-        Direction[] dirs = { Direction.NORTH, Direction.SOUTH };
-
-        for ( Direction dir : dirs ) {
-            Square sqFwd = SUM.adjacentSquare( sq, dir );
-            if ( sqFwd == null || ( pos.bothArmies() & sqFwd.bit() ) != 0 ) {
-            } else if ( pos.turn() == Colour.WHITE
-                && dir == Direction.NORTH ) {
-                peacefulPawnSquares.add( sqFwd );
-                sqFwd = SUM.adjacentSquare( sqFwd, dir );
-                if ( ( sq.bit() & CSS.RANK_2 ) != 0
-                    && ( sqFwd.bit() & pos.bothArmies() ) == 0 ) {
-                    peacefulPawnSquares.add( sqFwd );
-                }
-            } else if ( pos.turn() == Colour.BLACK
-                && dir == Direction.SOUTH ) {
-                peacefulPawnSquares.add( sqFwd );
-                sqFwd = SUM.adjacentSquare( sqFwd, dir );
-                if ( ( sq.bit() & CSS.RANK_7 ) != 0
-                    && ( sqFwd.bit() & pos.bothArmies() ) == 0 ) {
-                    peacefulPawnSquares.add( sqFwd );
-                }
-            }
-        }
-
-        return peacefulPawnSquares;
-    }
-
-    private static EnumSet<Square> aggressivePawnDestSqs( // sqs, squares
-        Square sq, Position pos ) throws Exception {
-        EnumSet<Square> hostilePawnSquares = EnumSet.noneOf( Square.class );
-
-        Direction[] dirs = { Direction.NORTHEAST, Direction.SOUTHEAST,
-            Direction.SOUTHWEST, Direction.NORTHWEST };
-
-        for ( Direction dir : dirs ) {
-            Square hostileSq = SUM.adjacentSquare( sq, dir );
-            if ( hostileSq == null ) {
-            } else if ( pos.turn() == Colour.WHITE
-                && ( hostileSq.bit() & pos.blackArmy() ) != 0
-                && ( dir == Direction.NORTHEAST
-                || dir == Direction.NORTHWEST ) ) {
-                hostilePawnSquares.add( hostileSq );
-            } else if ( pos.turn() == Colour.BLACK
-                && ( hostileSq.bit() & pos.whiteArmy() ) != 0
-                && ( dir == Direction.SOUTHEAST
-                || dir == Direction.SOUTHWEST ) ) {
-                hostilePawnSquares.add( hostileSq );
-            }
-        }
-
-        return hostilePawnSquares;
-    }
-
-    /*public static EnumSet<Square> pawnsSquares( Square square, Colour color )
-     throws Exception {
-     EnumSet<Square> squareSet;
-
-     if ( color == Colour.WHITE ) {
-     squareSet = whitePawnsSquares( square );
-     } // Color.BLACK or null
-     else {
-     squareSet = blackPawnsSquares( square );
-     }
-
-     return squareSet;
-     }*/
     //
     // (END: Pseudo-legal move generators)
+    //
     //
     /**
      * An alias for surroundingSquares(), added for the sake of consistency.
@@ -294,61 +226,6 @@ public class MoveGenerator {
         return squareSet;
     }
 
-    /*
-     private static EnumSet<Square> whitePawnsSquares( Square square )
-     throws Exception {
-     // A white pawn on the 1st rank is nonsense. If that is the case
-     // anyway, return an empty set.
-     if ( ( square.bit() & CSS.RANK_1 ) != 0 ) {
-     return EnumSet.noneOf( Square.class );
-     }
-
-     EnumSet<Square> squareSet = EnumSet.noneOf( Square.class );
-     if ( ( square.bit() & CSS.RANK_2 ) != 0 ) {
-     long theSquareTwoRanksFwdBB = ( square.bit() << 16 );
-     squareSet.add( SUM.squareBitToSquare( theSquareTwoRanksFwdBB ) );
-     }
-
-     Direction[] dirs
-     = { Direction.NORTHEAST, Direction.NORTH, Direction.NORTHWEST };
-
-     for ( Direction dir : dirs ) {
-     Square sqInDir = SUM.adjacentSquare( square, dir );
-     if ( sqInDir != null ) {
-     squareSet.add( sqInDir );
-     }
-     }
-
-     return squareSet;
-     }*/
-
-    /*
-     private static EnumSet<Square> blackPawnsSquares( Square square )
-     throws Exception {
-     // A black pawn on the 8th rank is nonsense. If that is the case
-     // anyway, return an empty set.
-     if ( ( square.bit() & CSS.RANK_8 ) != 0 ) {
-     return EnumSet.noneOf( Square.class );
-     }
-
-     EnumSet<Square> squareSet = EnumSet.noneOf( Square.class );
-     if ( ( square.bit() & CSS.RANK_7 ) != 0 ) {
-     long theSquareTwoRanksFwdBB = ( square.bit() >>> 16 );
-     squareSet.add( SUM.squareBitToSquare( theSquareTwoRanksFwdBB ) );
-     }
-
-     Direction[] dirs
-     = { Direction.SOUTHEAST, Direction.SOUTH, Direction.SOUTHWEST };
-
-     for ( Direction dir : dirs ) {
-     Square sqInDir = SUM.adjacentSquare( square, dir );
-     if ( sqInDir != null ) {
-     squareSet.add( sqInDir );
-     }
-     }
-
-     return squareSet;
-     }*/
     /**
      * Returns the surrounding squares of its Square parameter. Surrounding
      * squares are the squares to which a king can move from a particular
@@ -446,11 +323,87 @@ public class MoveGenerator {
     }
 
     //
-    // =====================================
-    // == Private (static) helper methods ==
-    // =====================================
+    // =============================
+    // == Private utility methods ==
+    // =============================
     //
     //
+    // Finds the passive pawn destination squares. These are the squares
+    // a pawn can move to on the same file. As they involve no capture,
+    // they are passive (non-aggressive) in nature. I couldn't figure out
+    // how to divide this method into smaller parts.
+    private static EnumSet<Square> passivePawnDestSqs( // destination squares
+        Square sq, Position pos ) throws Exception {
+        EnumSet<Square> passiveSqs = EnumSet.noneOf( Square.class );
+        Direction dir = ( pos.turn() == Colour.WHITE )
+            ? Direction.NORTH : Direction.SOUTH;
+
+        Square sqFwd = SUM.adjacentSquare( sq, dir ); // (one) square forward
+        // Either there's no road ahead (1st or 8th rank) or it is blocked
+        if ( sqFwd == null || ( pos.bothArmies() & sqFwd.bit() ) != 0 ) {
+            // Do nothing
+        } else if ( dir == Direction.NORTH ) { // White's turn
+            passiveSqs.add( sqFwd );
+            sqFwd = SUM.adjacentSquare( sqFwd, dir ); // Another step forward
+            if ( ( sq.bit() & CSS.RANK_2 ) != 0 // Pawn on 2nd rank
+                // No obstacle two squares ahead
+                && ( sqFwd.bit() & pos.bothArmies() ) == 0 ) {
+                passiveSqs.add( sqFwd ); // Two-rank pawn move, e.g., E2-E4
+            }
+        } else if ( dir == Direction.SOUTH ) { // Black's turn
+            passiveSqs.add( sqFwd );
+            sqFwd = SUM.adjacentSquare( sqFwd, dir ); // See previous else if
+            if ( ( sq.bit() & CSS.RANK_7 ) != 0
+                && ( sqFwd.bit() & pos.bothArmies() ) == 0 ) {
+                passiveSqs.add( sqFwd );
+            }
+        }
+
+        return passiveSqs;
+    }
+
+    // Finds the aggressive pawn destination squares, i.e., the ones that
+    // involve a capture by the pawn.
+    private static EnumSet<Square> aggressivePawnDestSqs( // destination squares
+        Square sq, Position pos ) throws Exception {
+        EnumSet<Square> aggressiveSqs = EnumSet.noneOf( Square.class );
+
+        // Directions of aggression (the two diagonal pawn capture squares)
+        Direction[] dirsOfAggression // Let's guess the active color is White
+            = { Direction.NORTHEAST, Direction.NORTHWEST };
+
+        if ( pos.turn() == Colour.BLACK ) { // Correct the color if we were wrong
+            dirsOfAggression[ 0 ] = Direction.SOUTHEAST;
+            dirsOfAggression[ 1 ] = Direction.SOUTHWEST;
+        }
+        for ( Direction dir : dirsOfAggression ) {
+            Square hostileSq = aggressivePawnDestSqsSel( sq, pos, dir );
+            if ( hostileSq != null ) {
+                aggressiveSqs.add( hostileSq );
+            }
+        }
+
+        return aggressiveSqs;
+    }
+
+    // Part of aggressivePawnDestSqs()
+    private static Square aggressivePawnDestSqsSel( // SELection
+        Square sq, Position pos, Direction dir ) throws Exception {
+        Square hostileSq = SUM.adjacentSquare( sq, dir );
+        if ( hostileSq == null ) {
+            // Do nothing
+        } else if ( ( hostileSq.bit() & pos.blackArmy() ) != 0 // Victim
+            && ( dir == Direction.NORTHEAST // White's turn
+            || dir == Direction.NORTHWEST ) ) {
+            return hostileSq;
+        } else if ( ( hostileSq.bit() & pos.whiteArmy() ) != 0 // Victim
+            && ( dir == Direction.SOUTHEAST // Black's turn
+            || dir == Direction.SOUTHWEST ) ) {
+            return hostileSq;
+        }
+        return null;
+    }
+
     private static EnumSet<Square> surroundingSquaresOfCorners( Square square )
         throws Exception {
         EnumSet<Square> ss; // surrounding squares

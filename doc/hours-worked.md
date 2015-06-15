@@ -189,3 +189,11 @@ http://s1.postimg.org/57umsvhdr/screenshot_02.png
 It's White's turn to move, and the supposedly legal moves for the rook on E2 are lit up. The move generator thinks the white rook could move off the e-file (move horizontally, that is) even though that would place the king behind it in check. The reality is that the rook on E2 has legal moves only on the e-file.
 
 I suppose the best remedy for these bugs would be to divide the move generation process into two stages. First find the seemingly legal (pseudolegal) moves for each piece and then create the position each of the moves would result in. If the king can be captured in a generated position, the move is illegal.
+
+## 2015-06-15 | Hours worked: -
+
+Today I have done a lot of work on the `MoveGenerator` class and its static methods. The whole move generation process I've created is much more procedural than object-orientated. Somehow that's the way I like it. Anyway, the move generator works well enough that I can actually play a sort of limited version of chess with myself.
+
+The biggest issue I have had with MoveGenerator is that I have lost track with its structure, assuming it ever had any. Structure is important to me which is why I've spent most of the day (re)organizing the class's code. One of the changes I've made is particularly important -- there's now a clear distinction between pseudo-legal and legal move generation. This can be seen in MoveGenerator's most important method, `moveGenerator()`. It first gets the pseudo-legal moves and only after that starts to analyze each one and discard the ones that are illegal. I haven't actually coded the part that determines which of the pseudo-legal moves are in fact legal.
+
+Time to get started on the second code review (I got some extra time from the teacher, something I appreciate).
