@@ -418,7 +418,7 @@ public class SUMTest {
             // inclusive, each one repeated twice. This is due to integer
             // division.
             assertEquals( theSixChessmenTypes[ chessmenTypesIndex / 2 ],
-                SUM.pieceType( square, testPosition ) );
+                SUM.resolvePieceType( square, testPosition ) );
             chessmenTypesIndex++;
         }
     }
@@ -447,7 +447,7 @@ public class SUMTest {
             = SUM.bitboardToSqSet( emptySquaresBB );
         // Looping over the 52 empty squares
         for ( Square square : emptySquares ) {
-            assertEquals( null, SUM.pieceType(
+            assertEquals( null, SUM.resolvePieceType(
                 square, testPosition ) );
         }
     }

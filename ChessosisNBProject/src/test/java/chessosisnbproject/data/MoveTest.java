@@ -46,7 +46,7 @@ public class MoveTest {
     @Test
     public void toStringOK() {
         assertEquals(
-            moveObj.from() + "-" + moveObj.to(), moveObj.toString() );
+            "1." + moveObj.from() + "-" + moveObj.to(), moveObj.toString() );
     }
 
     /**

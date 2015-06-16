@@ -4,6 +4,8 @@ import chessosisnbproject.data.Position;
 import chessosisnbproject.data.PieceType;
 import chessosisnbproject.data.Direction;
 import chessosisnbproject.data.CSS;
+import chessosisnbproject.data.Colour;
+import chessosisnbproject.data.Piece;
 import chessosisnbproject.data.Square;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
@@ -309,6 +311,40 @@ public class SUM {
         }
     }
 
+    public static Piece resolvePiece( Square sq, Position pos ) {
+        PieceType pieceType = resolvePieceType( sq, pos );
+        if ( pieceType == null ) {
+            return null;
+        }
+        Colour pieceColor = ( ( pos.whiteArmy() & sq.bit() ) != 0 )
+            ? Colour.WHITE : Colour.BLACK;
+        if ( pieceColor == Colour.WHITE && pieceType == PieceType.PAWN ) {
+            return Piece.WHITE_PAWN;
+        } else if ( pieceColor == Colour.WHITE && pieceType == PieceType.BISHOP ) {
+            return Piece.WHITE_BISHOP;
+        } else if ( pieceColor == Colour.WHITE && pieceType == PieceType.KNIGHT ) {
+            return Piece.WHITE_KNIGHT;
+        } else if ( pieceColor == Colour.WHITE && pieceType == PieceType.ROOK ) {
+            return Piece.WHITE_ROOK;
+        } else if ( pieceColor == Colour.WHITE && pieceType == PieceType.QUEEN ) {
+            return Piece.WHITE_QUEEN;
+        } else if ( pieceColor == Colour.WHITE && pieceType == PieceType.KING ) {
+            return Piece.WHITE_KING;
+        } else if ( pieceType == PieceType.PAWN ) {
+            return Piece.BLACK_PAWN;
+        } else if ( pieceType == PieceType.BISHOP ) {
+            return Piece.BLACK_BISHOP;
+        } else if ( pieceType == PieceType.KNIGHT ) {
+            return Piece.BLACK_KNIGHT;
+        } else if ( pieceType == PieceType.ROOK ) {
+            return Piece.BLACK_ROOK;
+        } else if ( pieceType == PieceType.QUEEN ) {
+            return Piece.BLACK_QUEEN;
+        } else { // Black king
+            return Piece.BLACK_KING;
+        }
+    }
+
     /**
      * Determines the type of chessman located on the given square. Possible
      * values include PAWN, BISHOP, KNIGHT, ROOK, QUEEN and KING. If the
@@ -318,7 +354,7 @@ public class SUM {
      * @param position the context
      * @return the type of the chessman on the square
      */
-    public static PieceType pieceType(
+    public static PieceType resolvePieceType(
         Square square, Position position ) {
         // Pawns
         if ( ( square.bit() & position.whitePawns() ) != 0

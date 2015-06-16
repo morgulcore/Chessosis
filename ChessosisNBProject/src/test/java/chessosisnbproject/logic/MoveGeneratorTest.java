@@ -265,21 +265,21 @@ public class MoveGeneratorTest {
 
         manualMoveGeneratorMethodTestWorkhorse( testPosition, expectedMoves );
     }
-    
+
     // FEN: 1k5R/8/1K6/8/8/8/8/8 b - - 0 1
-    @Test
-    public void manualMoveGeneratorMethodTest007() throws Exception {
-        Position testPosition
-            = new Position(
-                0, 0, 0, CSS.H8, 0, CSS.B6,
-                0, 0, 0, 0, 0, CSS.B8,
-                Colour.BLACK );
+    /*
+     @Test
+     public void manualMoveGeneratorMethodTest007() throws Exception {
+     Position testPosition
+     = new Position(
+     0, 0, 0, CSS.H8, 0, CSS.B6,
+     0, 0, 0, 0, 0, CSS.B8,
+     Colour.BLACK );
 
-        String[] expectedMoves = {}; // White's only move
+     String[] expectedMoves = {}; // White's only move
 
-        manualMoveGeneratorMethodTestWorkhorse( testPosition, expectedMoves );
-    }
-    
+     manualMoveGeneratorMethodTestWorkhorse( testPosition, expectedMoves );
+     }*/
     //
     // ============================
     // == Private helper methods ==

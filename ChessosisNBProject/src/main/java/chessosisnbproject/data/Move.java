@@ -70,8 +70,17 @@ public class Move {
      */
     @Override
     public String toString() {
-        // Coordinate notation, e.g., E2-E4
-        return this.from() + "-" + this.to();
+        String fromHyphenTo = this.from() + "-" + this.to(),
+            fullmoveNumber = "";
+
+        if ( this.context() != null ) {
+            fullmoveNumber
+                = Integer.toString( this.context.fullmoveNumber() );
+            fullmoveNumber
+                += ( this.context().turn() == Colour.WHITE ) ? "." : "...";
+        }
+
+        return fullmoveNumber + this.from() + "-" + this.to();
     }
 
     /**

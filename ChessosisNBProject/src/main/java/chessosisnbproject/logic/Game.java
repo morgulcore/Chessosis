@@ -112,7 +112,8 @@ public class Game {
             false, false, false, false,
             null,
             moveIsCapture ? 0 : ( 1 + pos.halfmoveClock() ),
-            1 + pos.fullmoveNumber()
+            ( pos.turn() == Colour.BLACK ) ? ( 1 + pos.fullmoveNumber() )
+                : ( pos.fullmoveNumber() )
         );
 
         return newPos;

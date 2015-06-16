@@ -46,6 +46,7 @@ public class Chessboard extends JPanel {
         if ( friendlySquareActivated( pos, squareBit ) ) {
             Set<Move> moves
                 = getGUIRef().getGame().getMoves();
+            //sendMessage( "Moves available: " + moves.size() + "\n" );
             this.highlightedDest
                 = extractDestSquares( moves, sq.name() );
             squaretaker( Task.HIGHLIGHT_DEST );

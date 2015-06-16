@@ -92,20 +92,17 @@ public class MoveGenerator {
 
     private static EnumSet<Square> pseudoLegalMGPieceTypeSel( // SELection
         Square sqOfPiece, Position pos ) throws Exception {
-        if ( PieceType.PAWN == SUM.pieceType( sqOfPiece, pos ) ) {
-            // pawnMoveGenerator()
+        if ( PieceType.PAWN == SUM.resolvePieceType( sqOfPiece, pos ) ) {
             return pawnMoveGenerator( sqOfPiece, pos );
-        } else if ( PieceType.BISHOP == SUM.pieceType( sqOfPiece, pos ) ) {
-            //destSquares = bishopMoveGenerator()
-            return EnumSet.noneOf( Square.class );
-        } else if ( PieceType.KNIGHT == SUM.pieceType( sqOfPiece, pos ) ) {
+        } else if ( PieceType.BISHOP == SUM.resolvePieceType( sqOfPiece, pos ) ) {
+            return bishopMoveGenerator( sqOfPiece, pos );
+        } else if ( PieceType.KNIGHT == SUM.resolvePieceType( sqOfPiece, pos ) ) {
             return accessibleKnightsSquares( sqOfPiece, pos );
-        } else if ( PieceType.ROOK == SUM.pieceType( sqOfPiece, pos ) ) {
+        } else if ( PieceType.ROOK == SUM.resolvePieceType( sqOfPiece, pos ) ) {
             return accessibleRooksSquares( sqOfPiece, pos );
-        } else if ( PieceType.QUEEN == SUM.pieceType( sqOfPiece, pos ) ) {
-            //destSquares = queenMoveGenerator()
-            return EnumSet.noneOf( Square.class );
-        } else if ( PieceType.KING == SUM.pieceType( sqOfPiece, pos ) ) {
+        } else if ( PieceType.QUEEN == SUM.resolvePieceType( sqOfPiece, pos ) ) {
+            return queenMoveGenerator( sqOfPiece, pos );
+        } else if ( PieceType.KING == SUM.resolvePieceType( sqOfPiece, pos ) ) {
             return accessibleKingsSquares( sqOfPiece, pos );
         } else {
             throw new Exception( "PieceType constant is null" );
@@ -131,6 +128,14 @@ public class MoveGenerator {
     // ========================================================
     //
     //
+    /**
+     TODO: Javadoc
+    
+     @param sq
+     @param pos
+     @return
+     @throws Exception 
+     */
     public static EnumSet<Square> pawnMoveGenerator( Square sq, Position pos )
         throws Exception {
         EnumSet<Square> pawnDestSquares = EnumSet.noneOf( Square.class );
@@ -138,6 +143,55 @@ public class MoveGenerator {
         pawnDestSquares.addAll( aggressivePawnDestSqs( sq, pos ) );
 
         return pawnDestSquares;
+    }
+
+    /**
+     TODO: Javadoc
+    
+     @param sq
+     @param pos
+     @return
+     @throws Exception 
+     */
+    public static EnumSet<Square> bishopMoveGenerator( Square sq, Position pos )
+        throws Exception {
+        EnumSet<Square> bishopDestSquares = EnumSet.noneOf( Square.class );
+        Direction[] dirs = { Direction.NORTHEAST, Direction.SOUTHEAST,
+            Direction.SOUTHWEST, Direction.NORTHWEST };
+
+        long friendlyPieces
+            = ( pos.turn() == Colour.WHITE ) ? pos.whiteArmy() : pos.blackArmy(),
+            enemyPieces
+            = ( pos.turn() == Colour.WHITE ) ? pos.blackArmy() : pos.whiteArmy();
+        for ( Direction dir : dirs ) {
+            // Dest squares in a single diagonal direction (NE, SE, SW or NW)
+            EnumSet<Square> destSquaresInDir
+                = bishopMoveGeneratorSingleDir(
+                    dir, sq, friendlyPieces, enemyPieces );
+            bishopDestSquares.addAll( destSquaresInDir ); // Set union
+        }
+
+        return bishopDestSquares;
+    }
+
+    /**
+     TODO: Javadoc
+    
+     @param sq
+     @param pos
+     @return
+     @throws Exception 
+     */
+    public static EnumSet<Square> queenMoveGenerator( Square sq, Position pos )
+        throws Exception {
+        EnumSet<Square> queenDestSquares = EnumSet.noneOf( Square.class ),
+            bishopDestSquares = bishopMoveGenerator( sq, pos ),
+            rookDestSquares = accessibleRooksSquares( sq, pos );
+
+        queenDestSquares.addAll( rookDestSquares );
+        queenDestSquares.addAll( bishopDestSquares );
+
+        return queenDestSquares;
     }
 
     //
@@ -328,10 +382,69 @@ public class MoveGenerator {
     // =============================
     //
     //
+    // Method: bishopMoveGeneratorSingleDir()
+    //
     // Finds the passive pawn destination squares. These are the squares
     // a pawn can move to on the same file. As they involve no capture,
     // they are passive (non-aggressive) in nature. I couldn't figure out
     // how to divide this method into smaller parts.
+    // Generates destination squares for a bishop in a single diagonal
+    // direction (NE, SE, SW, NW). The process starts from the square next
+    // to the bishop in the given direction (assuming such a square exists).
+    // Provided the square is not occupied by a friendly piece it is added
+    // to the list of destination squares. If the square is empty, the
+    // process moves to the next square on the diagonal -- one more square
+    // away from the bishop.
+    //
+    // The following serves as an example. The bishop is on A1 and the
+    // direction of the search for destination squares is NE (northeast).
+    // The X indicates some piece of opposite color (enemy piece). First the
+    // square B2 is considered. Being empty (or being a square not occupied by
+    // a friendly piece) it is added to the list of destination squares. The
+    // next square considered is C3. It too is added to the list. The seach
+    // is concluded at this point because the bishop cannot crash through
+    // or jump over the enemy piece even though it can capture it.
+    //
+    //   +---------------+
+    // 4 |   |   |   |   |
+    //   |---------------|
+    // 3 |   |   | X |   |
+    //   |---------------|
+    // 2 |   | * |   |   |
+    //   |---------------|
+    // 1 | B |   |   |   |
+    //   +---------------+
+    //     A   B   C   D
+    //
+    private static EnumSet<Square> bishopMoveGeneratorSingleDir(
+        Direction dir, Square sq, long friendlyPieces, long enemyPieces )
+        throws Exception {
+        EnumSet<Square> destSquaresInDir = EnumSet.noneOf( Square.class );
+        Square nextSquare = sq;
+        while ( true ) {
+            // Move away from the bishop one square at a time in the given
+            // direction
+            nextSquare = SUM.adjacentSquare( nextSquare, dir );
+            if ( nextSquare == null // null: search went overboard
+                // ...OR if there's a friendly piece on nextSquare
+                || ( nextSquare.bit() & friendlyPieces ) != 0 ) {
+                // Break out of the loop without adding to square to
+                // the list of possible destination squares for the
+                // bishop
+                break;
+            }
+            destSquaresInDir.add( nextSquare );
+
+            // Enemy piece on square
+            if ( ( nextSquare.bit() & enemyPieces ) != 0 ) {
+                // Although the bishop can capture the enemy piece,
+                // it can't crash through it
+                break;
+            }
+        }
+        return destSquaresInDir;
+    }
+
     private static EnumSet<Square> passivePawnDestSqs( // destination squares
         Square sq, Position pos ) throws Exception {
         EnumSet<Square> passiveSqs = EnumSet.noneOf( Square.class );

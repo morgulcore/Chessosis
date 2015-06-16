@@ -1,8 +1,11 @@
 package chessosisnbproject.gui;
 
 import chessosisnbproject.data.CSS;
+import chessosisnbproject.data.Colour;
 import chessosisnbproject.data.Square;
 import chessosisnbproject.data.Move;
+import chessosisnbproject.data.PieceType;
+import chessosisnbproject.logic.SUM;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -80,7 +83,21 @@ public class SquareOnGUI extends JLabel implements MouseListener {
                         Level.SEVERE, null, ex );
                 }
             }
-        } else if ( e.getButton() == MouseEvent.BUTTON3 ) {
+        } else if ( e.getButton() == MouseEvent.BUTTON2 ) { // Middle mouse button
+            chessosisnbproject.data.Position pos
+                = getCBRef().getGUIRef().getGame().getPos();
+            chessosisnbproject.data.Piece piece
+                = SUM.resolvePiece( square, pos );
+            String pieceString = ( piece == null ) ? "EMPTY" : piece.toString();
+            sendMessage(
+                "Square " + this.name() + ": " + " " + pieceString + "\t" );
+            try {
+                sendMessage( "NAM: "
+                    + getCBRef().getGUIRef().getGame().getMoves().size() + "\n" );
+            } catch ( Exception ex ) {
+                Logger.getLogger( SquareOnGUI.class.getName() ).log( Level.SEVERE, null, ex );
+            }
+        } else if ( e.getButton() == MouseEvent.BUTTON3 ) { // Right mouse button
             if ( activeSquare() == null ) {
                 // __TO-DO HERE__
                 sendMessage(
@@ -93,6 +110,8 @@ public class SquareOnGUI extends JLabel implements MouseListener {
                     if ( !getCBRef().getGUIRef().getGame().makeMove( move ) ) {
                         sendMessage( "ERROR: makeMove() refused to execute "
                             + move.toString() + "\n" );
+                    } else {
+                        sendMessage( move + "\n" );
                     }
                     SquareOnGUI.activeSquare = null;
                     getCBRef().squaretaker( Chessboard.Task.UNHIGHLIGHT );
