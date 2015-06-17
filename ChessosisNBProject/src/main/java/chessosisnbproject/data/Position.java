@@ -182,7 +182,7 @@ public class Position {
             // The default field values used by this constructor
             false, false, false, false,
             null,
-            0, 0
+            0, 1
         );
     }
 

@@ -25,6 +25,62 @@ public class SUM {
     private SUM() {
     }
 
+    public static EnumSet<Square> pseudoLegalAccess( Square sq, Position pos )
+        throws Exception {
+        EnumSet<Square> activePiecesWithAccess
+            = EnumSet.noneOf( Square.class );
+        Colour activeColor
+            = ( pos.turn() == Colour.WHITE ) ? Colour.WHITE : Colour.BLACK;
+        
+        // Pawns
+        //activePiecesWithAccess.addAll( pLegalAccessPawns( sq, pos, activeColor ) );
+        // Bishops
+        //activePiecesWithAccess.addAll( pLegalAccessBishops( sq, pos, activeColor ) );
+        // Knights
+        activePiecesWithAccess.addAll( pLegalAccessKnights( sq, pos, activeColor ) );
+        // Rooks
+        //activePiecesWithAccess.addAll( pLegalAccessRooks( sq, pos, activeColor ) );
+        // Queens
+        //activePiecesWithAccess.addAll( pLegalAccessQueens( sq, pos, activeColor ) );
+        // Kings
+        //activePiecesWithAccess.addAll( pLegalAccessKings( sq, pos, activeColor ) );
+
+        return activePiecesWithAccess;
+    }
+
+    private static EnumSet<Square> pLegalAccessPawns( // p for pseudo
+        Square sq, Position pos, Colour activeColor ) { return null; }
+    
+    private static EnumSet<Square> pLegalAccessBishops( // p for pseudo
+        Square sq, Position pos, Colour activeColor ) { return null; }
+    
+    private static EnumSet<Square> pLegalAccessKnights( // p for pseudo
+        Square sq, Position pos, Colour activeColor ) throws Exception {
+        EnumSet<Square> knightsWithAccess = EnumSet.noneOf( Square.class );
+
+        // Get the squares from which a knight could have access to
+        // the Square parameter
+        EnumSet<Square> knightsSquares = MoveGenerator.knightsSquares( sq );
+
+        for ( Square kSq : knightsSquares ) {
+            if ( SUM.resolvePieceType( kSq, pos ) == PieceType.KNIGHT
+                && SUM.resolvePieceColor( kSq, pos ) == activeColor ) {
+                knightsWithAccess.add( kSq );
+            }
+        }
+
+        return knightsWithAccess;
+    }
+    
+    private static EnumSet<Square> pLegalAccessRooks( // p for pseudo
+        Square sq, Position pos, Colour activeColor ) { return null; }
+    
+    private static EnumSet<Square> pLegalAccessQueens( // p for pseudo
+        Square sq, Position pos, Colour activeColor ) { return null; }
+    
+    private static EnumSet<Square> pLegalAccessKings( // p for pseudo
+        Square sq, Position pos, Colour activeColor ) { return null; }
+
     /**
      * Converts a bitboard-based square set representation to a Square
      * EnumSet-based one. This method is the inverse function of
@@ -342,6 +398,26 @@ public class SUM {
             return Piece.BLACK_QUEEN;
         } else { // Black king
             return Piece.BLACK_KING;
+        }
+    }
+
+    /**
+     TODO: Javadoc
+    
+     @param sq
+     @param pos
+     @return 
+     */
+    public static Colour resolvePieceColor( Square sq, Position pos ) {
+        Piece piece = resolvePiece( sq, pos );
+        if ( piece == null ) { // Empty square
+            return null;
+        } else if ( piece == Piece.WHITE_PAWN || piece == Piece.WHITE_BISHOP
+            || piece == Piece.WHITE_KNIGHT || piece == Piece.WHITE_ROOK
+            || piece == Piece.WHITE_QUEEN || piece == Piece.WHITE_KING ) {
+            return Colour.WHITE;
+        } else {
+            return Colour.BLACK;
         }
     }
 

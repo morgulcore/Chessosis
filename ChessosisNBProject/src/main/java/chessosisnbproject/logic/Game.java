@@ -1,5 +1,6 @@
 package chessosisnbproject.logic;
 
+import chessosisnbproject.data.CSS;
 import chessosisnbproject.data.Move;
 import chessosisnbproject.data.Position;
 import chessosisnbproject.data.Colour;
@@ -20,7 +21,15 @@ public class Game {
 
     public Game() {
         history = new ArrayList<>();
-        history.add( new Position() ); // Standard starting position
+        //history.add( new Position() ); // Standard starting position
+
+        Position testPos = new Position(
+            0, 0, CSS.E4,
+            0, 0, CSS.E3,
+            0, 0, 0,
+            0, 0, CSS.E6,
+            Colour.BLACK );
+        history.add( testPos );
     }
 
     public static void setDebugMsgRef( ChessosisGUI ref ) {
