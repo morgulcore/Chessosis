@@ -25,61 +25,42 @@ public class SUM {
     private SUM() {
     }
 
+    /**
+     TODO: Javadoc
+    
+     @param sq
+     @param pos
+     @return
+     @throws Exception 
+     */
     public static EnumSet<Square> pseudoLegalAccess( Square sq, Position pos )
         throws Exception {
         EnumSet<Square> activePiecesWithAccess
             = EnumSet.noneOf( Square.class );
         Colour activeColor
             = ( pos.turn() == Colour.WHITE ) ? Colour.WHITE : Colour.BLACK;
-        
+
         // Pawns
-        //activePiecesWithAccess.addAll( pLegalAccessPawns( sq, pos, activeColor ) );
+        activePiecesWithAccess.addAll(
+            pLegalAccessPawns( sq, pos, activeColor ) );
         // Bishops
-        //activePiecesWithAccess.addAll( pLegalAccessBishops( sq, pos, activeColor ) );
+        activePiecesWithAccess.addAll(
+            pLegalAccessBishops( sq, pos, activeColor, false ) );
         // Knights
-        activePiecesWithAccess.addAll( pLegalAccessKnights( sq, pos, activeColor ) );
+        activePiecesWithAccess.addAll(
+            pLegalAccessKnights( sq, pos, activeColor ) );
         // Rooks
-        //activePiecesWithAccess.addAll( pLegalAccessRooks( sq, pos, activeColor ) );
+        activePiecesWithAccess.addAll(
+            pLegalAccessRooks( sq, pos, activeColor, false ) );
         // Queens
-        //activePiecesWithAccess.addAll( pLegalAccessQueens( sq, pos, activeColor ) );
+        activePiecesWithAccess.addAll(
+            pLegalAccessQueens( sq, pos, activeColor ) );
         // Kings
-        //activePiecesWithAccess.addAll( pLegalAccessKings( sq, pos, activeColor ) );
+        activePiecesWithAccess.addAll(
+            pLegalAccessKing( sq, pos, activeColor ) );
 
         return activePiecesWithAccess;
     }
-
-    private static EnumSet<Square> pLegalAccessPawns( // p for pseudo
-        Square sq, Position pos, Colour activeColor ) { return null; }
-    
-    private static EnumSet<Square> pLegalAccessBishops( // p for pseudo
-        Square sq, Position pos, Colour activeColor ) { return null; }
-    
-    private static EnumSet<Square> pLegalAccessKnights( // p for pseudo
-        Square sq, Position pos, Colour activeColor ) throws Exception {
-        EnumSet<Square> knightsWithAccess = EnumSet.noneOf( Square.class );
-
-        // Get the squares from which a knight could have access to
-        // the Square parameter
-        EnumSet<Square> knightsSquares = MoveGenerator.knightsSquares( sq );
-
-        for ( Square kSq : knightsSquares ) {
-            if ( SUM.resolvePieceType( kSq, pos ) == PieceType.KNIGHT
-                && SUM.resolvePieceColor( kSq, pos ) == activeColor ) {
-                knightsWithAccess.add( kSq );
-            }
-        }
-
-        return knightsWithAccess;
-    }
-    
-    private static EnumSet<Square> pLegalAccessRooks( // p for pseudo
-        Square sq, Position pos, Colour activeColor ) { return null; }
-    
-    private static EnumSet<Square> pLegalAccessQueens( // p for pseudo
-        Square sq, Position pos, Colour activeColor ) { return null; }
-    
-    private static EnumSet<Square> pLegalAccessKings( // p for pseudo
-        Square sq, Position pos, Colour activeColor ) { return null; }
 
     /**
      * Converts a bitboard-based square set representation to a Square
@@ -472,38 +453,6 @@ public class SUM {
         return table;
     }
 
-    private static String unicodeChessSymbolOfSquare(
-        Position pos, Square sq ) {
-
-        if ( ( pos.whiteKing() & sq.bit() ) != 0 ) {
-            return "\u2654";
-        } else if ( ( pos.whiteQueens() & sq.bit() ) != 0 ) {
-            return "\u2655";
-        } else if ( ( pos.whiteRooks() & sq.bit() ) != 0 ) {
-            return "\u2656";
-        } else if ( ( pos.whiteBishops() & sq.bit() ) != 0 ) {
-            return "\u2657";
-        } else if ( ( pos.whiteKnights() & sq.bit() ) != 0 ) {
-            return "\u2658";
-        } else if ( ( pos.whitePawns() & sq.bit() ) != 0 ) {
-            return "\u2659";
-        } else if ( ( pos.blackKing() & sq.bit() ) != 0 ) {
-            return "\u265a";
-        } else if ( ( pos.blackQueens() & sq.bit() ) != 0 ) {
-            return "\u265b";
-        } else if ( ( pos.blackRooks() & sq.bit() ) != 0 ) {
-            return "\u265c";
-        } else if ( ( pos.blackBishops() & sq.bit() ) != 0 ) {
-            return "\u265d";
-        } else if ( ( pos.blackKnights() & sq.bit() ) != 0 ) {
-            return "\u265e";
-        } else if ( ( pos.blackPawns() & sq.bit() ) != 0 ) {
-            return "\u265f";
-        } else {
-            return "";
-        }
-    }
-
     public static Square tableCellToSquare( int row, int col ) {
         char file = (char) ( 'A' + col ),
             rank = (char) ( '8' - row );
@@ -675,5 +624,152 @@ public class SUM {
 
         // Returning null is legal for this method
         return squareToReturn;
+    }
+
+    private static String unicodeChessSymbolOfSquare(
+        Position pos, Square sq ) {
+
+        if ( ( pos.whiteKing() & sq.bit() ) != 0 ) {
+            return "\u2654";
+        } else if ( ( pos.whiteQueens() & sq.bit() ) != 0 ) {
+            return "\u2655";
+        } else if ( ( pos.whiteRooks() & sq.bit() ) != 0 ) {
+            return "\u2656";
+        } else if ( ( pos.whiteBishops() & sq.bit() ) != 0 ) {
+            return "\u2657";
+        } else if ( ( pos.whiteKnights() & sq.bit() ) != 0 ) {
+            return "\u2658";
+        } else if ( ( pos.whitePawns() & sq.bit() ) != 0 ) {
+            return "\u2659";
+        } else if ( ( pos.blackKing() & sq.bit() ) != 0 ) {
+            return "\u265a";
+        } else if ( ( pos.blackQueens() & sq.bit() ) != 0 ) {
+            return "\u265b";
+        } else if ( ( pos.blackRooks() & sq.bit() ) != 0 ) {
+            return "\u265c";
+        } else if ( ( pos.blackBishops() & sq.bit() ) != 0 ) {
+            return "\u265d";
+        } else if ( ( pos.blackKnights() & sq.bit() ) != 0 ) {
+            return "\u265e";
+        } else if ( ( pos.blackPawns() & sq.bit() ) != 0 ) {
+            return "\u265f";
+        } else {
+            return "";
+        }
+    }
+
+    private static EnumSet<Square> pLegalAccessPawns( // p for pseudo
+        Square sq, Position pos, Colour activeColor ) throws Exception {
+        EnumSet<Square> pawnsWithAccess = EnumSet.noneOf( Square.class );
+
+        EnumSet<Square> pawnsSquares
+            = MoveGenerator.pawnsSquares( sq, resolvePieceColor( sq, pos ) );
+        for ( Square pSq : pawnsSquares ) {
+            if ( resolvePieceType( pSq, pos ) == PieceType.PAWN
+                && resolvePieceColor( pSq, pos ) == activeColor ) {
+                pawnsWithAccess.add( pSq );
+            }
+        }
+
+        return pawnsWithAccess;
+    }
+
+    private static EnumSet<Square> pLegalAccessBishops( // p for pseudo
+        Square sq, Position pos, Colour activeColor, boolean queensInstead )
+        throws Exception {
+        // Search for queens instead of bishops?
+        PieceType bishopOrQueen
+            = queensInstead ? PieceType.QUEEN : PieceType.BISHOP;
+
+        EnumSet<Square> bishopsWithAccess = EnumSet.noneOf( Square.class );
+
+        for ( Direction dir : Direction.intermediateDirections() ) {
+            Square nextSq = sq;
+            while ( true ) {
+                nextSq = adjacentSquare( nextSq, dir );
+                if ( nextSq == null ) {
+                    break;
+                } else if ( resolvePieceType( nextSq, pos ) != null ) {
+                    if ( resolvePieceType( nextSq, pos ) == bishopOrQueen
+                        && resolvePieceColor( nextSq, pos ) == activeColor ) {
+                        bishopsWithAccess.add( nextSq );
+                    }
+                    break;
+                }
+            }
+        }
+
+        return bishopsWithAccess;
+    }
+
+    private static EnumSet<Square> pLegalAccessKnights( // p for pseudo
+        Square sq, Position pos, Colour activeColor ) throws Exception {
+        EnumSet<Square> knightsWithAccess = EnumSet.noneOf( Square.class );
+
+        EnumSet<Square> knightsSquares = MoveGenerator.knightsSquares( sq );
+        for ( Square kSq : knightsSquares ) {
+            if ( resolvePieceType( kSq, pos ) == PieceType.KNIGHT
+                && resolvePieceColor( kSq, pos ) == activeColor ) {
+                knightsWithAccess.add( kSq );
+            }
+        }
+
+        return knightsWithAccess;
+    }
+
+    private static EnumSet<Square> pLegalAccessRooks( // p for pseudo
+        Square sq, Position pos, Colour activeColor, boolean queensInstead )
+        throws Exception {
+        // Search for queens instead of rooks?
+        PieceType rookOrQueen
+            = queensInstead ? PieceType.QUEEN : PieceType.ROOK;
+
+        EnumSet<Square> rooksWithAccess = EnumSet.noneOf( Square.class );
+
+        for ( Direction dir : Direction.cardinalDirections() ) {
+            Square nextSq = sq;
+            while ( true ) {
+                nextSq = adjacentSquare( nextSq, dir );
+                if ( nextSq == null ) {
+                    break;
+                } else if ( resolvePieceType( nextSq, pos ) != null ) {
+                    if ( resolvePieceType( nextSq, pos ) == rookOrQueen
+                        && resolvePieceColor( nextSq, pos ) == activeColor ) {
+                        rooksWithAccess.add( nextSq );
+                    }
+                    break;
+                }
+            }
+        }
+
+        return rooksWithAccess;
+    }
+
+    private static EnumSet<Square> pLegalAccessQueens( // p for pseudo
+        Square sq, Position pos, Colour activeColor ) throws Exception {
+        EnumSet<Square> queensWithAccess = EnumSet.noneOf( Square.class );
+
+        queensWithAccess.addAll(
+            pLegalAccessBishops( sq, pos, activeColor, true ) );
+        queensWithAccess.addAll(
+            pLegalAccessRooks( sq, pos, activeColor, true ) );
+
+        return queensWithAccess;
+    }
+
+    private static EnumSet<Square> pLegalAccessKing( // p for pseudo
+        Square sq, Position pos, Colour activeColor ) throws Exception {
+        EnumSet<Square> kingWithAccess = EnumSet.noneOf( Square.class );
+
+        EnumSet<Square> kingsSquares = MoveGenerator.kingsSquares( sq );
+        for ( Square kSq : kingsSquares ) {
+            if ( resolvePieceType( kSq, pos ) == PieceType.KING
+                && resolvePieceColor( kSq, pos ) == activeColor ) {
+                kingWithAccess.add( kSq );
+                break; // There's only one king
+            }
+        }
+
+        return kingWithAccess;
     }
 }

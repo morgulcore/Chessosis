@@ -22,7 +22,18 @@ public enum Direction {
         Direction north = Direction.NORTH, east = Direction.EAST,
             south = Direction.SOUTH, west = Direction.WEST;
 
-        return new Direction[]{
-            north, east, south, west };
+        return new Direction[]{ north, east, south, west };
+    }
+
+    /**
+     TODO: Javadoc
+    
+     @return 
+     */
+    public static Direction[] intermediateDirections() {
+        Direction ne = Direction.NORTHEAST, se = Direction.SOUTHEAST,
+            sw = Direction.SOUTHWEST, nw = Direction.NORTHWEST;
+
+        return new Direction[]{ ne, se, sw, nw };
     }
 }

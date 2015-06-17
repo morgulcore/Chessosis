@@ -36,195 +36,10 @@ public class MoveGenerator {
     public static Set<Move> moveGenerator( Position pos )
         throws Exception {
         // Generate the pseudo-legal moves for the given position
-        Set<Move> pseudoLegalMoves
-            = pseudoLegalMoveGenerator( pos );
+        Set<Move> pseudoLegalMoves = pseudoLegalMoveGenerator( pos );
 
         // Returns a set of zero or more Move objects
         return legalMoves( pseudoLegalMoves );
-    }
-
-    private static Set<Move> legalMoves( Set<Move> pseudoLegalMoves )
-        throws Exception {
-        Set<Move> legalMoves = new LinkedHashSet<>();
-
-        for ( Move move : pseudoLegalMoves ) {
-            Position posAfterMove = Game.newPos(
-                move.context(), move.from().bit(), move.to().bit() );
-            Square inactiveKing = SUM.squareBitToSquare(
-                ( posAfterMove.turn() == Colour.WHITE )
-                    ? posAfterMove.blackKing() : posAfterMove.whiteKing() );
-            // Regicides are pieces of the active color that can capture
-            // the enemy king. The presence of regicides means that the
-            // position is illegal.
-            EnumSet<Square> regicides
-                = SUM.pseudoLegalAccess( inactiveKing, posAfterMove );
-            if ( regicides.size() == 0 ) {
-                legalMoves.add( move );
-            }
-        }
-        return legalMoves;
-    }
-
-    //
-    // ========================================================
-    // == Pseudo-legal move generators for individual pieces ==
-    // ========================================================
-    //
-    //
-    /**
-     TODO: Javadoc
-    
-     @param sq
-     @param pos
-     @return
-     @throws Exception 
-     */
-    public static EnumSet<Square> pawnMoveGenerator( Square sq, Position pos )
-        throws Exception {
-        EnumSet<Square> pawnDestSquares = EnumSet.noneOf( Square.class );
-        pawnDestSquares.addAll( passivePawnDestSqs( sq, pos ) );
-        pawnDestSquares.addAll( aggressivePawnDestSqs( sq, pos ) );
-
-        return pawnDestSquares;
-    }
-
-    /**
-     TODO: Javadoc
-    
-     @param sq
-     @param pos
-     @return
-     @throws Exception 
-     */
-    public static EnumSet<Square> bishopMoveGenerator( Square sq, Position pos )
-        throws Exception {
-        EnumSet<Square> bishopDestSquares = EnumSet.noneOf( Square.class );
-        Direction[] dirs = { Direction.NORTHEAST, Direction.SOUTHEAST,
-            Direction.SOUTHWEST, Direction.NORTHWEST };
-
-        long friendlyPieces
-            = ( pos.turn() == Colour.WHITE ) ? pos.whiteArmy() : pos.blackArmy(),
-            enemyPieces
-            = ( pos.turn() == Colour.WHITE ) ? pos.blackArmy() : pos.whiteArmy();
-        for ( Direction dir : dirs ) {
-            // Dest squares in a single diagonal direction (NE, SE, SW or NW)
-            EnumSet<Square> destSquaresInDir
-                = bishopMoveGeneratorSingleDir(
-                    dir, sq, friendlyPieces, enemyPieces );
-            bishopDestSquares.addAll( destSquaresInDir ); // Set union
-        }
-
-        return bishopDestSquares;
-    }
-
-    /**
-     TODO: Javadoc
-    
-     @param sq
-     @param pos
-     @return
-     @throws Exception 
-     */
-    public static EnumSet<Square> knightMoveGenerator(
-        Square sq, Position pos ) throws Exception {
-        // To begin with the destination squares include any square a knight
-        // could move to (on an empty board) from the square in question
-        EnumSet<Square> knightDestSquares = knightsSquares( sq );
-
-        long friendlyPieces
-            = ( pos.turn() == Colour.WHITE )
-                ? pos.whiteArmy() : pos.blackArmy();
-
-        // From the pseudo-legal moves point of view, the only thing that
-        // limits the knight's mobility is a friendly piece on a potential
-        // destination square. We'll now remove the squares of friendly pieces
-        // from the list of potential destination squares.
-        knightDestSquares.removeAll( SUM.bitboardToSqSet( friendlyPieces ) );
-
-        return knightDestSquares;
-    }
-
-    /**
-     TODO: Javadoc
-    
-     @param sq
-     @param pos
-     @return
-     @throws Exception 
-     */
-    public static EnumSet<Square> rookMoveGenerator( Square sq, Position pos )
-        throws Exception {
-        EnumSet<Square> rookDestSquares = EnumSet.noneOf( Square.class );
-
-        long friendlyPieces // Pieces the rook can never capture
-            = ( pos.turn() == Colour.WHITE ) ? pos.whiteArmy() : pos.blackArmy();
-
-        // Loop over the directions NORTH, EAST, SOUTH and WEST
-        for ( Direction dir : Direction.cardinalDirections() ) {
-            Square nextSq = sq; // Starting point
-            while ( true ) {
-                nextSq = SUM.adjacentSquare( nextSq, dir ); // One square fwd
-                // There's no next square in a particular direction or a
-                // piece of own color is blocking the way
-                if ( nextSq == null || ( friendlyPieces & nextSq.bit() ) != 0 ) {
-                    break;
-                }
-
-                rookDestSquares.add( nextSq );
-                // The square just added to the set contained a piece
-                // of opposing color
-                if ( ( pos.bothArmies() & nextSq.bit() ) != 0 ) {
-                    break;
-                }
-            }
-        }
-        return rookDestSquares;
-    }
-
-    /**
-     TODO: Javadoc
-    
-     @param sq
-     @param pos
-     @return
-     @throws Exception 
-     */
-    public static EnumSet<Square> queenMoveGenerator( Square sq, Position pos )
-        throws Exception {
-        EnumSet<Square> queenDestSquares = EnumSet.noneOf( Square.class ),
-            bishopDestSquares = bishopMoveGenerator( sq, pos ),
-            rookDestSquares = rookMoveGenerator( sq, pos );
-
-        queenDestSquares.addAll( rookDestSquares );
-        queenDestSquares.addAll( bishopDestSquares );
-
-        return queenDestSquares;
-    }
-
-    /**
-     TODO: Javadoc
-    
-     @param sq
-     @param pos
-     @return
-     @throws Exception 
-     */
-    public static EnumSet<Square> kingMoveGenerator( Square sq, Position pos )
-        throws Exception {
-        EnumSet<Square> kingDestSquares = EnumSet.noneOf( Square.class );
-
-        long friendlyPieces
-            = ( pos.turn() == Colour.WHITE ) ? pos.whiteArmy() : pos.blackArmy();
-
-        for ( Direction dir : Direction.values() ) { // The eight directions
-            Square kingsSq = SUM.adjacentSquare( sq, dir );
-            // The square exists and is not occupied by a friendly piece
-            if ( kingsSq != null && ( kingsSq.bit() & friendlyPieces ) == 0 ) {
-                kingDestSquares.add( kingsSq );
-            }
-        }
-
-        return kingDestSquares;
     }
 
     //
@@ -233,6 +48,28 @@ public class MoveGenerator {
     // =======================================================
     //
     //
+    public static EnumSet<Square> pawnsSquares( Square sq, Colour pawnColor )
+        throws Exception {
+        EnumSet<Square> pawnsSquares = EnumSet.noneOf( Square.class );
+
+        Direction[] dirs;
+        if ( pawnColor == Colour.WHITE ) {
+            dirs = new Direction[]{ Direction.NORTHEAST, Direction.NORTHWEST };
+        } else if ( pawnColor == Colour.BLACK ) {
+            dirs = new Direction[]{ Direction.SOUTHEAST, Direction.SOUTHWEST };
+        } else { // pawnColor == null
+            throw new Exception( "Invalid pawnColor: " + pawnColor );
+        }
+
+        for ( Direction dir : dirs ) {
+            Square pawnSquare = SUM.adjacentSquare( sq, dir );
+            if ( pawnSquare != null ) {
+                pawnsSquares.add( pawnSquare );
+            }
+        }
+        return pawnsSquares;
+    }
+
     /**
      TODO: Javadoc
     
@@ -242,7 +79,7 @@ public class MoveGenerator {
      */
     public static EnumSet<Square> knightsSquares( Square sq )
         throws Exception {
-        EnumSet<Square> sqSet = EnumSet.noneOf( Square.class );
+        EnumSet<Square> knightsSquares = EnumSet.noneOf( Square.class );
 
         // Loop over the four cardinal directions: NORTH, EAST, SOUTH and WEST
         for ( Direction dir : Direction.cardinalDirections() ) {
@@ -254,12 +91,12 @@ public class MoveGenerator {
                 if ( nextSq == null ) {
                     break;
                 } else if ( i == 2 ) { // After having moved two squares fwd
-                    knightsSquaresSwitch( dir, nextSq, sqSet );
+                    knightsSquaresSwitch( dir, nextSq, knightsSquares );
                 }
             }
         } // end for
 
-        return sqSet;
+        return knightsSquares;
     }
 
     /**
@@ -277,6 +114,26 @@ public class MoveGenerator {
         long rooksSquaresBB
             = SUM.fileOfSquare( sq ) ^ SUM.rankOfSquare( sq );
         return SUM.bitboardToSqSet( rooksSquaresBB );
+    }
+
+    /**
+     TODO: Javadoc
+    
+     @param sq
+     @return
+     @throws Exception 
+     */
+    public static EnumSet<Square> kingsSquares( Square sq ) throws Exception {
+        EnumSet<Square> kingsSquares = EnumSet.noneOf( Square.class );
+
+        for ( Direction dir : Direction.values() ) {
+            Square kingsSquare = SUM.adjacentSquare( sq, dir );
+            if ( kingsSquare != null ) {
+                kingsSquares.add( kingsSquare );
+            }
+        }
+
+        return kingsSquares;
     }
 
     //
@@ -502,6 +359,28 @@ public class MoveGenerator {
         }
     }
 
+    private static Set<Move> legalMoves( Set<Move> pseudoLegalMoves )
+        throws Exception {
+        Set<Move> legalMoves = new LinkedHashSet<>();
+
+        for ( Move move : pseudoLegalMoves ) {
+            Position posAfterMove = Game.newPos(
+                move.context(), move.from().bit(), move.to().bit() );
+            Square inactiveKing = SUM.squareBitToSquare(
+                ( posAfterMove.turn() == Colour.WHITE )
+                    ? posAfterMove.blackKing() : posAfterMove.whiteKing() );
+            // Regicides are pieces of the active color that can capture
+            // the enemy king. The presence of regicides means that the
+            // position is illegal.
+            EnumSet<Square> regicides
+                = SUM.pseudoLegalAccess( inactiveKing, posAfterMove );
+            if ( regicides.size() == 0 ) {
+                legalMoves.add( move );
+            }
+        }
+        return legalMoves;
+    }
+
     // Generates the set of pseudo-legal moves for an individual piece
     private static Set<Move> generateMoveSetForPiece(
         Square squareOfPiece, EnumSet<Square> destSquaresOfPiece,
@@ -513,5 +392,119 @@ public class MoveGenerator {
         }
 
         return moves;
+    }
+
+    //
+    // ================================================================
+    // == Private pseudo-legal move generators for individual pieces ==
+    // ================================================================
+    //
+    //
+    private static EnumSet<Square> pawnMoveGenerator( Square sq, Position pos )
+        throws Exception {
+        EnumSet<Square> pawnDestSquares = EnumSet.noneOf( Square.class );
+        pawnDestSquares.addAll( passivePawnDestSqs( sq, pos ) );
+        pawnDestSquares.addAll( aggressivePawnDestSqs( sq, pos ) );
+
+        return pawnDestSquares;
+    }
+
+    private static EnumSet<Square> bishopMoveGenerator( Square sq, Position pos )
+        throws Exception {
+        EnumSet<Square> bishopDestSquares = EnumSet.noneOf( Square.class );
+        Direction[] dirs = { Direction.NORTHEAST, Direction.SOUTHEAST,
+            Direction.SOUTHWEST, Direction.NORTHWEST };
+
+        long friendlyPieces
+            = ( pos.turn() == Colour.WHITE ) ? pos.whiteArmy() : pos.blackArmy(),
+            enemyPieces
+            = ( pos.turn() == Colour.WHITE ) ? pos.blackArmy() : pos.whiteArmy();
+        for ( Direction dir : dirs ) {
+            // Dest squares in a single diagonal direction (NE, SE, SW or NW)
+            EnumSet<Square> destSquaresInDir
+                = bishopMoveGeneratorSingleDir(
+                    dir, sq, friendlyPieces, enemyPieces );
+            bishopDestSquares.addAll( destSquaresInDir ); // Set union
+        }
+
+        return bishopDestSquares;
+    }
+
+    private static EnumSet<Square> knightMoveGenerator(
+        Square sq, Position pos ) throws Exception {
+        // To begin with the destination squares include any square a knight
+        // could move to (on an empty board) from the square in question
+        EnumSet<Square> knightDestSquares = knightsSquares( sq );
+
+        long friendlyPieces
+            = ( pos.turn() == Colour.WHITE )
+                ? pos.whiteArmy() : pos.blackArmy();
+
+        // From the pseudo-legal moves point of view, the only thing that
+        // limits the knight's mobility is a friendly piece on a potential
+        // destination square. We'll now remove the squares of friendly pieces
+        // from the list of potential destination squares.
+        knightDestSquares.removeAll( SUM.bitboardToSqSet( friendlyPieces ) );
+
+        return knightDestSquares;
+    }
+
+    private static EnumSet<Square> rookMoveGenerator( Square sq, Position pos )
+        throws Exception {
+        EnumSet<Square> rookDestSquares = EnumSet.noneOf( Square.class );
+
+        long friendlyPieces // Pieces the rook can never capture
+            = ( pos.turn() == Colour.WHITE ) ? pos.whiteArmy() : pos.blackArmy();
+
+        // Loop over the directions NORTH, EAST, SOUTH and WEST
+        for ( Direction dir : Direction.cardinalDirections() ) {
+            Square nextSq = sq; // Starting point
+            while ( true ) {
+                nextSq = SUM.adjacentSquare( nextSq, dir ); // One square fwd
+                // There's no next square in a particular direction or a
+                // piece of own color is blocking the way
+                if ( nextSq == null || ( friendlyPieces & nextSq.bit() ) != 0 ) {
+                    break;
+                }
+
+                rookDestSquares.add( nextSq );
+                // The square just added to the set contained a piece
+                // of opposing color
+                if ( ( pos.bothArmies() & nextSq.bit() ) != 0 ) {
+                    break;
+                }
+            }
+        }
+        return rookDestSquares;
+    }
+
+    private static EnumSet<Square> queenMoveGenerator( Square sq, Position pos )
+        throws Exception {
+        EnumSet<Square> queenDestSquares = EnumSet.noneOf( Square.class ),
+            bishopDestSquares = bishopMoveGenerator( sq, pos ),
+            rookDestSquares = rookMoveGenerator( sq, pos );
+
+        queenDestSquares.addAll( rookDestSquares );
+        queenDestSquares.addAll( bishopDestSquares );
+
+        return queenDestSquares;
+    }
+
+    private static EnumSet<Square> kingMoveGenerator( Square sq, Position pos )
+        throws Exception {
+        EnumSet<Square> kingDestSquares = EnumSet.noneOf( Square.class );
+
+        long friendlyPieces
+            = ( pos.turn() == Colour.WHITE ) ? pos.whiteArmy() : pos.blackArmy();
+
+        for ( Direction dir : Direction.values() ) { // The eight directions
+            Square kingsSq = SUM.adjacentSquare( sq, dir );
+            // The square exists and is not occupied by a friendly piece
+            if ( kingsSq != null && ( kingsSq.bit() & friendlyPieces ) == 0 ) {
+                kingDestSquares.add( kingsSq );
+            }
+        }
+
+        return kingDestSquares;
     }
 }

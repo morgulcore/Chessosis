@@ -21,15 +21,16 @@ public class Game {
 
     public Game() {
         history = new ArrayList<>();
-        //history.add( new Position() ); // Standard starting position
+        history.add( new Position() ); // Standard starting position
 
+        /*
         Position testPos = new Position(
-            0, 0, CSS.E4,
-            0, 0, CSS.E3,
-            0, 0, 0,
-            0, 0, CSS.E6,
+            //CSS.E4, CSS.A1 | CSS.H5, CSS.C6, CSS.A7, 0, CSS.E3,
+            //0, 0, 0, 0, 0, CSS.E6,
+            0, 0, 0, 0, CSS.F6, CSS.D4,
+            0, 0, 0, 0, 0, CSS.B5,
             Colour.BLACK );
-        history.add( testPos );
+        history.add( testPos );*/
     }
 
     public static void setDebugMsgRef( ChessosisGUI ref ) {
