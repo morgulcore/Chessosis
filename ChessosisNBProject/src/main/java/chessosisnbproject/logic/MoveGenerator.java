@@ -97,7 +97,7 @@ public class MoveGenerator {
         } else if ( PieceType.BISHOP == SUM.resolvePieceType( sqOfPiece, pos ) ) {
             return bishopMoveGenerator( sqOfPiece, pos );
         } else if ( PieceType.KNIGHT == SUM.resolvePieceType( sqOfPiece, pos ) ) {
-            return accessibleKnightsSquares( sqOfPiece, pos );
+            return knightMoveGenerator( sqOfPiece, pos );
         } else if ( PieceType.ROOK == SUM.resolvePieceType( sqOfPiece, pos ) ) {
             return accessibleRooksSquares( sqOfPiece, pos );
         } else if ( PieceType.QUEEN == SUM.resolvePieceType( sqOfPiece, pos ) ) {
@@ -182,6 +182,33 @@ public class MoveGenerator {
      @return
      @throws Exception 
      */
+    public static EnumSet<Square> knightMoveGenerator(
+        Square sq, Position pos ) throws Exception {
+        // To begin with the destination squares include any square a knight
+        // could move to (on an empty board) from the square in question
+        EnumSet<Square> knightDestSquares = knightsSquares( sq );
+
+        long friendlyPieces
+            = ( pos.turn() == Colour.WHITE )
+                ? pos.whiteArmy() : pos.blackArmy();
+
+        // From the pseudo-legal moves point of view, the only thing that
+        // limits the knight's mobility is a friendly piece on a potential
+        // destination square. We'll now remove the squares of friendly pieces
+        // from the list of potential destination squares.
+        knightDestSquares.removeAll( SUM.bitboardToSqSet( friendlyPieces ) );
+
+        return knightDestSquares;
+    }
+
+    /**
+     TODO: Javadoc
+    
+     @param sq
+     @param pos
+     @return
+     @throws Exception 
+     */
     public static EnumSet<Square> queenMoveGenerator( Square sq, Position pos )
         throws Exception {
         EnumSet<Square> queenDestSquares = EnumSet.noneOf( Square.class ),
@@ -195,8 +222,42 @@ public class MoveGenerator {
     }
 
     //
-    // (END: Pseudo-legal move generators)
+    // =======================================================
+    // == {pawns,bishops,knights,rooks,queens,kings}Squares ==
+    // =======================================================
     //
+    //
+    /**
+     TODO: Javadoc
+    
+     @param sq
+     @return
+     @throws Exception 
+     */
+    public static EnumSet<Square> knightsSquares( Square sq )
+        throws Exception {
+        EnumSet<Square> sqSet = EnumSet.noneOf( Square.class );
+
+        // Loop over the four cardinal directions: NORTH, EAST, SOUTH and WEST
+        for ( Direction dir : Direction.cardinalDirections() ) {
+            Square nextSq = sq; // Set the starting point
+            // Then move two squares forward on a file or rank
+            for ( int i = 1; i <= 2; i++ ) {
+                nextSq = SUM.adjacentSquare( nextSq, dir );
+                // There's no next square in a particular direction
+                if ( nextSq == null ) {
+                    break;
+                } else if ( i == 2 ) { // After having moved two squares fwd
+                    knightsSquaresSwitch( dir, nextSq, sqSet );
+                }
+            }
+        } // end for
+
+        return sqSet;
+    }
+
+    //
+    // (END: {pawns,bishops,knights,rooks,queens,kings}Squares)
     //
     /**
      * An alias for surroundingSquares(), added for the sake of consistency.
@@ -227,57 +288,6 @@ public class MoveGenerator {
         long rooksSquaresBB
             = SUM.fileOfSquare( square ) ^ SUM.rankOfSquare( square );
         return SUM.bitboardToSqSet( rooksSquaresBB );
-    }
-
-    public static EnumSet<Square> knightsSquares( Square square )
-        throws Exception {
-        EnumSet<Square> squareSet = EnumSet.noneOf( Square.class );
-
-        for ( Direction direction : Direction.cardinalDirections() ) {
-            Square nextSquare = square;
-            for ( int i = 1; i <= 2; i++ ) {
-                nextSquare = SUM.adjacentSquare( nextSquare, direction );
-                // There's no next square in a particular direction
-                if ( nextSquare == null ) {
-                    break;
-                } else if ( i == 2 ) {
-                    switch ( direction ) {
-                        case NORTH:
-                        case SOUTH:
-                            if ( SUM.adjacentSquare(
-                                nextSquare, Direction.EAST ) != null ) {
-                                squareSet.add( SUM.squareBitToSquare(
-                                    nextSquare.bit() << 1 ) );
-                            }
-                            if ( SUM.adjacentSquare(
-                                nextSquare, Direction.WEST ) != null ) {
-                                squareSet.add( SUM.squareBitToSquare(
-                                    nextSquare.bit() >>> 1 ) );
-                            }
-                            break;
-                        case EAST:
-                        case WEST:
-                            if ( SUM.adjacentSquare(
-                                nextSquare, Direction.NORTH ) != null ) {
-                                squareSet.add( SUM.squareBitToSquare(
-                                    nextSquare.bit() << 8 ) );
-                            }
-                            if ( SUM.adjacentSquare(
-                                nextSquare, Direction.SOUTH ) != null ) {
-                                squareSet.add( SUM.squareBitToSquare(
-                                    nextSquare.bit() >>> 8 ) );
-                            }
-                            break;
-                        default:
-                            throw new Exception(
-                                "Default case of switch executed: "
-                                + direction );
-                    }
-                }
-            }
-        } // end for
-
-        return squareSet;
     }
 
     /**
@@ -362,20 +372,6 @@ public class MoveGenerator {
         return squareSet;
     }
 
-    public static EnumSet<Square> accessibleKnightsSquares(
-        Square square, Position pos ) throws Exception {
-        EnumSet<Square> squareSet = knightsSquares( square );
-
-        long friendlyPieces
-            = ( pos.turn() == Colour.WHITE )
-                ? pos.whiteArmy() : pos.blackArmy();
-
-        // Set difference: remove friendly pieces from dest squares
-        squareSet.removeAll( SUM.bitboardToSqSet( friendlyPieces ) );
-
-        return squareSet;
-    }
-
     //
     // =============================
     // == Private utility methods ==
@@ -445,6 +441,36 @@ public class MoveGenerator {
         return destSquaresInDir;
     }
 
+    // Part of knightsSquares()
+    private static void knightsSquaresSwitch( Direction dir, Square nextSq,
+        EnumSet<Square> sqSet ) throws Exception {
+        switch ( dir ) {
+            case NORTH:
+            case SOUTH:
+                if ( SUM.adjacentSquare( nextSq, Direction.EAST ) != null ) {
+                    sqSet.add( SUM.squareBitToSquare( nextSq.bit() << 1 ) );
+                }
+                if ( SUM.adjacentSquare( nextSq, Direction.WEST ) != null ) {
+                    sqSet.add( SUM.squareBitToSquare( nextSq.bit() >>> 1 ) );
+                }
+                break;
+            case EAST:
+            case WEST:
+                if ( SUM.adjacentSquare( nextSq, Direction.NORTH ) != null ) {
+                    sqSet.add( SUM.squareBitToSquare( nextSq.bit() << 8 ) );
+                }
+                if ( SUM.adjacentSquare( nextSq, Direction.SOUTH ) != null ) {
+                    sqSet.add( SUM.squareBitToSquare( nextSq.bit() >>> 8 ) );
+                }
+                break;
+            default:
+                throw new Exception(
+                    "Default case of switch executed: " + dir );
+        }
+    }
+
+    // Finds pawn destination squares that don't involve piece capture.
+    // Such dest squares are always on the same file as the pawn being moved.
     private static EnumSet<Square> passivePawnDestSqs( // destination squares
         Square sq, Position pos ) throws Exception {
         EnumSet<Square> passiveSqs = EnumSet.noneOf( Square.class );

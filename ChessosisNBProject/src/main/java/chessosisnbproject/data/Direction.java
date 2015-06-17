@@ -19,7 +19,10 @@ public enum Direction {
      * @return the four cardinal directions
      */
     public static Direction[] cardinalDirections() {
+        Direction north = Direction.NORTH, east = Direction.EAST,
+            south = Direction.SOUTH, west = Direction.WEST;
+
         return new Direction[]{
-            NORTH, EAST, SOUTH, WEST };
+            north, east, south, west };
     }
 }
