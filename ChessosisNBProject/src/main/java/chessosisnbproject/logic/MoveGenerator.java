@@ -365,7 +365,7 @@ public class MoveGenerator {
 
         for ( Move move : pseudoLegalMoves ) {
             Position posAfterMove = Game.newPos(
-                move.context(), move.from().bit(), move.to().bit() );
+                move.context(), move.from(), move.to() );
             Square inactiveKing = SUM.squareBitToSquare(
                 ( posAfterMove.turn() == Colour.WHITE )
                     ? posAfterMove.blackKing() : posAfterMove.whiteKing() );
@@ -505,6 +505,18 @@ public class MoveGenerator {
             }
         }
 
+        if ( ( pos.turn() == Colour.WHITE && pos.whiteCanCastleKingside() )
+            || ( pos.turn() == Colour.BLACK && pos.blackCanCastleKingside() ) ) {
+            if ( kingsideCastlingPossible( pos ) ) {
+                kingDestSquares.add(
+                    ( pos.turn() == Colour.WHITE ) ? Square.G1 : Square.G8 );
+            }
+        }
+
         return kingDestSquares;
+    }
+
+    private static boolean kingsideCastlingPossible( Position pos ) {
+        return true;
     }
 }

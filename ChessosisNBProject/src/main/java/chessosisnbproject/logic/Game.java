@@ -4,6 +4,9 @@ import chessosisnbproject.data.CSS;
 import chessosisnbproject.data.Move;
 import chessosisnbproject.data.Position;
 import chessosisnbproject.data.Colour;
+import chessosisnbproject.data.Piece;
+import chessosisnbproject.data.PieceType;
+import chessosisnbproject.data.Square;
 import chessosisnbproject.gui.ChessosisGUI;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,16 +24,13 @@ public class Game {
 
     public Game() {
         history = new ArrayList<>();
-        history.add( new Position() ); // Standard starting position
+        //history.add( new Position() ); // Standard starting position
 
-        /*
         Position testPos = new Position(
-            //CSS.E4, CSS.A1 | CSS.H5, CSS.C6, CSS.A7, 0, CSS.E3,
-            //0, 0, 0, 0, 0, CSS.E6,
-            0, 0, 0, 0, CSS.F6, CSS.D4,
-            0, 0, 0, 0, 0, CSS.B5,
-            Colour.BLACK );
-        history.add( testPos );*/
+            CSS.F2 | CSS.G2 | CSS.H2, 0, 0, CSS.H1, 0, CSS.E1,
+            CSS.F7 | CSS.G7 | CSS.H7, 0, 0, CSS.H8, 0, CSS.E8,
+            Colour.WHITE, true, true, true, true, null, 0, 1 );
+        history.add( testPos );
     }
 
     public static void setDebugMsgRef( ChessosisGUI ref ) {
@@ -53,21 +53,81 @@ public class Game {
         if ( !getMoves().contains( move ) ) {
             return false;
         }
-        // SB, square bit
-        long fromSB = move.from().bit(),
-            toSB = move.to().bit();
 
-        Position newPos = newPos( getPos(), fromSB, toSB );
+        Position newPos;
+        // Kingside castle
+        if ( ( move.from() == Square.E1 && move.to() == Square.G1
+            && SUM.resolvePiece( Square.E1, move.context() )
+            == Piece.WHITE_KING )
+            || ( move.from() == Square.E8 && move.to() == Square.G8
+            && SUM.resolvePiece( Square.E8, move.context() )
+            == Piece.BLACK_KING ) ) {
+            newPos = makeMoveKingsideCastle( move.context() );
+        } // Non-castling move
+        else {
+            newPos = newPos( getPos(), move.from(), move.to() );
+        }
+
         history.add( newPos );
-
         return true;
     }
 
-    public static Position newPos( Position pos, long fromSB, long toSB )
+    private static Position makeMoveKingsideCastle( Position pos )
         throws Exception {
-        long[] chessmen = pos.chessmanBBArray();
+        long whiteKingSB, whiteRooksBB, blackKingSB, blackRooksBB;
+        boolean whiteCanCastleKS, whiteCanCastleQS,
+            blackCanCastleKS, blackCanCastleQS;
 
-        int fromSBPieceIndex = pieceIndex( fromSB, pos );
+        if ( pos.turn() == Colour.WHITE ) {
+            whiteKingSB = CSS.G1;
+            whiteRooksBB = ( pos.whiteRooks() ^ CSS.H1 ) | CSS.F1;
+            blackKingSB = pos.blackKing();
+            blackRooksBB = pos.blackRooks();
+            whiteCanCastleKS = whiteCanCastleQS = false;
+            blackCanCastleKS = pos.blackCanCastleKingside();
+            blackCanCastleQS = pos.blackCanCastleQueenside();
+        } else if ( pos.turn() == Colour.BLACK ) {
+            whiteKingSB = pos.whiteKing();
+            whiteRooksBB = pos.whiteRooks();
+            blackKingSB = CSS.G8;
+            blackRooksBB = ( pos.blackRooks() ^ CSS.H8 ) | CSS.F8;
+            whiteCanCastleKS = pos.whiteCanCastleKingside();
+            whiteCanCastleQS = pos.whiteCanCastleQueenside();
+            blackCanCastleKS = blackCanCastleQS = false;
+        } else {
+            throw new Exception( "Invalid turn value: " + pos.turn() );
+        }
+
+        Position newPos = new Position(
+            pos.whitePawns(),
+            pos.whiteBishops(),
+            pos.whiteKnights(),
+            whiteRooksBB,
+            pos.whiteQueens(),
+            whiteKingSB,
+            pos.blackPawns(),
+            pos.blackBishops(),
+            pos.blackKnights(),
+            blackRooksBB,
+            pos.blackQueens(),
+            blackKingSB,
+            ( pos.turn() == Colour.WHITE ) ? Colour.BLACK : Colour.WHITE,
+            whiteCanCastleKS, whiteCanCastleQS,
+            blackCanCastleKS, blackCanCastleQS,
+            null,
+            1 + pos.halfmoveClock(),
+            ( pos.turn() == Colour.BLACK ) ? ( 1 + pos.fullmoveNumber() )
+                : ( pos.fullmoveNumber() )
+        );
+
+        return newPos;
+    }
+
+    public static Position newPos( Position pos, Square fromSq, Square toSq )
+        throws Exception {
+        long[] pieces = pos.chessmanBBArray();
+
+        int fromSBPieceIndex = pieceIndex( fromSq.bit(), pos );
 
         if ( fromSBPieceIndex < 0 || fromSBPieceIndex > 11 ) {
             throw new Exception( "Invalid value in fromSBPieceIndex: "
@@ -75,7 +135,7 @@ public class Game {
         }
 
         boolean moveIsCapture = false;
-        int toSBPieceIndex = pieceIndex( toSB, pos );
+        int toSBPieceIndex = pieceIndex( toSq.bit(), pos );
 
         // Non-capture move
         if ( toSBPieceIndex == -1 ) {
@@ -99,25 +159,25 @@ public class Game {
         }
 
         // Make the move
-        long fromToBB = fromSB | toSB;
-        chessmen[ fromSBPieceIndex ] ^= fromToBB;
+        long fromToBB = fromSq.bit() | toSq.bit();
+        pieces[ fromSBPieceIndex ] ^= fromToBB;
         if ( moveIsCapture ) {
-            chessmen[ toSBPieceIndex ] ^= toSB;
+            pieces[ toSBPieceIndex ] ^= toSq.bit();
         }
 
         Position newPos = new Position(
-            chessmen[ Position.WHITE_PAWNS ],
-            chessmen[ Position.WHITE_BISHOPS ],
-            chessmen[ Position.WHITE_KNIGHTS ],
-            chessmen[ Position.WHITE_ROOKS ],
-            chessmen[ Position.WHITE_QUEEN ],
-            chessmen[ Position.WHITE_KING ],
-            chessmen[ Position.BLACK_PAWNS ],
-            chessmen[ Position.BLACK_BISHOPS ],
-            chessmen[ Position.BLACK_KNIGHTS ],
-            chessmen[ Position.BLACK_ROOKS ],
-            chessmen[ Position.BLACK_QUEEN ],
-            chessmen[ Position.BLACK_KING ],
+            pieces[ Position.WHITE_PAWNS ],
+            pieces[ Position.WHITE_BISHOPS ],
+            pieces[ Position.WHITE_KNIGHTS ],
+            pieces[ Position.WHITE_ROOKS ],
+            pieces[ Position.WHITE_QUEEN ],
+            pieces[ Position.WHITE_KING ],
+            pieces[ Position.BLACK_PAWNS ],
+            pieces[ Position.BLACK_BISHOPS ],
+            pieces[ Position.BLACK_KNIGHTS ],
+            pieces[ Position.BLACK_ROOKS ],
+            pieces[ Position.BLACK_QUEEN ],
+            pieces[ Position.BLACK_KING ],
             ( pos.turn() == Colour.WHITE ) ? Colour.BLACK : Colour.WHITE,
             false, false, false, false,
             null,
