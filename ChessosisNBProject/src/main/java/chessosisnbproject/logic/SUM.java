@@ -480,7 +480,83 @@ public class SUM {
         }
         return fENRanks;
     }
-    
+
+    public static long[] fENRanksToBBArray( String[] fENRanks )
+        throws Exception {
+        long[] pieces = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        int bitIndexOfFirstColumn = 64;
+        for ( String fENRank : fENRanks ) {
+            char[] fENRankCA = fENRank.toCharArray();
+            bitIndexOfFirstColumn -= 8;
+            long cursorSB = bitIndexToSquareBit( bitIndexOfFirstColumn );
+            fENRanksToBBArrayHelper( fENRankCA, pieces, cursorSB );
+        }
+
+        return pieces;
+    }
+
+    private static void fENRanksToBBArrayHelper(
+        char[] fENRankCA, long[] pieces, long cursorSB ) {
+        for ( int i = 0; i < fENRankCA.length; i++ ) {
+            char currentChar = fENRankCA[ i ];
+            // A digit between 1 and 8 indicating the number of consecutive
+            // empty squares
+            if ( currentChar >= '1' && currentChar <= '8' ) {
+                int numberOfEmptySquares = currentChar - 48;
+                cursorSB <<= numberOfEmptySquares;
+                // Without the continue there will be one more left-shift
+                // after the last else-if
+                continue;
+            } else if ( currentChar == 'P' ) {
+                pieces[ 0 ] |= cursorSB;
+            } else if ( currentChar == 'B' ) {
+                pieces[ 1 ] |= cursorSB;
+            } else if ( currentChar == 'N' ) {
+                pieces[ 2 ] |= cursorSB;
+            } else if ( currentChar == 'R' ) {
+                pieces[ 3 ] |= cursorSB;
+            } else if ( currentChar == 'Q' ) {
+                pieces[ 4 ] |= cursorSB;
+            } else if ( currentChar == 'K' ) {
+                pieces[ 5 ] |= cursorSB;
+            } else if ( currentChar == 'p' ) {
+                pieces[ 6 ] |= cursorSB;
+            } else if ( currentChar == 'b' ) {
+                pieces[ 7 ] |= cursorSB;
+            } else if ( currentChar == 'n' ) {
+                pieces[ 8 ] |= cursorSB;
+            } else if ( currentChar == 'r' ) {
+                pieces[ 9 ] |= cursorSB;
+            } else if ( currentChar == 'q' ) {
+                pieces[ 10 ] |= cursorSB;
+            } else if ( currentChar == 'k' ) {
+                pieces[ 11 ] |= cursorSB;
+            }
+            cursorSB <<= 1;
+        }
+    }
+
+    /**
+     * Returns the square bit at a particular bit index.
+     *
+     * @param index The bit index of a 64-bit integer (an int between 0 and 63).
+     * @return A square bit, i.e., a bitboard with a single bit set.
+     * @throws Exception In case of an invalid index.
+     */
+    public static long bitIndexToSquareBit( int index ) throws Exception {
+        if ( index < 0 || index > 63 ) {
+            throw new Exception( "index: " + index );
+        }
+
+        long bitboard = 0x0000000000000001L;
+
+        for ( int counter = 0; counter < index; counter++ ) {
+            // Shift the set bit left a single position
+            bitboard <<= 1;
+        }
+
+        return bitboard;
+    }
 
     //
     // ============================

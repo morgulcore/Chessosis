@@ -1,40 +1,28 @@
-package chessosisnbproject.data;
+package chessosisnbproject.logic;
 
-import chessosisnbproject.logic.Position;
-import chessosisnbproject.logic.SUM;
+import chessosisnbproject.data.CSS;
+import chessosisnbproject.data.Colour;
 import java.util.Random;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Henrik Lindberg
- */
 public class PositionTest {
 
     // Reference for the standard starting position object
     Position standard;
 
-    /**
-     * Sets up the test fixture. 
-     * (Called before every test case method.)
-     */
+    // Sets up the test fixture (called before every test case method).
     @Before
     public void setUp() {
-        //System.out.println( "Setting up" );
         // Should set up the standard starting position
         standard = new Position();
     }
 
-    /**
-     * Tears down the test fixture. 
-     * (Called after every test case method.)
-     */
+    // Tears down the test fixture (called after every test case method).
     @After
     public void tearDown() {
-        //System.out.println( "Tearing down" );
         standard = null;
     }
 
@@ -172,6 +160,111 @@ public class PositionTest {
         } while ( equalsCounter < 10 );
     }
 
+    @Test
+    public void fENToPositionConversionTest1() throws Exception {
+        Position actualPos = Position.fENToPosition(
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" );
+        if ( !identicalPositions( standard, actualPos ) ) {
+            fail();
+        }
+    }
+
+    @Test
+    public void fENToPositionConversionTest2() throws Exception {
+        Position expectedPos = new Position(
+            CSS.B2 | CSS.C2 | CSS.F2 | CSS.B3 | CSS.H6,
+            0,
+            0,
+            CSS.H1 | CSS.E5,
+            CSS.G6,
+            CSS.C1,
+            CSS.B4 | CSS.F4 | CSS.A5,
+            CSS.E7,
+            CSS.H7,
+            CSS.A7,
+            CSS.C7,
+            CSS.G8,
+            Colour.BLACK,
+            false, false, false, false,
+            null,
+            1,
+            35
+        );
+
+        Position actualPos = Position.fENToPosition(
+            "6k1/r1q1b2n/6QP/p3R3/1p3p2/1P6/1PP2P2/2K4R b - - 1 35" );
+        if ( !identicalPositions( expectedPos, actualPos ) ) {
+            fail();
+        }
+    }
+
+    // Compares each and every field of two Position objects and returns
+    // true if they are all equal. Note that the overridden equals() of
+    // Position doesn't compare all fields.
+    private static boolean identicalPositions(
+        Position first, Position second ) throws Exception {
+        if ( first == second ) { // One and the same object
+            throw new Exception(
+                "Variables 'first' and 'second' point to the same object" );
+        }
+
+        // Compare the bitboards
+        if ( first.whitePawns() != second.whitePawns() ) { // white pawns
+            System.out.printf( "%x\t%x\n", first.whitePawns(), second.whitePawns() );
+            return false;
+        } else if ( first.whiteBishops() != second.whiteBishops() ) { // white bishops
+            return false;
+        } else if ( first.whiteKnights() != second.whiteKnights() ) { // white knights
+            return false;
+        } else if ( first.whiteRooks() != second.whiteRooks() ) {
+            return false;
+        } else if ( first.whiteQueens() != second.whiteQueens() ) {
+            return false;
+        } else if ( first.whiteKing() != second.whiteKing() ) {
+            return false;
+        } else if ( first.blackPawns() != second.blackPawns() ) {
+            return false;
+        } else if ( first.blackBishops() != second.blackBishops() ) {
+            return false;
+        } else if ( first.blackKnights() != second.blackKnights() ) {
+            return false;
+        } else if ( first.blackRooks() != second.blackRooks() ) {
+            return false;
+        } else if ( first.blackQueens() != second.blackQueens() ) {
+            return false;
+        } else if ( first.blackKing() != second.blackKing() ) {
+            return false;
+        } // Compare the turn indicators
+        else if ( first.turn() != second.turn() ) {
+            return false;
+        } // Compare castling rights
+        else if ( first.whiteCanCastleKingside() != second.whiteCanCastleKingside() ) {
+            return false;
+        } else if ( first.whiteCanCastleQueenside() != second.whiteCanCastleQueenside() ) {
+            return false;
+        } else if ( first.blackCanCastleKingside() != second.blackCanCastleKingside() ) {
+            return false;
+        } else if ( first.blackCanCastleQueenside() != second.blackCanCastleQueenside() ) {
+            return false;
+        } // Compare en passant target square indicators
+        else if ( first.enPassantTargetSquare() != second.enPassantTargetSquare() ) {
+            return false;
+        } // Compare halfmove and fullmove counters
+        else if ( first.halfmoveClock() != second.halfmoveClock() ) {
+            return false;
+        } else if ( first.fullmoveNumber() != second.fullmoveNumber() ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    //
+    // =============================
+    // == Private utility methods ==
+    // =============================
+    //
+    //
     private static Position randomPositionObject(
         boolean makeCopy, int fullmove, Colour turn ) {
         Random rand = new Random();

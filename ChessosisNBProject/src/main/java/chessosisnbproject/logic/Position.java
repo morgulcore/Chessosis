@@ -416,6 +416,101 @@ public class Position {
         return makeRegularMove( move );
     }
 
+    /**
+     TODO: Javadoc
+    
+     @param fEN
+     @return
+     @throws Exception 
+     */
+    public static Position fENToPosition( String fEN ) throws Exception {
+        String[] fENFields = SUM.splitFENIntoFields( fEN );
+        String[] fENRanks = SUM.splitFirstFENField( fENFields[ 0 ] );
+
+        long[] pieces = SUM.fENRanksToBBArray( fENRanks );
+
+        Colour turn = fENActiveColor( fENFields[ 1 ] );
+
+        boolean whiteCanCastleKS = fENCastlingRights( fENFields[ 2 ], 'K' ),
+            whiteCanCastleQS = fENCastlingRights( fENFields[ 2 ], 'Q' ),
+            blackCanCastleKS = fENCastlingRights( fENFields[ 2 ], 'k' ),
+            blackCanCastleQS = fENCastlingRights( fENFields[ 2 ], 'q' );
+
+        Square enPassantTSq;
+        if ( fENFields[ 3 ].equals( "-" ) ) {
+            enPassantTSq = null;
+        } else {
+            enPassantTSq = Square.valueOf( fENFields[ 3 ].toUpperCase() );
+        }
+
+        return fENToPositionInit(
+            pieces,
+            turn,
+            whiteCanCastleKS, whiteCanCastleQS,
+            blackCanCastleKS, blackCanCastleQS,
+            enPassantTSq, // En passant target square
+            Integer.parseInt( fENFields[ 4 ] ),
+            Integer.parseInt( fENFields[ 5 ] ) );
+    }
+
+    //
+    // =============================
+    // == Private utility methods ==
+    // =============================
+    //
+    //
+    private static boolean fENCastlingRights(
+        String rights, char colorAndSide ) {
+        if ( rights.equals( "-" ) ) {
+            return false;
+        }
+        char[] rightsCA = rights.toCharArray();
+        for ( int i = 0; i < rightsCA.length; i++ ) {
+            if ( rightsCA[ i ] == colorAndSide ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static Colour fENActiveColor( String activeColor )
+        throws Exception {
+        switch ( activeColor ) {
+            case "w":
+                return Colour.WHITE;
+            case "b":
+                return Colour.BLACK;
+            default:
+                throw new Exception(
+                    "Invalid activeColor string: " + activeColor );
+        }
+    }
+
+    private static Position fENToPositionInit( long[] pieces, Colour turn,
+        boolean whiteCanCastleKS, boolean whiteCanCastleQS,
+        boolean blackCanCastleKS, boolean blackCanCastleQS,
+        Square enPassantTSq, int halfmoveCounter, int fullmoveNumber ) {
+        return new Position(
+            pieces[ Position.WHITE_PAWNS ],
+            pieces[ Position.WHITE_BISHOPS ],
+            pieces[ Position.WHITE_KNIGHTS ],
+            pieces[ Position.WHITE_ROOKS ],
+            pieces[ Position.WHITE_QUEEN ],
+            pieces[ Position.WHITE_KING ],
+            pieces[ Position.BLACK_PAWNS ],
+            pieces[ Position.BLACK_BISHOPS ],
+            pieces[ Position.BLACK_KNIGHTS ],
+            pieces[ Position.BLACK_ROOKS ],
+            pieces[ Position.BLACK_QUEEN ],
+            pieces[ Position.BLACK_KING ],
+            turn,
+            whiteCanCastleKS, whiteCanCastleQS,
+            blackCanCastleKS, blackCanCastleQS,
+            enPassantTSq,
+            halfmoveCounter, fullmoveNumber
+        );
+    }
+
     private static boolean isKingsideCastlingMove( Move move ) {
         return ( move.from() == Square.E1 && move.to() == Square.G1
             && SUM.resolvePiece( Square.E1, move.context() )
