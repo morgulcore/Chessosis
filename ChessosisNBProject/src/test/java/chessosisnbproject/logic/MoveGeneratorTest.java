@@ -39,7 +39,7 @@ public class MoveGeneratorTest {
 
         for ( Square square : Square.values() ) {
             // Get the square set proper
-            actualSquareSet = MoveGenerator.surroundingSquares( square );
+            actualSquareSet = MoveGenerator.kingsSquares( square );
             // Get the comparison square set created by different means
             // altogether
             expectedSquareSet = generateComparisonEnumSetForSSTest(
@@ -57,7 +57,7 @@ public class MoveGeneratorTest {
     @Test
     public void surroundingSquaresNeverReturnsNull() throws Exception {
         for ( Square square : Square.values() ) {
-            if ( MoveGenerator.surroundingSquares( square ) == null ) {
+            if ( MoveGenerator.kingsSquares( square ) == null ) {
                 fail();
             }
         }
@@ -77,7 +77,7 @@ public class MoveGeneratorTest {
         throws Exception {
         EnumSet<Square> squareSet;
         for ( Square square : Square.values() ) {
-            squareSet = MoveGenerator.surroundingSquares( square );
+            squareSet = MoveGenerator.kingsSquares( square );
             // Corner square case
             if ( ( square.bit() & CSS.CORNER_SQUARES ) != 0 ) {
                 // A corner square has three surrounding squares
@@ -266,19 +266,70 @@ public class MoveGeneratorTest {
     }
 
     // FEN: 1k5R/8/1K6/8/8/8/8/8 b - - 0 1
-    /*
-     @Test
-     public void manualMoveGeneratorMethodTest007() throws Exception {
-     Position testPosition
-     = new Position(
-     0, 0, 0, CSS.H8, 0, CSS.B6,
-     0, 0, 0, 0, 0, CSS.B8,
-     Colour.BLACK );
+    @Test
+    public void manualMoveGeneratorMethodTest007() throws Exception {
+        Position testPosition
+            = new Position(
+                0, 0, 0, CSS.H8, 0, CSS.B6,
+                0, 0, 0, 0, 0, CSS.B8,
+                Colour.BLACK );
 
-     String[] expectedMoves = {}; // White's only move
+        String[] expectedMoves = {}; // Checkmate
 
-     manualMoveGeneratorMethodTestWorkhorse( testPosition, expectedMoves );
-     }*/
+        manualMoveGeneratorMethodTestWorkhorse( testPosition, expectedMoves );
+    }
+
+    @Test
+    public void manualMoveGeneratorMethodTest008() throws Exception {
+        Position testPos = Position.fENToPosition(
+            "6k1/r1q1b2n/6QP/p3R3/1p3p2/1P6/1PP2P2/2K4R b - - 1 35" );
+
+        String[] expectedMoves = { "G8-F8", "G8-H8" };
+
+        manualMoveGeneratorMethodTestWorkhorse( testPos, expectedMoves );
+    }
+
+    @Test
+    public void manualMoveGeneratorMethodTest009() throws Exception {
+        Position testPos = Position.fENToPosition(
+            "r1bqk2r/1p2bppp/p1nppn2/8/2BNP3/2N1B3/PPP1QPPP/2KR3R b kq - 5 9" );
+
+        String[] expectedMoves = {
+            "A8-A7", "A8-B8",
+            "C8-D7",
+            "D8-C7", "D8-B6", "D8-A5", "D8-D7",
+            "E8-D7", "E8-F8", "E8-G8",
+            "H8-G8", "H8-F8",
+            "B7-B5", "B7-B6",
+            "E7-F8",
+            "G7-G6", "G7-G5",
+            "H7-H6", "H7-H5",
+            "A6-A5",
+            "C6-E5", "C6-D4", "C6-B4", "C6-A5", "C6-A7", "C6-B8",
+            "D6-D5", "E6-E5",
+            "E6-E5",
+            "F6-G8", "F6-H5", "F6-G4", "F6-E4", "F6-D5", "F6-D7"
+        };
+
+        manualMoveGeneratorMethodTestWorkhorse( testPos, expectedMoves );
+    }
+
+    @Test
+    public void manualMoveGeneratorMethodTest010() throws Exception {
+        Position testPos = Position.fENToPosition(
+            "4k2r/5ppp/8/8/8/8/5PPP/4K2R w Kk - 0 1" );
+
+        String[] expectedMoves = {
+            "F2-F3", "F2-F4",
+            "G2-G3", "G2-G4",
+            "H2-H3", "H2-H4",
+            "E1-E2", "E1-F1", "E1-D1", "E1-D2", "E1-G1",
+            "H1-G1", "H1-F1"
+        };
+
+        manualMoveGeneratorMethodTestWorkhorse( testPos, expectedMoves );
+    }
+
     //
     // ============================
     // == Private helper methods ==
@@ -290,6 +341,7 @@ public class MoveGeneratorTest {
         Position position, String[] expectedMovesSA ) // SA, string array
         throws Exception {
         Set<Move> actualMoves = MoveGenerator.moveGenerator( position );
+
         Set<Move> expectedMoves = new HashSet<>();
 
         // Construct the set of expected moves from the String array

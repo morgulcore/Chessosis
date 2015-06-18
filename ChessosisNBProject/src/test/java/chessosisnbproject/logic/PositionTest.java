@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 public class PositionTest {
 
     // Reference for the standard starting position object
-    Position standard;
+    private Position standard;
 
     // Sets up the test fixture (called before every test case method).
     @Before
