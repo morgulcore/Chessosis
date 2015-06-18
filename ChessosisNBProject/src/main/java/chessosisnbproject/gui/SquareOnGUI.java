@@ -1,10 +1,8 @@
 package chessosisnbproject.gui;
 
 import chessosisnbproject.data.CSS;
-import chessosisnbproject.data.Colour;
 import chessosisnbproject.data.Square;
 import chessosisnbproject.data.Move;
-import chessosisnbproject.data.PieceType;
 import chessosisnbproject.logic.SUM;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
@@ -14,8 +12,13 @@ import java.util.logging.Logger;
 import javax.swing.*;
 
 /**
- *
- * @author Henrik Lindberg
+ A class to represent graphical square objects or "squares on the GUI". The
+ graphical chessboard contains 64 of these JLabel-extending objects. Each
+ of them has their own action listeners attached and can therefore be
+ interacted with by the user. The main way of interacting with SquareOnGUI
+ objects is by clicking on them with the mouse buttons.
+
+ @author Henrik Lindberg
  */
 public class SquareOnGUI extends JLabel implements MouseListener {
 
@@ -24,6 +27,13 @@ public class SquareOnGUI extends JLabel implements MouseListener {
     private final Square square;
     private final boolean darkSquare;
 
+    /**
+     Initialize a SquareOnGUI object. Note that the addMouseListener() method
+     of each SquareOnGUI object is not called from the constructor but from
+     the squaretaker() method of class Chessboard.
+    
+     @param square the Square constant associated with the object
+     */
     public SquareOnGUI( Square square ) {
         super( "", JLabel.CENTER );
         this.square = square;
@@ -53,10 +63,17 @@ public class SquareOnGUI extends JLabel implements MouseListener {
         return (Chessboard) this.getParent();
     }
 
+    // Relays the message forward so that it will eventually be displayed
+    // in the GUI's text area
     private void sendMessage( String message ) {
         getCBRef().sendMessage( message );
     }
 
+    /**
+     Called whenever a SquareOnGUI object needs to be repainted.
+    
+     @param label specifies the graphical square to repaint
+     */
     public static void repaintSquare( SquareOnGUI label ) {
         SquareOnGUI thisSquare = (SquareOnGUI) label;
         if ( SquareOnGUI.activeSquare() == thisSquare ) {
@@ -69,6 +86,12 @@ public class SquareOnGUI extends JLabel implements MouseListener {
         label.repaint();
     }
 
+    /**
+     Used to handle mouse-induced events. Mouse-clicks are the main means
+     of interacting with the Chessosis GUI.
+    
+     @param e information about the event
+     */
     @Override
     public void mouseClicked( MouseEvent e ) {
         // Left mouse button

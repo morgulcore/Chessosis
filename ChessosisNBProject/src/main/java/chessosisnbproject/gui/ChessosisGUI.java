@@ -8,8 +8,10 @@ import java.awt.Dimension;
 import javax.swing.*;
 
 /**
- *
- * @author Henrik Lindberg
+ The central class of the Chessosis GUI. In principle this class holds in it
+ all the other classes that comprise the GUI.
+ 
+ @author Henrik Lindberg
  */
 public class ChessosisGUI extends JFrame {
 
@@ -18,6 +20,10 @@ public class ChessosisGUI extends JFrame {
     private Game game;
     private final Chessboard chessboard;
 
+    /**
+     Sets up and displays the GUI. The key components initialized in the
+     constructor are the graphical chessboard and the message area.
+     */
     public ChessosisGUI() {
         Container container = getContentPane();
         container.setLayout( new BorderLayout() );
@@ -40,10 +46,23 @@ public class ChessosisGUI extends JFrame {
         this.setJMenuBar( menuBar );
     }
 
+    /**
+     Used to display messages in the text area of the GUI. The method is
+     public so it can be called from anywhere provided there's a reference
+     available to the GUI object.
+    
+     @param message the String to display in the message area
+     */
     public void sendMessage( String message ) {
         this.messageArea.append( message );
     }
 
+    /**
+     Begins actual gameplay. Called from main() after the ChessosisGUI
+     constructor call and other tasks that have to do with setting up the GUI.
+    
+     @param game the Game object to "play with"
+     */
     protected void play( Game game ) {
         this.game = game;
         chessboard.setGUIRef( this );
@@ -52,6 +71,11 @@ public class ChessosisGUI extends JFrame {
         sendMessage( "Welcome!\n\n" );
     }
 
+    /**
+     Returns a reference to the Game object used by Chessosis.
+    
+     @return instance of class Game
+     */
     protected Game getGame() {
         return this.game;
     }

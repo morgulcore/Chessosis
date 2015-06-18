@@ -12,14 +12,21 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 /**
- *
- * @author Henrik Lindberg
+ The graphical representation of the board and pieces. Class Chessboard
+ is a JPanel that contains 64 JLabel (or SquareOnGUI) objects that each
+ correspond to a square on the board. Class Chessboard uses GridLayout to
+ arrange the JLabels into an 8-by-8 matrix.
+
+ @author Henrik Lindberg
  */
 public class Chessboard extends JPanel {
 
     private ChessosisGUI chessosisGUIRef;
     private EnumSet<Square> highlightedDest; // highlighted destination squares
 
+    /**
+     Initialize a new Chessboard object.
+     */
     public Chessboard() {
         super( new GridLayout( 0, 8, 1, 1 ) );
         this.setBackground( Color.DARK_GRAY );
@@ -27,19 +34,43 @@ public class Chessboard extends JPanel {
         squaretaker( Task.INIT_SQUARES );
     }
 
+    /**
+     Called from the ChessosisGUI object to provide a means to call its methods,
+     especially sendMessage().
+    
+     @param ref a reference to the main GUI object
+     */
     protected void setGUIRef( ChessosisGUI ref ) {
         this.chessosisGUIRef = ref;
     }
 
-    // Get (Chessosis) GUI reference
+    /**
+     Returns the reference to the main GUI object.
+    
+     @return instance of class ChessosisGUI
+     */
     protected ChessosisGUI getGUIRef() {
         return this.chessosisGUIRef;
     }
 
+    /**
+     This method simply calls the method with the same name in the parent
+     object (of type ChessosisGUI). The message is relayed forward and displayed
+     in the GUI's text area.
+    
+     @param message the message to display to the user
+     */
     protected void sendMessage( String message ) {
         getGUIRef().sendMessage( message );
     }
 
+    /**
+     Handles the tasks associated with the setting of the active square.
+     The active square is set when the user clicks on a square.
+    
+     @param sq the Square object that was set active
+     @throws Exception 
+     */
     protected void activeSquareSet( SquareOnGUI sq ) throws Exception {
         Position pos = getGUIRef().getGame().getPos();
         long squareBit = sq.name().bit();
@@ -53,6 +84,12 @@ public class Chessboard extends JPanel {
         }
     }
 
+    /**
+     Determines whether a square that was just clicked was highlighted.
+    
+     @param name right-clicked square
+     @return true or false
+     */
     protected boolean rightClickedHighlighted( Square name ) {
         if ( this.highlightedDest == null ) {
             return false;
@@ -82,16 +119,25 @@ public class Chessboard extends JPanel {
             && ( pos.blackArmy() & sqBit ) != 0 );
     }
 
+    /**
+     Used in method squaretaker() to identify different tasks.
+     */
     public enum Task {
 
         INIT_SQUARES, DISPLAY_POS, HIGHLIGHT_DEST, UNHIGHLIGHT
     }
 
-    // If the method is not final, NetBeans will warn about an overridable
-    // method call in the constructor
     /**
-     *
-     * @param task
+     squaretaker(), the caretaker of many square-related things. All of the
+     actions performed by squaretaker involve the use of an outer and inner
+     for loop, both of which iterate eight times. This is an often used
+     structure in this class. Indeed, the main motivation behind this lengthy
+     method is to avoid repetition of code.
+     <p>
+     Note that the method is declared final. If it is not, NetBeans will warn
+     about an overridable method call in the constructor.
+     
+     @param task the enum constant specifies the task to perform
      */
     protected final void squaretaker( Task task ) {
         for ( int row = 0; row < 8; row++ ) {
