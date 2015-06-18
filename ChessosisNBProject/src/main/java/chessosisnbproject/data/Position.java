@@ -1,5 +1,7 @@
 package chessosisnbproject.data;
 
+import chessosisnbproject.logic.MoveGenerator;
+import chessosisnbproject.logic.SUM;
 import java.util.Objects;
 
 /**
@@ -314,7 +316,7 @@ public class Position {
     
      @return a long array containing all 12 BB's that express piece placement
      */
-    public long[] chessmanBBArray() {
+    public long[] pieceBBArray() {
 
         long copyOfWhitePawnBB = this.whitePawnBB,
             copyOfWhiteBishopBB = this.whiteBishopBB,
@@ -338,7 +340,7 @@ public class Position {
     }
 
     /**
-     Mainly to be used with the array returned by chessmenBBArray().
+     Mainly to be used with the array returned by pieceBBArray().
      */
     public static final int WHITE_PAWNS = 0, WHITE_BISHOPS = 1, WHITE_KNIGHTS = 2,
         WHITE_ROOKS = 3, WHITE_QUEEN = 4, WHITE_KING = 5,
@@ -386,5 +388,184 @@ public class Position {
             return false;
         }
         return this.fullmoveNumber == other.fullmoveNumber;
+    }
+
+    /**
+     TODO: Javadoc
+    
+     @param move
+     @return
+     @throws Exception 
+     */
+    public static Position makeMove( Move move ) throws Exception {
+        if ( move.context() == null ) {
+            throw new Exception( "Received Move object with null context" );
+        }
+
+        // Kingside castling
+        if ( isKingsideCastlingMove( move ) ) {
+            return makeKingsideCastlingMove( move.context() );
+        } // Queenside castling
+        else if ( isQueensideCastlingMove( move ) ) {
+            return makeQueensideCastlingMove( move.context() );
+        } // Non-castling move
+
+        return makeRegularMove( move );
+    }
+
+    private static boolean isKingsideCastlingMove( Move move ) {
+        return ( move.from() == Square.E1 && move.to() == Square.G1
+            && SUM.resolvePiece( Square.E1, move.context() )
+            == Piece.WHITE_KING )
+            || ( move.from() == Square.E8 && move.to() == Square.G8
+            && SUM.resolvePiece( Square.E8, move.context() )
+            == Piece.BLACK_KING );
+    }
+
+    private static boolean isQueensideCastlingMove( Move move ) {
+        return false;
+    }
+
+    private static Position makeKingsideCastlingMove( Position pos ) throws Exception {
+        long whiteKingSB = CSS.G1, // Making a guess: it's White's turn
+            whiteRooksBB = ( pos.whiteRooks() ^ CSS.H1 ) | CSS.F1,
+            blackKingSB = pos.blackKing(),
+            blackRooksBB = pos.blackRooks();
+        boolean whiteCanCastleKS = false, // Making the same guess as above
+            whiteCanCastleQS = false,
+            blackCanCastleKS = pos.blackCanCastleKingside(),
+            blackCanCastleQS = pos.blackCanCastleQueenside();
+
+        if ( pos.turn() == Colour.BLACK ) { // If the guess went wrong, redo
+            whiteKingSB = pos.whiteKing();  // the initializations
+            whiteRooksBB = pos.whiteRooks();
+            blackKingSB = CSS.G8;
+            blackRooksBB = ( pos.blackRooks() ^ CSS.H8 ) | CSS.F8;
+            whiteCanCastleKS = pos.whiteCanCastleKingside();
+            whiteCanCastleQS = pos.whiteCanCastleQueenside();
+            blackCanCastleKS = blackCanCastleQS = false;
+        }
+
+        return createPositionAfterKingsideCastling(
+            pos, whiteKingSB, whiteRooksBB, blackKingSB, blackRooksBB,
+            whiteCanCastleKS, whiteCanCastleQS,
+            blackCanCastleKS, blackCanCastleQS );
+    }
+    
+    private static Position makeQueensideCastlingMove( Position pos ) {
+        return null;
+    }
+
+    private static Position createPositionAfterKingsideCastling(
+        Position pos,
+        long whiteKingSB, long whiteRooksBB, long blackKingSB, long blackRooksBB,
+        boolean whiteCanCastleKS, boolean whiteCanCastleQS,
+        boolean blackCanCastleKS, boolean blackCanCastleQS ) {
+        Position newPos = new Position(
+            pos.whitePawns(),
+            pos.whiteBishops(),
+            pos.whiteKnights(),
+            whiteRooksBB,
+            pos.whiteQueens(),
+            whiteKingSB,
+            pos.blackPawns(),
+            pos.blackBishops(),
+            pos.blackKnights(),
+            blackRooksBB,
+            pos.blackQueens(),
+            blackKingSB,
+            ( pos.turn() == Colour.WHITE ) ? Colour.BLACK : Colour.WHITE,
+            whiteCanCastleKS, whiteCanCastleQS,
+            blackCanCastleKS, blackCanCastleQS,
+            null,
+            1 + pos.halfmoveClock(),
+            ( pos.turn() == Colour.BLACK ) ? ( 1 + pos.fullmoveNumber() )
+                : ( pos.fullmoveNumber() )
+        );
+
+        return newPos;
+    }
+
+    private static Position makeRegularMove( Move move ) throws Exception {
+        Position pos = move.context();
+        Square from = move.from(), to = move.to();
+        long[] pieces = pos.pieceBBArray();
+
+        int fromSBPieceIndex = pieceIndex( from.bit(), pos );
+
+        if ( fromSBPieceIndex < 0 || fromSBPieceIndex > 11 ) {
+            throw new Exception( "Invalid value in fromSBPieceIndex: "
+                + fromSBPieceIndex );
+        }
+
+        boolean moveIsCapture = false;
+        int toSBPieceIndex = pieceIndex( to.bit(), pos );
+
+        // Non-capture move
+        if ( toSBPieceIndex == -1 ) {
+        } // White captures black piece
+        else if ( pos.turn() == Colour.WHITE
+            && ( toSBPieceIndex >= 6 && toSBPieceIndex <= 11 ) ) {
+            //Game.debugMsgRef.sendMessage( "DB: White captured black\n" );
+            moveIsCapture = true;
+        } // Black captures white piece
+        else if ( pos.turn() == Colour.BLACK
+            && ( toSBPieceIndex >= 0 && toSBPieceIndex <= 5 ) ) {
+            //Game.debugMsgRef.sendMessage( "DB: Black captured white\n" );
+            moveIsCapture = true;
+        } // Invalid index
+        else if ( toSBPieceIndex >= 12 ) {
+            throw new Exception( "Invalid value in toSBPieceIndex: "
+                + toSBPieceIndex );
+        } else { // Did a piece attempt to kill its own kind?
+            throw new Exception( "Cannibalism? Turn: " + pos.turn()
+                + ", toSBPieceIndex: " + toSBPieceIndex );
+        }
+
+        // Make the move
+        long fromToBB = from.bit() | to.bit();
+        pieces[ fromSBPieceIndex ] ^= fromToBB;
+        if ( moveIsCapture ) {
+            pieces[ toSBPieceIndex ] ^= to.bit();
+        }
+
+        Position newPos = new Position(
+            pieces[ Position.WHITE_PAWNS ],
+            pieces[ Position.WHITE_BISHOPS ],
+            pieces[ Position.WHITE_KNIGHTS ],
+            pieces[ Position.WHITE_ROOKS ],
+            pieces[ Position.WHITE_QUEEN ],
+            pieces[ Position.WHITE_KING ],
+            pieces[ Position.BLACK_PAWNS ],
+            pieces[ Position.BLACK_BISHOPS ],
+            pieces[ Position.BLACK_KNIGHTS ],
+            pieces[ Position.BLACK_ROOKS ],
+            pieces[ Position.BLACK_QUEEN ],
+            pieces[ Position.BLACK_KING ],
+            ( pos.turn() == Colour.WHITE ) ? Colour.BLACK : Colour.WHITE,
+            pos.whiteCanCastleKingside(), pos.whiteCanCastleQueenside(),
+            pos.blackCanCastleKingside(), pos.blackCanCastleQueenside(),
+            null,
+            moveIsCapture ? 0 : ( 1 + pos.halfmoveClock() ),
+            ( pos.turn() == Colour.BLACK ) ? ( 1 + pos.fullmoveNumber() )
+                : ( pos.fullmoveNumber() )
+        );
+
+        return newPos;
+    }
+
+    private static int pieceIndex( long squareBit, Position pos )
+        throws Exception {
+        long[] chessmen = pos.pieceBBArray();
+        int pieceIndex = -1;
+
+        for ( int i = 0; i < 12; i++ ) {
+            if ( ( squareBit & chessmen[ i ] ) != 0 ) {
+                pieceIndex = i;
+                break;
+            }
+        }
+
+        return pieceIndex;
     }
 }

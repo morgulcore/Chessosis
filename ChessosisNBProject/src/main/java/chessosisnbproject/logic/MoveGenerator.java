@@ -364,8 +364,8 @@ public class MoveGenerator {
         Set<Move> legalMoves = new LinkedHashSet<>();
 
         for ( Move move : pseudoLegalMoves ) {
-            Position posAfterMove = Game.newPos(
-                move.context(), move.from(), move.to() );
+            //Position posAfterMove = Game.newPos( move.context(), move.from(), move.to() );
+            Position posAfterMove = Position.makeMove( move );
             Square inactiveKing = SUM.squareBitToSquare(
                 ( posAfterMove.turn() == Colour.WHITE )
                     ? posAfterMove.blackKing() : posAfterMove.whiteKing() );

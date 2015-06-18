@@ -107,7 +107,7 @@ public class SquareOnGUI extends JLabel implements MouseListener {
                     activeSquare().name(), this.name(),
                     getCBRef().getGUIRef().getGame().getPos() );
                 try {
-                    if ( !getCBRef().getGUIRef().getGame().makeMove( move ) ) {
+                    if ( !getCBRef().getGUIRef().getGame().newMove( move ) ) {
                         sendMessage( "ERROR: makeMove() refused to execute "
                             + move.toString() + "\n" );
                     } else {
