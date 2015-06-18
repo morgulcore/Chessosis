@@ -7,11 +7,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 
-/**
- * JUnit tests for class Move.
- *
- * @author Henrik Lindberg
- */
 public class MoveTest {
 
     private Move moveObj;
@@ -50,7 +45,7 @@ public class MoveTest {
             "1." + moveObj.from() + "-" + moveObj.to(), moveObj.toString() );
     }
 
-    /**
+    /*
      * First test of overridden equals().
      * "Symmetry: For two references, a and b, a.equals(b) if and only
      * if b.equals(a)."
@@ -64,7 +59,7 @@ public class MoveTest {
         assertTrue( rmo.equals( rmoCopy ) && rmoCopy.equals( rmo ) );
     }
 
-    /**
+    /*
      * Second test of overridden equals().
      * "Reflexivity: For all non-null references, a.equals(a)."
      * http://www.ibm.com/developerworks/library/j-jtp05273/
@@ -78,7 +73,7 @@ public class MoveTest {
         }
     }
 
-    /**
+    /*
      * Third test of overridden equals().
      * "If a.equals(b) and b.equals(c), then a.equals(c)."
      * http://www.ibm.com/developerworks/library/j-jtp05273/
@@ -99,7 +94,7 @@ public class MoveTest {
         }
     }
 
-    /**
+    /*
      * Method hashCode() consistency check.
      * "Consistency with hashCode(): Two equal objects must have the same
      * hashCode() value."

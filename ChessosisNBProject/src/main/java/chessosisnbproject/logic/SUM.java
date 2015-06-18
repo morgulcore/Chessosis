@@ -20,16 +20,22 @@ import java.util.Set;
  */
 public class SUM {
 
-    // Private constructor -- no instances, no javadoc
+    // Private constructor -- no instances, no Javadoc
     private SUM() {
     }
 
     /**
-     TODO: Javadoc
+     Used to determine the pieces of the active color that have "pseudo-legal"
+     access to the square specified by the first parameter. The main use of
+     the method is checking the legality of a newly generated position. If
+     any piece of the active color has pseudo-legal access to the square of
+     the enemy king (i.e., can capture it), then the position is illegal and
+     the move leading to it should be discarded from the list of legal move
+     candidates.
     
-     @param sq
-     @param pos
-     @return
+     @param sq the square to which access will be determined
+     @param pos the context
+     @return the set of pieces that have pseudo-legal access to the given square
      @throws Exception 
      */
     public static EnumSet<Square> pseudoLegalAccess( Square sq, Position pos )
@@ -347,6 +353,15 @@ public class SUM {
         }
     }
 
+    /**
+     Returns the piece located on the square argument or null if the
+     square is empty. Strictly speaking the method returns an enum constant
+     that identifies the type and color of the piece.
+    
+     @param sq the square to examine
+     @param pos the context
+     @return the piece found on the square
+     */
     public static Piece resolvePiece( Square sq, Position pos ) {
         PieceType pieceType = resolvePieceType( sq, pos );
         if ( pieceType == null ) {
@@ -382,11 +397,12 @@ public class SUM {
     }
 
     /**
-     TODO: Javadoc
+     Resolves the color of the piece found on the square parameter or null
+     if it is empty.
     
-     @param sq
-     @param pos
-     @return 
+     @param sq the square to examine
+     @param pos the context
+     @return the color of the piece or null
      */
     public static Colour resolvePieceColor( Square sq, Position pos ) {
         Piece piece = resolvePiece( sq, pos );
@@ -440,6 +456,13 @@ public class SUM {
         return null;
     }
 
+    /**
+     Returns a two-dimensional String array that is used in drawing the chess
+     pieces (which are actually characters) seen on the GUI.
+    
+     @param pos the position to operate on
+     @return a table of characters representing the input position
+     */
     public static String[][] unicodeChessSymbolTable( Position pos ) {
         String[][] table = new String[ 8 ][ 8 ];
         for ( int row = 0; row < 8; row++ ) {
@@ -452,6 +475,16 @@ public class SUM {
         return table;
     }
 
+    /**
+     Returns the square name that corresponds to a given cell in an
+     8-by-8 table. The cell is identified by the row and col parameters.
+     For example, tableCellToSquare( 0, 0 ) would return Square.A8 and
+     tableCellToSquare( 7, 7 ) Square.H1
+    
+     @param row the row (or chessboard rank)
+     @param col the column (or chessboard file)
+     @return 
+     */
     public static Square tableCellToSquare( int row, int col ) {
         char file = (char) ( 'A' + col ),
             rank = (char) ( '8' - row );
@@ -461,6 +494,13 @@ public class SUM {
             (char) file + "" + (char) rank );
     }
 
+    /**
+     Used to split a FEN string into its six constituent fields.
+    
+     @param fEN the FEN string to split
+     @return a String array of six elements
+     @throws Exception 
+     */
     public static String[] splitFENIntoFields( String fEN ) throws Exception {
         // Field separator: a sequence of one of more tabs or spaces
         String[] fENFields = fEN.split( "\\p{Blank}++" );
@@ -471,6 +511,17 @@ public class SUM {
         return fENFields;
     }
 
+    /**
+     Splits the first field of a FEN string into eight parts. Each of these
+     parts represents a rank on the chessboard along with the pieces placed
+     on it. As an example consider the standard starting position:
+     <p>
+     rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
+    
+     @param firstFENField the first field of a FEN string
+     @return a String array representing the eight ranks of the board
+     @throws Exception 
+     */
     public static String[] splitFirstFENField( String firstFENField )
         throws Exception {
         String[] fENRanks = firstFENField.split( "/" );
@@ -481,6 +532,15 @@ public class SUM {
         return fENRanks;
     }
 
+    /**
+     Converts the eight ranks of the FEN strings' first field into an array
+     of 12 bitboards. Both the eight ranks and the 12 bitboards are a means
+     to express the same thing -- the piece placement of the board.
+    
+     @param fENRanks the first field of a FEN string
+     @return an array of 12 bitboards that expresses piece placement on the board
+     @throws Exception 
+     */
     public static long[] fENRanksToBBArray( String[] fENRanks )
         throws Exception {
         long[] pieces = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -495,6 +555,34 @@ public class SUM {
         return pieces;
     }
 
+    /**
+     * Returns the square bit at a particular bit index.
+     *
+     * @param index The bit index of a 64-bit integer (an int between 0 and 63).
+     * @return A square bit, i.e., a bitboard with a single bit set.
+     * @throws Exception In case of an invalid index.
+     */
+    public static long bitIndexToSquareBit( int index ) throws Exception {
+        if ( index < 0 || index > 63 ) {
+            throw new Exception( "index: " + index );
+        }
+
+        long bitboard = 0x0000000000000001L;
+
+        for ( int counter = 0; counter < index; counter++ ) {
+            // Shift the set bit left a single position
+            bitboard <<= 1;
+        }
+
+        return bitboard;
+    }
+
+    //
+    // ============================
+    // == Private static methods ==
+    // ============================
+    //
+    //
     private static void fENRanksToBBArrayHelper(
         char[] fENRankCA, long[] pieces, long cursorSB ) {
         for ( int i = 0; i < fENRankCA.length; i++ ) {
@@ -536,33 +624,6 @@ public class SUM {
         }
     }
 
-    /**
-     * Returns the square bit at a particular bit index.
-     *
-     * @param index The bit index of a 64-bit integer (an int between 0 and 63).
-     * @return A square bit, i.e., a bitboard with a single bit set.
-     * @throws Exception In case of an invalid index.
-     */
-    public static long bitIndexToSquareBit( int index ) throws Exception {
-        if ( index < 0 || index > 63 ) {
-            throw new Exception( "index: " + index );
-        }
-
-        long bitboard = 0x0000000000000001L;
-
-        for ( int counter = 0; counter < index; counter++ ) {
-            // Shift the set bit left a single position
-            bitboard <<= 1;
-        }
-
-        return bitboard;
-    }
-
-    //
-    // ============================
-    // == Private static methods ==
-    // ============================
-    //
     // The following method deals with adjacent squares on diagonals.
     private static Square adjacentSquareOnDiagonal(
         Square square, Direction direction ) throws Exception {

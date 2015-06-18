@@ -394,10 +394,11 @@ public class Position {
     }
 
     /**
-     TODO: Javadoc
+     The means to make or execute a move. The result of the operation is a
+     new Position object.
     
-     @param move
-     @return
+     @param move the move to make
+     @return the position that resulted from making the move in the previous position
      @throws Exception 
      */
     public static Position makeMove( Move move ) throws Exception {
@@ -417,10 +418,22 @@ public class Position {
     }
 
     /**
-     TODO: Javadoc
+     Converts a FEN string into a Position object. FEN strings and Position
+     objects are interchangable in the sense that they both contain the same
+     information. Initializing new Position objects from FEN strings can be
+     convenient. The reason why I created the FEN string to Position object
+     mechanism was to facilitate testing of class MoveGenerator.
+     <p>
+     For now the conversion mechanism takes the form of this static method.
+     However, a more natural approach would probably be a Position constructor
+     that would accept as its parameter a single FEN string.
+     <p>
+     More on FEN strings:
+     <p>
+     https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
     
-     @param fEN
-     @return
+     @param fEN a FEN string
+     @return the Position object created
      @throws Exception 
      */
     public static Position fENToPosition( String fEN ) throws Exception {

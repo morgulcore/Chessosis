@@ -3,9 +3,6 @@ package chessosisnbproject.data;
 import chessosisnbproject.logic.Position;
 import java.util.Objects;
 
-// Javadoc: OK
-// JUnit: OK
-//
 /**
  * Move objects represent possible moves in a particular position. Each move
  * object corresponds to a single move such as E2-E4. When treated as a String

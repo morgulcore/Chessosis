@@ -1,6 +1,7 @@
 package chessosisnbproject.data;
 
 /**
+ * An enum type that represents the 12 distinct chess pieces.
  *
  * @author Henrik Lindberg
  */

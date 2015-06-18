@@ -12,11 +12,11 @@ public enum PieceType {
     PAWN, BISHOP, KNIGHT, ROOK, QUEEN, KING;
 
     /**
-     * Returns an array of the types of chessmen available in standard chess.
+     * Returns an array of the types of pieces available in standard chess.
      *
-     * @return a Chessman array containing the six types of chessmen
+     * @return a PieceType array containing the six types of chess pieces
      */
-    public static PieceType[] availableChessmanTypes() {
+    public static PieceType[] availablePieceTypes() {
         // Let's pass copies in the array rather than the real thing,
         // just to be on the safe side
         PieceType pawn = PieceType.PAWN;

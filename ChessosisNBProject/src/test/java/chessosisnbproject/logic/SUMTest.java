@@ -11,19 +11,12 @@ import java.util.Set;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * JUnit tests for class SUM.
- *
- * @author Henrik
- */
 public class SUMTest {
 
-    /**
+    /*
      * Tests bitboardToSquareSet() with the binary number sequence
      * (0, 1, 11, 111, ...) where the last value has all 64 bits set.
      * Part one of the test checks the square set sizes.
-     *
-     * @throws Exception might be thrown in squareBitToSquare()
      */
     @Test
     public void testBitboardToSquareSetWithBitPatternOfIncreasingSetBitsPartOne()
@@ -44,7 +37,7 @@ public class SUMTest {
         }
     }
 
-    /**
+    /*
      * Part 2 of the test with the bit sequence (1, 11, 111, ...). In
      * the test the bit sequence is translated into a "sequence of sequences"
      * ( (A1), (A1,B1), (A1,B1,C1), ... ). In the final square sequence all
@@ -52,8 +45,6 @@ public class SUMTest {
      * (assuming bitboardToSquareSet() is doing its job). The test works
      * by checking the ordinals of the enum constants against a reference
      * counter.
-     *
-     * @throws Exception might be thrown in squareBitToSquare()
      */
     @Test
     public void testBitboardToSquareSetWithBitPatternOfIncreasingSetBitsPartTwo()
@@ -83,12 +74,10 @@ public class SUMTest {
         }
     }
 
-    /**
+    /*
      * Tests squareSetToBitboard() with a few square sets. As there are 2^64
      * unique square sets, this is certainly not an ideal approach to testing
      * the method.
-     *
-     * @throws Exception might be thrown in squareSetToBitboard()
      */
     @Test
     public void quickAndDirtyTestingOnSquareSetToBitboard() throws Exception {
@@ -112,12 +101,10 @@ public class SUMTest {
         assertEquals( CSS.EDGE, SUM.squareSetToBitboard( edge ) );
     }
 
-    /**
+    /*
      * Verifies that bitboardToSquareSet() and squareSetToBitboard() are
      * inverse functions. In general this sort of a test consists of two
      * parts: f(g(x)) == x and g(f(x)) == x
-     *
-     * @throws Exception
      */
     @Test
     public void inverseFunctionTestOnBitboardToSquareSetAndSquareSetToBitboard()
@@ -163,10 +150,8 @@ public class SUMTest {
         return squareSet;
     }
 
-    /**
+    /*
      * Tests squareBitToSquare( long squareBit ) with all 64 valid input values.
-     *
-     * @throws Exception might be thrown in squareBitToSquare
      */
     @Test
     public void squareBitToSquareWorksWithValidInput() throws Exception {
@@ -178,7 +163,7 @@ public class SUMTest {
         }
     }
 
-    /**
+    /*
      * Verifies that validSquareBit returns true in all cases it should.
      */
     @Test
@@ -188,7 +173,7 @@ public class SUMTest {
         }
     }
 
-    /**
+    /*
      * Tests validSquareBit with random longs. It's extremely unlikely that
      * any of the random values would be a square bit so all of the return
      * values should be false.
@@ -203,7 +188,7 @@ public class SUMTest {
         }
     }
 
-    /**
+    /*
      * Verifies that each element in a set returned by method
      * splitBitboardIntoSetOfSquareBits( long bitboard ) is indeed a
      * square bit. Random values are used here as testing all possible
@@ -223,7 +208,7 @@ public class SUMTest {
         }
     }
 
-    /**
+    /*
      * Tests numberOfSetBits( long bitboard ) with an "increasing" bit
      * pattern of 0, 1, 11, 111, ..., the last pattern having 64 set bits.
      * During the test the method should return the ascending sequence
@@ -245,7 +230,7 @@ public class SUMTest {
         }
     }
 
-    /**
+    /*
      * Checks the set size returned by
      * splitBitboardIntoSetOfSquareBits( long bitboard ) for consistency.
      * For example, if the bitboard argument is 7 (i.e., 4 + 2 + 1), then
@@ -264,7 +249,7 @@ public class SUMTest {
         }
     }
 
-    /**
+    /*
      * Verifies that randomSquare() eventually returns each and every
      * constant defined in enum type Square. Note that failure in this
      * test means an infinite loop, not explicit failure as in fail().
@@ -281,7 +266,7 @@ public class SUMTest {
         assertTrue( true );
     }
 
-    /**
+    /*
      * Tests methods fileOfSquare() by calling it with random Square values.
      * Quick and dirty testing, I admit.
      */
@@ -321,7 +306,7 @@ public class SUMTest {
         }
     }
 
-    /**
+    /*
      * Tests method rankOfSquare with random Square constant values.
      */
     @Test
@@ -360,7 +345,7 @@ public class SUMTest {
         }
     }
 
-    /**
+    /*
      * A comprehensive test for adjacentSquare(). The method is tested with
      * each of the 64 squares in all directions. The test works by comparing
      * the set of squares generated in the two for loops to that returned
@@ -385,7 +370,7 @@ public class SUMTest {
         }
     }
 
-    /**
+    /*
      * Tests determineTypeOfChessman() with 12 different chessmen, two for
      * each type (PAWN, BISHOP, etc.). The test succeeds if each of the
      * chessmen returned is of the expected type.
@@ -407,7 +392,7 @@ public class SUMTest {
 
         // Contains the six Chessman constants. They should be in the
         // following order: PAWN, BISHOP, KNIGHT, ROOK, QUEEN, KING
-        PieceType[] theSixChessmenTypes = PieceType.availableChessmanTypes();
+        PieceType[] theSixChessmenTypes = PieceType.availablePieceTypes();
 
         // During the loop, the following index has all the values from
         // 0 to 11, inclusive
@@ -422,13 +407,11 @@ public class SUMTest {
         }
     }
 
-    /**
+    /*
      * Tests determineTypeOfChessman with a particular position to see if
      * it really returns null on empty squares.
      *
      * FEN: 8/pbnrqk2/8/8/8/8/PBNRQK2/8 w - - 0 1
-     *
-     * @throws Exception
      */
     @Test
     public void determineTypeOfChessmanReturnsNullForEmptySquares()

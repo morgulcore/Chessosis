@@ -26,9 +26,9 @@ public enum Direction {
     }
 
     /**
-     TODO: Javadoc
+     Return the set of the four intermediate directions packed as an array.
     
-     @return 
+     @return the four intermediate directions (NE, SE, SW and NW)
      */
     public static Direction[] intermediateDirections() {
         Direction ne = Direction.NORTHEAST, se = Direction.SOUTHEAST,

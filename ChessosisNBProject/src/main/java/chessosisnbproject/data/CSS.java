@@ -175,7 +175,7 @@ public class CSS {
         | A7 | C7 | E7 | G7 | B8 | D8 | F8 | H8;
 
     /**
-     * The 32 light-colored squares of the chessboard;
+     * The 32 light-colored squares of the chessboard.
      */
     public static final long LIGHT_SQUARES = ~DARK_SQUARES;
 }

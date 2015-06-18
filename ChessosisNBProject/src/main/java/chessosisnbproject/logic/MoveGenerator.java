@@ -47,6 +47,17 @@ public class MoveGenerator {
     // =======================================================
     //
     //
+    /**
+     Returns the pawn's squares associated with the given square and piece
+     color. Pawn's squares mean the squares on which a pawn could capture
+     a piece. For example, the pawn's squares of E4 are {D5, F5} for a white
+     pawn and {D3, F3} for a black one.
+    
+     @param sq square to operate on
+     @param pawnColor the pawn's squares are in part determined by piece color
+     @return a set of zero, one or two squares
+     @throws Exception 
+     */
     public static EnumSet<Square> pawnsSquares( Square sq, Colour pawnColor )
         throws Exception {
         EnumSet<Square> pawnsSquares = EnumSet.noneOf( Square.class );
@@ -70,10 +81,13 @@ public class MoveGenerator {
     }
 
     /**
-     TODO: Javadoc
+     Returns the knight's squares of the given square parameter. For example,
+     with the square parameter value E4 the method would return the set
+     {F6, G5, G3, F2, D2, C3, C5, D6}. Think of the method as applying to
+     the movement of a knight on an empty chessboard.
     
-     @param sq
-     @return
+     @param sq the square to operate on
+     @return a set of up to eight squares
      @throws Exception 
      */
     public static EnumSet<Square> knightsSquares( Square sq )
@@ -102,8 +116,8 @@ public class MoveGenerator {
      * Returns the rook's squares of the square parameter. The rook's squares
      * mean the squares to which a rook could move to on an empty board.
      *
-     * @param sq
-     * @return 
+     * @param sq the square to operate on
+     * @return a set of 14 squares
      * @throws Exception
      */
     public static EnumSet<Square> rooksSquares( Square sq )
@@ -116,10 +130,11 @@ public class MoveGenerator {
     }
 
     /**
-     TODO: Javadoc
+     Return the king's squares of the square parameter. They are the squares
+     to which a king could move to from its current square on an empty board.
     
-     @param sq
-     @return
+     @param sq the current square of a king
+     @return a set of up to eight squares
      @throws Exception 
      */
     public static EnumSet<Square> kingsSquares( Square sq ) throws Exception {
@@ -515,17 +530,17 @@ public class MoveGenerator {
         return kingDestSquares;
     }
 
-    // Incomplete
+    // Incomplete, doesn't do a fully legal job
     private static boolean kingsideCastlingPossible( Position pos )
         throws Exception {
         if ( pos.turn() == Colour.WHITE ) {
             if ( SUM.resolvePieceType( Square.F1, pos ) == null
-                && SUM.resolvePieceType( Square.G1, pos) == null ) {
+                && SUM.resolvePieceType( Square.G1, pos ) == null ) {
                 return true;
             }
         } else if ( pos.turn() == Colour.BLACK ) {
             if ( SUM.resolvePieceType( Square.F8, pos ) == null
-                && SUM.resolvePieceType( Square.G8, pos) == null ) {
+                && SUM.resolvePieceType( Square.G8, pos ) == null ) {
                 return true;
             }
         } else { // pos.turn() == null

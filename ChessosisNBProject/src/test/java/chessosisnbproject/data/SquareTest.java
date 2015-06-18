@@ -1,17 +1,11 @@
 package chessosisnbproject.data;
 
-import chessosisnbproject.data.Square;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * JUnit tests for enum type Square.
- *
- * @author Henrik Lindberg
- */
 public class SquareTest {
 
-    /**
+    /*
      * Verifies that the number of enum constants in Square equals 64.
      */
     @Test
@@ -19,9 +13,9 @@ public class SquareTest {
         assertEquals( 64, Square.values().length );
     }
 
-    /**
+    /*
      * Checks that the constant names are correct and are in the right order.
-     * <p>
+     *
      * The first constant name should be A1, the last H8. The test first
      * concatenates the constant names as a single string and then does a string
      * comparison to a reference string.
@@ -45,9 +39,9 @@ public class SquareTest {
             concatenatedConstantNames );
     }
 
-    /**
+    /*
      * Checks the squareBit property of each enum constant.
-     * <p>
+     *
      * Each squareBit should be a power of two (2^n) and as a sequence they
      * should be in ascending order starting from 2^0 and ending in 2^63.
      */
@@ -77,7 +71,7 @@ public class SquareTest {
         }
     }
 
-    /**
+    /*
      * Doing a bitwise OR between all the squareBits of the enum constants
      * should produce a 64-bit integer with all its bits set.
      */
