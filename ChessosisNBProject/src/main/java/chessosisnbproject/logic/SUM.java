@@ -1,6 +1,5 @@
 package chessosisnbproject.logic;
 
-import chessosisnbproject.data.Position;
 import chessosisnbproject.data.PieceType;
 import chessosisnbproject.data.Direction;
 import chessosisnbproject.data.CSS;
@@ -461,6 +460,27 @@ public class SUM {
             // integer arithmetic.
             (char) file + "" + (char) rank );
     }
+
+    public static String[] splitFENIntoFields( String fEN ) throws Exception {
+        // Field separator: a sequence of one of more tabs or spaces
+        String[] fENFields = fEN.split( "\\p{Blank}++" );
+        if ( fENFields.length != 6 ) {
+            throw new Exception(
+                "Invalid number of FEN fields: " + fENFields.length );
+        }
+        return fENFields;
+    }
+
+    public static String[] splitFirstFENField( String firstFENField )
+        throws Exception {
+        String[] fENRanks = firstFENField.split( "/" );
+        if ( fENRanks.length != 8 ) {
+            throw new Exception(
+                "Invalid number of rank fields: " + fENRanks.length );
+        }
+        return fENRanks;
+    }
+    
 
     //
     // ============================

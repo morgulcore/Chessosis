@@ -1,6 +1,5 @@
 package chessosisnbproject.logic;
 
-import chessosisnbproject.data.Position;
 import chessosisnbproject.data.PieceType;
 import chessosisnbproject.data.Direction;
 import chessosisnbproject.data.Colour;

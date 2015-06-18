@@ -1,7 +1,7 @@
 package chessosisnbproject.gui;
 
 import chessosisnbproject.data.Square;
-import chessosisnbproject.data.Position;
+import chessosisnbproject.logic.Position;
 import chessosisnbproject.data.Move;
 import chessosisnbproject.logic.SUM;
 import java.awt.Color;

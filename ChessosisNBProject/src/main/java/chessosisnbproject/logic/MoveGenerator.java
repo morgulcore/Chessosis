@@ -1,7 +1,6 @@
 package chessosisnbproject.logic;
 
 import chessosisnbproject.data.Move;
-import chessosisnbproject.data.Position;
 import chessosisnbproject.data.PieceType;
 import chessosisnbproject.data.Direction;
 import chessosisnbproject.data.Colour;
@@ -516,7 +515,23 @@ public class MoveGenerator {
         return kingDestSquares;
     }
 
-    private static boolean kingsideCastlingPossible( Position pos ) {
-        return true;
+    // Incomplete
+    private static boolean kingsideCastlingPossible( Position pos )
+        throws Exception {
+        if ( pos.turn() == Colour.WHITE ) {
+            if ( SUM.resolvePieceType( Square.F1, pos ) == null
+                && SUM.resolvePieceType( Square.G1, pos) == null ) {
+                return true;
+            }
+        } else if ( pos.turn() == Colour.BLACK ) {
+            if ( SUM.resolvePieceType( Square.F8, pos ) == null
+                && SUM.resolvePieceType( Square.G8, pos) == null ) {
+                return true;
+            }
+        } else { // pos.turn() == null
+            throw new Exception( "turn() returned: " + pos.turn() );
+        }
+
+        return false;
     }
 }

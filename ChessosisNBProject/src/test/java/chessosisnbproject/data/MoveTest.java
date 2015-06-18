@@ -1,5 +1,6 @@
 package chessosisnbproject.data;
 
+import chessosisnbproject.logic.Position;
 import chessosisnbproject.logic.SUM;
 import org.junit.After;
 import org.junit.Test;

@@ -1,5 +1,6 @@
 package chessosisnbproject.data;
 
+import chessosisnbproject.logic.Position;
 import java.util.Objects;
 
 // Javadoc: OK

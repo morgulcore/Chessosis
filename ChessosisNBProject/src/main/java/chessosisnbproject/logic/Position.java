@@ -1,7 +1,10 @@
-package chessosisnbproject.data;
+package chessosisnbproject.logic;
 
-import chessosisnbproject.logic.MoveGenerator;
-import chessosisnbproject.logic.SUM;
+import chessosisnbproject.data.CSS;
+import chessosisnbproject.data.Colour;
+import chessosisnbproject.data.Move;
+import chessosisnbproject.data.Piece;
+import chessosisnbproject.data.Square;
 import java.util.Objects;
 
 /**
@@ -426,7 +429,8 @@ public class Position {
         return false;
     }
 
-    private static Position makeKingsideCastlingMove( Position pos ) throws Exception {
+    private static Position makeKingsideCastlingMove( Position pos )
+        throws Exception {
         long whiteKingSB = CSS.G1, // Making a guess: it's White's turn
             whiteRooksBB = ( pos.whiteRooks() ^ CSS.H1 ) | CSS.F1,
             blackKingSB = pos.blackKing(),
@@ -451,7 +455,7 @@ public class Position {
             whiteCanCastleKS, whiteCanCastleQS,
             blackCanCastleKS, blackCanCastleQS );
     }
-    
+
     private static Position makeQueensideCastlingMove( Position pos ) {
         return null;
     }
@@ -489,46 +493,86 @@ public class Position {
     private static Position makeRegularMove( Move move ) throws Exception {
         Position pos = move.context();
         Square from = move.from(), to = move.to();
-        long[] pieces = pos.pieceBBArray();
+        long[] pieces = pos.pieceBBArray(); // The 12 piece placement BB's
 
+        // The piece being moved corresponds to one of the 12 bitboards
+        // in pieces[]
+        int fromSBPieceIndex = resolvePieceIndexOfFROM( move.context(), from );
+        // If the move is a capture, then to.bit() corresponds to one out of
+        // ten bitboards in pieces[] (any non-king piece). If moving to an
+        // empty square, the pieceIndex() call returns -1.
+        int toSBPieceIndex = resolvePieceIndexOfTO( move.context(), to );
+
+        // Create a bitboard with exactly two bits set: the 'from' and 'to'
+        // square bits
+        long fromToBB = from.bit() | to.bit();
+        // Unset the 'from' bit and set the 'to' bit using a clever XOR
+        // operation. This means moving the piece from one square to another.
+        pieces[ fromSBPieceIndex ] ^= fromToBB;
+        if ( moveIsCapture( pos.turn(), toSBPieceIndex ) ) {
+            // Unset the bit of the captured piece, i.e., remove it from
+            // its bitboard
+            pieces[ toSBPieceIndex ] ^= to.bit(); // 1 XOR 1 equals 0
+        }
+
+        return createPositionAfterRegularMove(
+            pos, pieces, moveIsCapture( pos.turn(), toSBPieceIndex ) );
+    }
+
+    private static int resolvePieceIndexOfFROM( Position pos, Square from )
+        throws Exception {
         int fromSBPieceIndex = pieceIndex( from.bit(), pos );
-
-        if ( fromSBPieceIndex < 0 || fromSBPieceIndex > 11 ) {
+        if ( fromSBPieceIndex < 0 || fromSBPieceIndex > 11 ) { // Serious error
             throw new Exception( "Invalid value in fromSBPieceIndex: "
                 + fromSBPieceIndex );
         }
+        return fromSBPieceIndex;
+    }
 
-        boolean moveIsCapture = false;
+    private static int resolvePieceIndexOfTO( Position pos, Square to )
+        throws Exception {
         int toSBPieceIndex = pieceIndex( to.bit(), pos );
+        if ( toSBPieceIndex == Position.WHITE_KING
+            || toSBPieceIndex == Position.BLACK_KING ) { // Serious error
+            throw new Exception( "King about to be captured: toSBPieceIndex: "
+                + toSBPieceIndex );
+        }
+        return toSBPieceIndex;
+    }
+
+    private static boolean moveIsCapture( Colour turn, int toSBPieceIndex )
+        throws Exception {
+        boolean moveIsCapture = false; // Guess: toSBPieceIndex == -1
 
         // Non-capture move
         if ( toSBPieceIndex == -1 ) {
+            // Do nothing
         } // White captures black piece
-        else if ( pos.turn() == Colour.WHITE
-            && ( toSBPieceIndex >= 6 && toSBPieceIndex <= 11 ) ) {
+        else if ( turn == Colour.WHITE
+            && ( toSBPieceIndex >= Position.BLACK_PAWNS
+            && toSBPieceIndex <= Position.BLACK_KING ) ) {
             //Game.debugMsgRef.sendMessage( "DB: White captured black\n" );
             moveIsCapture = true;
         } // Black captures white piece
-        else if ( pos.turn() == Colour.BLACK
-            && ( toSBPieceIndex >= 0 && toSBPieceIndex <= 5 ) ) {
+        else if ( turn == Colour.BLACK
+            && ( toSBPieceIndex >= Position.WHITE_PAWNS
+            && toSBPieceIndex <= Position.WHITE_KING ) ) {
             //Game.debugMsgRef.sendMessage( "DB: Black captured white\n" );
             moveIsCapture = true;
         } // Invalid index
-        else if ( toSBPieceIndex >= 12 ) {
+        else if ( toSBPieceIndex > Position.BLACK_KING ) {
             throw new Exception( "Invalid value in toSBPieceIndex: "
                 + toSBPieceIndex );
         } else { // Did a piece attempt to kill its own kind?
-            throw new Exception( "Cannibalism? Turn: " + pos.turn()
+            throw new Exception( "Cannibalism? Turn: " + turn
                 + ", toSBPieceIndex: " + toSBPieceIndex );
         }
 
-        // Make the move
-        long fromToBB = from.bit() | to.bit();
-        pieces[ fromSBPieceIndex ] ^= fromToBB;
-        if ( moveIsCapture ) {
-            pieces[ toSBPieceIndex ] ^= to.bit();
-        }
+        return moveIsCapture;
+    }
 
+    private static Position createPositionAfterRegularMove(
+        Position pos, long[] pieces, boolean moveIsCapture ) {
         Position newPos = new Position(
             pieces[ Position.WHITE_PAWNS ],
             pieces[ Position.WHITE_BISHOPS ],
@@ -550,17 +594,24 @@ public class Position {
             ( pos.turn() == Colour.BLACK ) ? ( 1 + pos.fullmoveNumber() )
                 : ( pos.fullmoveNumber() )
         );
-
         return newPos;
     }
 
+    // Each of the 12 distinct pieces correspond to an index in the array
+    // returned by pieceBBArray(). The pieceIndex() method is used to look up
+    // the index of the bitboard that matches the squareBit parameter. For
+    // example, if in Position somePos there's a white rook on a1, then the
+    // call pieceIndex( CSS.A1, somePos ) would return 3.
+    //
+    // The value returned is between -1 to 11, inclusive. The value -1
+    // indicates that the squareBit parameter corresponds to an empty square.
     private static int pieceIndex( long squareBit, Position pos )
         throws Exception {
-        long[] chessmen = pos.pieceBBArray();
+        long[] pieces = pos.pieceBBArray();
         int pieceIndex = -1;
 
         for ( int i = 0; i < 12; i++ ) {
-            if ( ( squareBit & chessmen[ i ] ) != 0 ) {
+            if ( ( squareBit & pieces[ i ] ) != 0 ) {
                 pieceIndex = i;
                 break;
             }

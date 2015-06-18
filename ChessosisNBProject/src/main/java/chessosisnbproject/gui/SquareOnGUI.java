@@ -84,7 +84,7 @@ public class SquareOnGUI extends JLabel implements MouseListener {
                 }
             }
         } else if ( e.getButton() == MouseEvent.BUTTON2 ) { // Middle mouse button
-            chessosisnbproject.data.Position pos
+            chessosisnbproject.logic.Position pos
                 = getCBRef().getGUIRef().getGame().getPos();
             chessosisnbproject.data.Piece piece
                 = SUM.resolvePiece( square, pos );

@@ -1,7 +1,6 @@
 package chessosisnbproject.logic;
 
 import chessosisnbproject.data.Move;
-import chessosisnbproject.data.Position;
 import chessosisnbproject.data.Colour;
 import chessosisnbproject.data.CSS;
 import chessosisnbproject.data.Square;
