@@ -1,0 +1,23 @@
+# Chessosis program structure description
+
+Class Game is a key class in Chessosis because it connects together many other classes. As its name name implies, the class is used to store game status information. Currently that information consists of only the positional game history. However, it would be easy to add other information too, such as information on the players or game time controls (chess clocks).
+
+The positional game history of class Game is a container object of type `List<Position>`. To start with the game history contains only the standard starting position. As moves are made, the resulting positions are added to the list one by one. The last position in the list is always the current position.
+
+Class Position is the means to express an individual position. It contains exactly the same information than a FEN string. In fact, the class has a static method called `fENToPosition()` that can be used to create a Position object from the FEN string parameter. In future development one might also add a constructor that receives a FEN string as its single argument. Doing it the other way round might also be a useful feature: converting Position objects into FEN strings would provide a convenient way to save them in text files. More information on FEN string can be found in the following article:
+
+`https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation`
+
+Each position contains zero or more moves. In Chessosis moves are represented as instances of class Move. Each such instance or object contains as its fields a FROM square, TO square and a context position. The FROM and TO squares describes the source and destination square of the piece being moved. Example: pawn moves FROM square E2 TO square E4. The context position means the position where the move takes place.
+
+The means to actually make a move is the static method `Position.makeMove()`. It takes a Move object as its single parameter and returns the Position object that results from making that move.
+
+There are only so many legal moves in any given position (sometimes there are none as occurs in checkmate or stalemate). The means to find these moves is the static method `MoveGenerator.moveGenerator()`. Calling this method with a Position parameter starts a rather complex process that results in the method returning a Set of Move objects. Method `Position.makeMove()` should only ever be called with one of the Move objects returned by `moveGenerator()`.
+
+Class SUM is a collection of static general-purpose methods (the name stands for Static Utility Methods). It can be thought of as a sort of a light-weight library used by Chessosis. It's not possible to create SUM objects. As a general rule, if a new method will be used by several classes and is static by nature, it should be placed in SUM. SUM contains many of the technical details of the inner workings of Chessosis.
+
+Class CSS defines the key data used in Chessosis. Most importantly, it contains the mapping of the square indices of a 64-bit integer to chessboard squares. Each bit in a 64-bit integer corresponds to exactly one square. The Javadoc of CSS contains a diagram of these mappings. The mappings described in the diagram are hard-coded into Chessosis and thus cannot be changed without rewriting much of the program.
+
+The GUI of Chessosis consists of three key classes: ChessosisGUI, Chessboard and SquareOnGUI. It could be said that the Chessboard object contains 64 SquareOnGUI objects and that the Chessboard object in turn in contained in the ChessosisGUI object. ChessosisGUI also contains a text area of type JTextArea. In the class diagram the area is expressed as the class MessageService. This describes its conceptual function rather than its technical implementation. The point of the message service or GUI text area is to relay information to the user of whatever is considered important, be it game status information or messages about the inner workings of Chessosis.
+
+Enum type Square consists of 64 constants named after the chessboard squares (e.g., E4 or G7). These constants are mainly a convenience feature. The basic idea of Chessosis is to express information about a given position with a set of bitboards (64-bit integers). However, bitboards and sets of Square constants can be used in a fairly interchangable manner. One of the reasons for this is the conversion methods found in SUM. It's easy to convert a set of squares into a bitboard and vica versa. Also, each Square constant contains a type long property that is returned by the bit() accessor method. The value returned is a 64-bit integer with exactly one bit set. It expresses the bit index the square is mapped to (see the Javadoc of class CSS).
