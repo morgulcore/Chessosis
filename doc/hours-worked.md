@@ -190,10 +190,24 @@ It's White's turn to move, and the supposedly legal moves for the rook on E2 are
 
 I suppose the best remedy for these bugs would be to divide the move generation process into two stages. First find the seemingly legal (pseudolegal) moves for each piece and then create the position each of the moves would result in. If the king can be captured in a generated position, the move is illegal.
 
-## 2015-06-15 | Hours worked: -
+## 2015-06-15 | Hours worked: 10
 
 Today I have done a lot of work on the `MoveGenerator` class and its static methods. The whole move generation process I've created is much more procedural than object-orientated. Somehow that's the way I like it. Anyway, the move generator works well enough that I can actually play a sort of limited version of chess with myself.
 
 The biggest issue I have had with MoveGenerator is that I have lost track with its structure, assuming it ever had any. Structure is important to me which is why I've spent most of the day (re)organizing the class's code. One of the changes I've made is particularly important -- there's now a clear distinction between pseudo-legal and legal move generation. This can be seen in MoveGenerator's most important method, `moveGenerator()`. It first gets the pseudo-legal moves and only after that starts to analyze each one and discard the ones that are illegal. I haven't actually coded the part that determines which of the pseudo-legal moves are in fact legal.
 
 Time to get started on the second code review (I got some extra time from the teacher, something I appreciate).
+
+## 2015-06-19 | Hours worked: (too many)
+
+For the last few days I have done little else than worked on Chessosis. I suppose most of my time in that has involved rearranging the code so as to improve the structure of the program. I've also added functionality little by little. One thing I've added is `Position.fENToPosition()`. It is a method that takes as its input a FEN string and returns the corresponding Position object. Converting from FEN to Position is quite convenient in testing `MoveGenerator.moveGenerator()`. Rather than having to manually initialize a Position object for each JUnit test one can just create the object with a FEN string. It would also be easy to store Positions in a text file by first converting them to FEN (which is ASCII text).
+
+The move generation process of Chessosis is not perfect yet, and what comes to this course, I have no time to fix it. I have already missed the final deadline. After completing this entry I'm going to make my final git push and then inform the teacher of me missing the deadline. Hopefully he will agree to evaluate my course performance on my final git push rather than the last one before the deadline.
+
+The details of the deficiencies left in the Chessosis move generation process can be viewed by starting the program. The listing will appear in the text area of the GUI.
+
+Creating Chessosis has been a complex and demanding project. Had I known it would be this difficult I suppose I would have opted to create something like a checkers or a Tic-Tac-Toe game. Even so, I don't really regret this project. While I failed to complete it on the course schedule I still like the structure and basic idea of it. I intend to keep working on Chessosis as a hobby project.
+
+I have now done all that time and mental energy permits me to do on this course. I don't know if that was sufficient but even so, it was the best I could do.
+
+Hyvää juhannusta!
