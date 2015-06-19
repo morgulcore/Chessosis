@@ -14,7 +14,7 @@ import javax.swing.*;
  @author Henrik Lindberg
  */
 public class ChessosisGUI extends JFrame {
-
+    
     private final JTextArea messageArea;
     private final JMenuBar menuBar;
     private Game game;
@@ -27,10 +27,10 @@ public class ChessosisGUI extends JFrame {
     public ChessosisGUI() {
         Container container = getContentPane();
         container.setLayout( new BorderLayout() );
-
+        
         chessboard = new Chessboard();
         container.add( chessboard, BorderLayout.CENTER );
-
+        
         this.messageArea = new JTextArea( 10, 20 );
         this.messageArea.setEditable( false );
         this.messageArea.setFont(
@@ -38,7 +38,7 @@ public class ChessosisGUI extends JFrame {
         //container.add( this.messageArea, BorderLayout.SOUTH );
         container.add( new JScrollPane( this.messageArea ),
             BorderLayout.SOUTH );
-
+        
         this.menuBar = new JMenuBar();
         menuBar.setOpaque( true );
         menuBar.setBackground( Color.BLACK );
@@ -68,7 +68,21 @@ public class ChessosisGUI extends JFrame {
         chessboard.setGUIRef( this );
         Game.setDebugMsgRef( this );
         chessboard.squaretaker( Chessboard.Task.DISPLAY_POS );
-        sendMessage( "Welcome!\n\n" );
+        sendMessage( "Welcome to Chessosis!\n\n" );
+        sendMessage( "Left-click on a piece to see the squares it can move to\n" );
+        sendMessage(
+            "After doing that, you can right-click on one of the highlighted squares\n" );
+        sendMessage( "Doing so will execute the move\n" );
+        sendMessage( "Try also clicking on the board with the middle mouse button\n\n" );
+        sendMessage( "This version of Chessosis has some deficiencies:\n" );
+        sendMessage( "* It enforces only part of the rules of kingside castling\n" );
+        sendMessage( "* Queenside castling is not supported\n" );
+        sendMessage( "* Pawns that reach the last rank don't get promoted\n" );
+        sendMessage( "* En passant captures are not supported\n" );
+        sendMessage( "* The 50-move rule or the rule of threefold repetition is not enforced\n" );
+        sendMessage( "* The user has to figure out for themselves when the game has ended\n\n" );
+        sendMessage( "These deficiencies are due to time constraints, not bad design\n" );
+        sendMessage( "Any of them could be rectified with a few hours of intense coding!\n\n" );
     }
 
     /**
@@ -79,7 +93,7 @@ public class ChessosisGUI extends JFrame {
     protected Game getGame() {
         return this.game;
     }
-
+    
     public static void main( String[] args ) {
         javax.swing.SwingUtilities.invokeLater( new Runnable() {
             @Override
@@ -91,7 +105,7 @@ public class ChessosisGUI extends JFrame {
                 chessosisGUI.setTitle( "Chessosis" );
                 //chessosisGUI.pack();
                 chessosisGUI.setVisible( true );
-
+                
                 chessosisGUI.play( new Game() );
             }
         } );
