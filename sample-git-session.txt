@@ -1,0 +1,10 @@
+ssh-agent /bin/bash
+ssh-add ~/.ssh/id_rsa
+# Change tab title
+cd uf/yo1415/javalabra/
+git clone 'git@github.com:morgulcore/Chessosis.git'
+cd Chessosis/
+git status
+git add <dir>
+git commit -am 'Commit message'
+git push
