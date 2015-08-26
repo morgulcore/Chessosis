@@ -1,0 +1,4 @@
+--fENToPosition(): a constructor with a FEN string parameter is more natural than this static method
+--positionToFEN(): doesn't exist yet. How about an overridden toString()?
+--FEN string validation?
+--deepEquals() for detecting Position objects with identical contents
