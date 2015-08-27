@@ -569,6 +569,10 @@ public class SUM {
      '/'. A sort of a side-effect test is making sure that everything after
      the first field and the single space up to the end of the string is
      in the set [a-h0-9kKqQw-].
+     4. The first field doesn't contain two (or more) consecutive decimal
+     digits. Something like .../2p311/... doesn't make much sense.
+     5. The "sum" of each of the subfields of the first field is 8. For
+     example, 2p5 = 2 + 1 + 5, rnbqkbnr = 8 * 1 and 4P3 = 4 + 1 + 3.
 
      The ordinal number of the tests correspond to the integer value
      returned by the method should the test fail. If all of the tests
@@ -578,6 +582,8 @@ public class SUM {
      --validateFENRecordReturns0()
      --validateFENRecordReturns1()
      --validateFENRecordReturns2()
+     --validateFENRecordReturns3()
+     --validateFENRecordReturns4()
      */
     public static int validateFENRecord( String fENRecord ) {
         String charClassPlus = "[pPnNbBrRqQkK1-8]+"; // Needed in test 3
@@ -592,13 +598,17 @@ public class SUM {
             return 2;
         } // Test 3
         else if ( !Pattern.matches(
-                '^' +
-                charClassPlus + '/' + charClassPlus + '/' +
-                charClassPlus + '/' + charClassPlus + '/' +
-                charClassPlus + '/' + charClassPlus + '/' +
-                charClassPlus + '/' + charClassPlus + " [a-h 0-9kKqQw-]+$",
+                '^'
+                + charClassPlus + '/' + charClassPlus + '/'
+                + charClassPlus + '/' + charClassPlus + '/'
+                + charClassPlus + '/' + charClassPlus + '/'
+                + charClassPlus + '/' + charClassPlus + " [a-h 0-9kKqQw-]+$",
                 fENRecord ) ) {
             return 3;
+        } // Test 4. Note that the result of the match is not negated, i.e.,
+        // a FEN record that matches the regex is invalid.
+        else if ( Pattern.matches( "^[^ ]*[1-8]{2}[^ ]* .*$", fENRecord ) ) {
+            return 4;
         }
 
         return 0;

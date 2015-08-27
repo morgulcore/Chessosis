@@ -520,12 +520,45 @@ public class SUMTest {
             // Empty subfield in first FEN record field
             "rnbqkbnr/pppppppp/8//8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
             // Extra subfield
-            "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR/8 w KQkq c6 0 2"
+            "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR/8 w KQkq c6 0 2",
+            // Single subfield
+            "RNBQKBNR w KQkq - 0 1",
+            // '/' at beginning
+            "/rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            // Trailing '/'
+            "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR/ b KQkq e3 0 1",
+            // Invalid char '9'
+            "rnbqkbnr/pppppppp/8/9/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
+            // Empty string subfield at end
+            "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/ w KQkq c6 0 2"
         };
 
         for ( String s : invalidFENRecords ) {
-            System.out.println( "Test: " + s );
             assertEquals( 3, SUM.validateFENRecord( s ) );
+        }
+    }
+
+    /*
+     validateFENRecord(), consecutive digits detection test, applies to the
+     first field of a FEN record
+     */
+    @Test
+    public void validateFENRecordReturns4() {
+        String[] invalidFENRecords = {
+            // Two consecutive digits, exactly
+            "rnbqkbnr/pppppppp/71/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            // Three consecutive digits
+            "rnbqkbnr/pppppppp/8/8/4P111/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
+            // Five consecutive digits
+            "rnbqkbnr/pp1ppppp/12345/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2",
+            // Two consecutive digits at the beginning of the first field
+            "12bqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
+            // Two consecutive digits at the end of the first field
+            "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKB78 w KQkq c6 0 2"
+        };
+
+        for ( String s : invalidFENRecords ) {
+            assertEquals( 4, SUM.validateFENRecord( s ) );
         }
     }
 }
