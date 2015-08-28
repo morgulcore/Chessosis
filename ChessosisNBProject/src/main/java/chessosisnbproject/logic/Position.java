@@ -8,24 +8,24 @@ import chessosisnbproject.data.Square;
 import java.util.Objects;
 
 /**
- * The instances of class Position contain information about positions.
- * The instances contain enough such information that they can be used
- * to produce a FEN string representation of the position. The following
- * is Wikipedia's description of the six fields of a FEN record:
- * <p>
- * http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation#Definition
- * <p>
- * Instances of class Position should be considered immutable objects.
- * That is, there's no way to modify the instance variables after the creation
- * of an Position object.
- * <p>
- * Class Position should be considered "dumb by design". It has no error
- * detection or consistency checking logic in it so it can be initialized
- * with completely meaningless data. This simply means the assumption that
- * the classes (or people) who use Position take responsibility for the
- * consistency of the data they initialize it with.
- *
- * @author Henrik Lindberg
+ The instances of class Position contain information about positions.
+ The instances contain enough such information that they can be used
+ to produce a FEN string representation of the position. The following
+ is Wikipedia's description of the six fields of a FEN record:
+ <p>
+ http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation#Definition
+ <p>
+ Instances of class Position should be considered immutable objects.
+ That is, there's no way to modify the instance variables after the creation
+ of an Position object.
+ <p>
+ Class Position should be considered "dumb by design". It has no error
+ detection or consistency checking logic in it so it can be initialized
+ with completely meaningless data. This simply means the assumption that
+ the classes (or people) who use Position take responsibility for the
+ consistency of the data they initialize it with.
+
+ @author Henrik Lindberg
  */
 public class Position {
 
@@ -65,7 +65,7 @@ public class Position {
      recommended constructor to use when setting up a game to start from
      something else than the standard starting position. For the standard
      starting position, use the constructor with the empty parameter list.
-    
+
      @param whitePawnBB six bitboards to express the placement of White's chessmen
      @param whiteBishopBB
      @param whiteKnightBB
@@ -156,7 +156,7 @@ public class Position {
      color need to be explicitly specified to this constructor. While in some
      situations this is convenient, it will also lead to loss of game
      information if used in serious gameplay.
-    
+
      @param whitePawnBB
      @param whiteBishopBB
      @param whiteKnightBB
@@ -169,7 +169,7 @@ public class Position {
      @param blackRookBB
      @param blackQueenBB
      @param blackKingBB
-     @param turn 
+     @param turn
      */
     public Position( long whitePawnBB, long whiteBishopBB, long whiteKnightBB,
         long whiteRookBB, long whiteQueenBB, long whiteKingBB,
@@ -240,9 +240,9 @@ public class Position {
     }
 
     /**
-     * Used to determine the active color, i.e., who's turn it is.
-     *
-     * @return a Color constant, either WHITE or BLACK
+     Used to determine the active color, i.e., who's turn it is.
+
+     @return a Color constant, either WHITE or BLACK
      */
     public Colour turn() {
         return this.turn;
@@ -268,7 +268,7 @@ public class Position {
      Accessor method that returns non-null only when an enemy pawn has just
      advanced two squares. Whether or not the pawn can actually be captured
      en passant makes no difference.
-    
+
      @return Square constant or null
      */
     public Square enPassantTargetSquare() {
@@ -284,9 +284,9 @@ public class Position {
     }
 
     /**
-     * Returns the white army, i.e., all of White's chessmen.
-     *
-     * @return a bitboard of all white chessmen
+     Returns the white army, i.e., all of White's chessmen.
+
+     @return a bitboard of all white chessmen
      */
     public long whiteArmy() {
         return this.whitePawnBB | this.whiteBishopBB | this.whiteKnightBB
@@ -294,9 +294,9 @@ public class Position {
     }
 
     /**
-     * Returns the black army, i.e., all of Black's chessmen.
-     *
-     * @return a bitboard of all black chessmen
+     Returns the black army, i.e., all of Black's chessmen.
+
+     @return a bitboard of all black chessmen
      */
     public long blackArmy() {
         return this.blackPawnBB | this.blackBishopBB | this.blackKnightBB
@@ -304,10 +304,10 @@ public class Position {
     }
 
     /**
-     * Returns the union of the white and black armies, i.e., all chessmen
-     * on the board.
-     *
-     * @return all chessmen on the board
+     Returns the union of the white and black armies, i.e., all chessmen
+     on the board.
+
+     @return all chessmen on the board
      */
     public long bothArmies() {
         return whiteArmy() | blackArmy();
@@ -316,7 +316,7 @@ public class Position {
     /**
      Packs the 12 fundamental bitboards into an array and returns it to
      the caller. Note the 12 int constants for specifying the array indices.
-    
+
      @return a long array containing all 12 BB's that express piece placement
      */
     public long[] pieceBBArray() {
@@ -355,7 +355,7 @@ public class Position {
      seems to be necessary whenever overriding equals(). This is because it is
      assumed (required) that whenever two objects are equal (according to the
      objects' equals() method), they also have the same hashCode() value.
-    
+
      @return a stash of hash?
      */
     @Override
@@ -374,9 +374,9 @@ public class Position {
      a new Position object is added into the set. Also, every time a piece is
      moved, this.turn gets toggled; every other time a piece gets moved,
      this.fullmoveNumber gets incremented.
-    
+
      @param obj
-     @return 
+     @return
      */
     @Override
     public boolean equals( Object obj ) {
@@ -396,10 +396,10 @@ public class Position {
     /**
      The means to make or execute a move. The result of the operation is a
      new Position object.
-    
+
      @param move the move to make
      @return the position that resulted from making the move in the previous position
-     @throws Exception 
+     @throws Exception
      */
     public static Position makeMove( Move move ) throws Exception {
         if ( move.context() == null ) {
@@ -431,14 +431,27 @@ public class Position {
      More on FEN strings:
      <p>
      https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
-    
+
      @param fEN a FEN string
      @return the Position object created
-     @throws Exception 
+     @throws Exception
      */
     public static Position fENToPosition( String fEN ) throws Exception {
-        String[] fENFields = SUM.splitFENIntoFields( fEN );
-        String[] fENRanks = SUM.splitFirstFENField( fENFields[ 0 ] );
+        String[] fENFields = fEN.split( " " );
+        if ( fENFields.length != 6 ) { // Serious error
+            System.out.println(
+                "ERROR: fENToPosition(): fENFields.length == "
+                + fENFields.length );
+            System.exit( 1 );
+        }
+        
+        String[] fENRanks = fENFields[ 0 ].split( "/" );
+        if ( fENRanks.length != 8 ) { // Serious error
+            System.out.println(
+                "ERROR: fENToPosition(): fENRanks.length == "
+                + fENRanks.length );
+            System.exit( 1 );
+        }
 
         long[] pieces = SUM.fENRanksToBBArray( fENRanks );
 
@@ -525,12 +538,12 @@ public class Position {
     }
 
     private static boolean isKingsideCastlingMove( Move move ) {
-        return ( move.from() == Square.E1 && move.to() == Square.G1
+        return (move.from() == Square.E1 && move.to() == Square.G1
             && SUM.resolvePiece( Square.E1, move.context() )
-            == Piece.WHITE_KING )
-            || ( move.from() == Square.E8 && move.to() == Square.G8
+            == Piece.WHITE_KING)
+            || (move.from() == Square.E8 && move.to() == Square.G8
             && SUM.resolvePiece( Square.E8, move.context() )
-            == Piece.BLACK_KING );
+            == Piece.BLACK_KING);
     }
 
     private static boolean isQueensideCastlingMove( Move move ) {
@@ -540,7 +553,7 @@ public class Position {
     private static Position makeKingsideCastlingMove( Position pos )
         throws Exception {
         long whiteKingSB = CSS.G1, // Making a guess: it's White's turn
-            whiteRooksBB = ( pos.whiteRooks() ^ CSS.H1 ) | CSS.F1,
+            whiteRooksBB = (pos.whiteRooks() ^ CSS.H1) | CSS.F1,
             blackKingSB = pos.blackKing(),
             blackRooksBB = pos.blackRooks();
         boolean whiteCanCastleKS = false, // Making the same guess as above
@@ -552,7 +565,7 @@ public class Position {
             whiteKingSB = pos.whiteKing();  // the initializations
             whiteRooksBB = pos.whiteRooks();
             blackKingSB = CSS.G8;
-            blackRooksBB = ( pos.blackRooks() ^ CSS.H8 ) | CSS.F8;
+            blackRooksBB = (pos.blackRooks() ^ CSS.H8) | CSS.F8;
             whiteCanCastleKS = pos.whiteCanCastleKingside();
             whiteCanCastleQS = pos.whiteCanCastleQueenside();
             blackCanCastleKS = blackCanCastleQS = false;
@@ -586,13 +599,13 @@ public class Position {
             blackRooksBB,
             pos.blackQueens(),
             blackKingSB,
-            ( pos.turn() == Colour.WHITE ) ? Colour.BLACK : Colour.WHITE,
+            (pos.turn() == Colour.WHITE) ? Colour.BLACK : Colour.WHITE,
             whiteCanCastleKS, whiteCanCastleQS,
             blackCanCastleKS, blackCanCastleQS,
             null,
             1 + pos.halfmoveClock(),
-            ( pos.turn() == Colour.BLACK ) ? ( 1 + pos.fullmoveNumber() )
-                : ( pos.fullmoveNumber() )
+            (pos.turn() == Colour.BLACK) ? (1 + pos.fullmoveNumber())
+                : (pos.fullmoveNumber())
         );
 
         return newPos;
@@ -657,14 +670,14 @@ public class Position {
             // Do nothing
         } // White captures black piece
         else if ( turn == Colour.WHITE
-            && ( toSBPieceIndex >= Position.BLACK_PAWNS
-            && toSBPieceIndex <= Position.BLACK_KING ) ) {
+            && (toSBPieceIndex >= Position.BLACK_PAWNS
+            && toSBPieceIndex <= Position.BLACK_KING) ) {
             //Game.debugMsgRef.sendMessage( "DB: White captured black\n" );
             moveIsCapture = true;
         } // Black captures white piece
         else if ( turn == Colour.BLACK
-            && ( toSBPieceIndex >= Position.WHITE_PAWNS
-            && toSBPieceIndex <= Position.WHITE_KING ) ) {
+            && (toSBPieceIndex >= Position.WHITE_PAWNS
+            && toSBPieceIndex <= Position.WHITE_KING) ) {
             //Game.debugMsgRef.sendMessage( "DB: Black captured white\n" );
             moveIsCapture = true;
         } // Invalid index
@@ -694,13 +707,13 @@ public class Position {
             pieces[ Position.BLACK_ROOKS ],
             pieces[ Position.BLACK_QUEEN ],
             pieces[ Position.BLACK_KING ],
-            ( pos.turn() == Colour.WHITE ) ? Colour.BLACK : Colour.WHITE,
+            (pos.turn() == Colour.WHITE) ? Colour.BLACK : Colour.WHITE,
             pos.whiteCanCastleKingside(), pos.whiteCanCastleQueenside(),
             pos.blackCanCastleKingside(), pos.blackCanCastleQueenside(),
             null,
-            moveIsCapture ? 0 : ( 1 + pos.halfmoveClock() ),
-            ( pos.turn() == Colour.BLACK ) ? ( 1 + pos.fullmoveNumber() )
-                : ( pos.fullmoveNumber() )
+            moveIsCapture ? 0 : (1 + pos.halfmoveClock()),
+            (pos.turn() == Colour.BLACK) ? (1 + pos.fullmoveNumber())
+                : (pos.fullmoveNumber())
         );
         return newPos;
     }
@@ -719,7 +732,7 @@ public class Position {
         int pieceIndex = -1;
 
         for ( int i = 0; i < 12; i++ ) {
-            if ( ( squareBit & pieces[ i ] ) != 0 ) {
+            if ( (squareBit & pieces[ i ]) != 0 ) {
                 pieceIndex = i;
                 break;
             }

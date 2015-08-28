@@ -20,7 +20,7 @@ public class SUMTest {
      */
     @Test
     public void testBitboardToSquareSetWithBitPatternOfIncreasingSetBitsPartOne()
-            throws Exception {
+        throws Exception {
         long bitPattern = 0;
 
         // Testing with a null bitboard to start with
@@ -33,7 +33,7 @@ public class SUMTest {
             bitPattern |= square.bit();
             bitCounter++;
             assertEquals( bitCounter,
-                    SUM.bitboardToSqSet( bitPattern ).size() );
+                SUM.bitboardToSqSet( bitPattern ).size() );
         }
     }
 
@@ -48,7 +48,7 @@ public class SUMTest {
      */
     @Test
     public void testBitboardToSquareSetWithBitPatternOfIncreasingSetBitsPartTwo()
-            throws Exception {
+        throws Exception {
         long bitPattern = 0;
 
         // Number of iterations: 64
@@ -92,11 +92,11 @@ public class SUMTest {
         assertEquals( CSS.E4, SUM.squareSetToBitboard( squareE4 ) );
         // The edge(s) of the board (including the corner squares)
         EnumSet<Square> edge = EnumSet.of(
-                Square.A1, Square.A2, Square.A3, Square.A4, Square.A5, Square.A6,
-                Square.A7, Square.A8, Square.H1, Square.H2, Square.H3, Square.H4,
-                Square.H5, Square.H6, Square.H7, Square.H8, Square.B1, Square.C1,
-                Square.D1, Square.E1, Square.F1, Square.G1, Square.B8, Square.C8,
-                Square.D8, Square.E8, Square.F8, Square.G8
+            Square.A1, Square.A2, Square.A3, Square.A4, Square.A5, Square.A6,
+            Square.A7, Square.A8, Square.H1, Square.H2, Square.H3, Square.H4,
+            Square.H5, Square.H6, Square.H7, Square.H8, Square.B1, Square.C1,
+            Square.D1, Square.E1, Square.F1, Square.G1, Square.B8, Square.C8,
+            Square.D8, Square.E8, Square.F8, Square.G8
         );
         assertEquals( CSS.EDGE, SUM.squareSetToBitboard( edge ) );
     }
@@ -108,7 +108,7 @@ public class SUMTest {
      */
     @Test
     public void inverseFunctionTestOnBitboardToSquareSetAndSquareSetToBitboard()
-            throws Exception {
+        throws Exception {
         assertTrue( inverseFunctionTestPartOne() && inverseFunctionTestPartTwo() );
     }
 
@@ -118,7 +118,7 @@ public class SUMTest {
         long randomBitboard = random.nextLong();
 
         return randomBitboard
-                == SUM.squareSetToBitboard( SUM.bitboardToSqSet( randomBitboard ) );
+            == SUM.squareSetToBitboard( SUM.bitboardToSqSet( randomBitboard ) );
     }
 
     // Part two of the inverse function test: g(f(x)) == x
@@ -126,7 +126,7 @@ public class SUMTest {
 
         EnumSet<Square> randomSquareSet = generateRandomSquareSet();
         EnumSet<Square> squareSetReturned
-                = SUM.bitboardToSqSet( SUM.squareSetToBitboard( randomSquareSet ) );
+            = SUM.bitboardToSqSet( SUM.squareSetToBitboard( randomSquareSet ) );
         return randomSquareSet.equals( squareSetReturned );
     }
 
@@ -201,7 +201,7 @@ public class SUMTest {
 
         for ( int i = 1; i <= 10000; i++ ) {
             setOfBitboards = SUM.splitBitboardIntoSetOfSquareBits(
-                    random.nextLong() );
+                random.nextLong() );
             for ( Long bitboard : setOfBitboards ) {
                 assertTrue( SUM.validSquareBit( bitboard ) );
             }
@@ -243,9 +243,9 @@ public class SUMTest {
         for ( int i = 1; i <= 10000; i++ ) {
             long randomBitboard = random.nextLong();
             Set<Long> setOfBitboards
-                    = SUM.splitBitboardIntoSetOfSquareBits( randomBitboard );
+                = SUM.splitBitboardIntoSetOfSquareBits( randomBitboard );
             assertEquals( SUM.numberOfSetBits( randomBitboard ),
-                    setOfBitboards.size() );
+                setOfBitboards.size() );
         }
     }
 
@@ -277,28 +277,28 @@ public class SUMTest {
             final long fileBB = SUM.fileOfSquare( square );
 
             if ( fileBB == CSS.FILE_A
-                    && square.toString().charAt( 0 ) == 'A' ) {
+                && square.toString().charAt( 0 ) == 'A' ) {
                 continue;
             } else if ( fileBB == CSS.FILE_B
-                    && square.toString().charAt( 0 ) == 'B' ) {
+                && square.toString().charAt( 0 ) == 'B' ) {
                 continue;
             } else if ( fileBB == CSS.FILE_C
-                    && square.toString().charAt( 0 ) == 'C' ) {
+                && square.toString().charAt( 0 ) == 'C' ) {
                 continue;
             } else if ( fileBB == CSS.FILE_D
-                    && square.toString().charAt( 0 ) == 'D' ) {
+                && square.toString().charAt( 0 ) == 'D' ) {
                 continue;
             } else if ( fileBB == CSS.FILE_E
-                    && square.toString().charAt( 0 ) == 'E' ) {
+                && square.toString().charAt( 0 ) == 'E' ) {
                 continue;
             } else if ( fileBB == CSS.FILE_F
-                    && square.toString().charAt( 0 ) == 'F' ) {
+                && square.toString().charAt( 0 ) == 'F' ) {
                 continue;
             } else if ( fileBB == CSS.FILE_G
-                    && square.toString().charAt( 0 ) == 'G' ) {
+                && square.toString().charAt( 0 ) == 'G' ) {
                 continue;
             } else if ( fileBB == CSS.FILE_H
-                    && square.toString().charAt( 0 ) == 'H' ) {
+                && square.toString().charAt( 0 ) == 'H' ) {
                 continue;
             }
 
@@ -316,28 +316,28 @@ public class SUMTest {
             final long rankBB = SUM.rankOfSquare( square );
 
             if ( rankBB == CSS.RANK_1
-                    && square.toString().charAt( 1 ) == '1' ) {
+                && square.toString().charAt( 1 ) == '1' ) {
                 continue;
             } else if ( rankBB == CSS.RANK_2
-                    && square.toString().charAt( 1 ) == '2' ) {
+                && square.toString().charAt( 1 ) == '2' ) {
                 continue;
             } else if ( rankBB == CSS.RANK_3
-                    && square.toString().charAt( 1 ) == '3' ) {
+                && square.toString().charAt( 1 ) == '3' ) {
                 continue;
             } else if ( rankBB == CSS.RANK_4
-                    && square.toString().charAt( 1 ) == '4' ) {
+                && square.toString().charAt( 1 ) == '4' ) {
                 continue;
             } else if ( rankBB == CSS.RANK_5
-                    && square.toString().charAt( 1 ) == '5' ) {
+                && square.toString().charAt( 1 ) == '5' ) {
                 continue;
             } else if ( rankBB == CSS.RANK_6
-                    && square.toString().charAt( 1 ) == '6' ) {
+                && square.toString().charAt( 1 ) == '6' ) {
                 continue;
             } else if ( rankBB == CSS.RANK_7
-                    && square.toString().charAt( 1 ) == '7' ) {
+                && square.toString().charAt( 1 ) == '7' ) {
                 continue;
             } else if ( rankBB == CSS.RANK_8
-                    && square.toString().charAt( 1 ) == '8' ) {
+                && square.toString().charAt( 1 ) == '8' ) {
                 continue;
             }
 
@@ -355,13 +355,13 @@ public class SUMTest {
      */
     @Test
     public void adjacentSquareWorksWithAllSquaresAndDirections()
-            throws Exception {
+        throws Exception {
         // Create empty EnumSet of Squares
         for ( Square square : Square.values() ) {
             EnumSet<Square> squareSet = EnumSet.noneOf( Square.class );
             for ( Direction direction : Direction.values() ) {
                 Square squareReturned
-                        = SUM.adjacentSquare( square, direction );
+                    = SUM.adjacentSquare( square, direction );
                 if ( squareReturned != null ) {
                     squareSet.add( squareReturned );
                 }
@@ -380,10 +380,10 @@ public class SUMTest {
     @Test
     public void testingDetermineTypeOfChessmanWithTwelveChessmen() {
         Position testPosition
-                = new Position(
-                        CSS.A2, CSS.B2, CSS.C2, CSS.D2, CSS.E2, CSS.F2,
-                        CSS.A7, CSS.B7, CSS.C7, CSS.D7, CSS.E7, CSS.F7,
-                        Colour.WHITE );
+            = new Position(
+                CSS.A2, CSS.B2, CSS.C2, CSS.D2, CSS.E2, CSS.F2,
+                CSS.A7, CSS.B7, CSS.C7, CSS.D7, CSS.E7, CSS.F7,
+                Colour.WHITE );
 
         // Squares to loop over; contains 12 squares
         Square[] squares = { Square.A2, Square.A7, Square.B2, Square.B7,
@@ -402,7 +402,7 @@ public class SUMTest {
             // inclusive, each one repeated twice. This is due to integer
             // division.
             assertEquals( theSixChessmenTypes[ chessmenTypesIndex / 2 ],
-                    SUM.resolvePieceType( square, testPosition ) );
+                SUM.resolvePieceType( square, testPosition ) );
             chessmenTypesIndex++;
         }
     }
@@ -415,22 +415,22 @@ public class SUMTest {
      */
     @Test
     public void determineTypeOfChessmanReturnsNullForEmptySquares()
-            throws Exception {
+        throws Exception {
         Position testPosition
-                = new Position(
-                        CSS.A2, CSS.B2, CSS.C2, CSS.D2, CSS.E2, CSS.F2,
-                        CSS.A7, CSS.B7, CSS.C7, CSS.D7, CSS.E7, CSS.F7,
-                        Colour.WHITE );
+            = new Position(
+                CSS.A2, CSS.B2, CSS.C2, CSS.D2, CSS.E2, CSS.F2,
+                CSS.A7, CSS.B7, CSS.C7, CSS.D7, CSS.E7, CSS.F7,
+                Colour.WHITE );
 
         // Getting an empty squares BB by flipping zeroes to ones and
         // vica versa
         long emptySquaresBB = ~testPosition.bothArmies();
         EnumSet<Square> emptySquares
-                = SUM.bitboardToSqSet( emptySquaresBB );
+            = SUM.bitboardToSqSet( emptySquaresBB );
         // Looping over the 52 empty squares
         for ( Square square : emptySquares ) {
             assertEquals( null, SUM.resolvePieceType(
-                    square, testPosition ) );
+                square, testPosition ) );
         }
     }
 
@@ -559,6 +559,33 @@ public class SUMTest {
 
         for ( String s : invalidFENRecords ) {
             assertEquals( 4, SUM.validateFENRecord( s ) );
+        }
+    }
+
+    /*
+     validateFENRecord(): Testing the detection of ranks with an invalid
+     number of squares. The valid number of squares is always eight. For
+     example, pp1ppppp = 8 and 2p5 = 8.
+     */
+    @Test
+    public void validateFENRecordReturns5() {
+        String[] invalidFENRecords = {
+            // Extra rook/square on the 8th rank
+            "rnbqkbnrr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            // Missing pawn/square on the 7th rank
+            "rnbqkbnr/ppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
+            // Invalid number of squares on 6th rank
+            "rnbqkbnr/pp1ppppp/1/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2",
+            // Way too many squares on 1st rank
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R8B7K6N5 w KQkq - 0 1",
+            // Extra square on the 7th rank
+            "6k1/r1q1b3n/6QP/p3R3/1p3p2/1P6/1PP2P2/2K4R b - - 1 35",
+            // Extra pawn on the 2nd rank
+            "6k1/r1q1b2n/6QP/p3R3/1p3p2/1P6/1PP2P2P/2K4R b - - 1 35"
+        };
+
+        for ( String s : invalidFENRecords ) {
+            assertEquals( 5, SUM.validateFENRecord( s ) );
         }
     }
 }

@@ -41,30 +41,30 @@ public class SUM {
      @throws Exception
      */
     public static EnumSet<Square> pseudoLegalAccess( Square sq, Position pos )
-            throws Exception {
+        throws Exception {
         EnumSet<Square> activePiecesWithAccess
-                = EnumSet.noneOf( Square.class );
+            = EnumSet.noneOf( Square.class );
         Colour activeColor
-                = (pos.turn() == Colour.WHITE) ? Colour.WHITE : Colour.BLACK;
+            = (pos.turn() == Colour.WHITE) ? Colour.WHITE : Colour.BLACK;
 
         // Pawns
         activePiecesWithAccess.addAll(
-                pLegalAccessPawns( sq, pos, activeColor ) );
+            pLegalAccessPawns( sq, pos, activeColor ) );
         // Bishops
         activePiecesWithAccess.addAll(
-                pLegalAccessBishops( sq, pos, activeColor, false ) );
+            pLegalAccessBishops( sq, pos, activeColor, false ) );
         // Knights
         activePiecesWithAccess.addAll(
-                pLegalAccessKnights( sq, pos, activeColor ) );
+            pLegalAccessKnights( sq, pos, activeColor ) );
         // Rooks
         activePiecesWithAccess.addAll(
-                pLegalAccessRooks( sq, pos, activeColor, false ) );
+            pLegalAccessRooks( sq, pos, activeColor, false ) );
         // Queens
         activePiecesWithAccess.addAll(
-                pLegalAccessQueens( sq, pos, activeColor ) );
+            pLegalAccessQueens( sq, pos, activeColor ) );
         // Kings
         activePiecesWithAccess.addAll(
-                pLegalAccessKing( sq, pos, activeColor ) );
+            pLegalAccessKing( sq, pos, activeColor ) );
 
         return activePiecesWithAccess;
     }
@@ -79,10 +79,10 @@ public class SUM {
      @throws Exception might be thrown in squareBitToSquare()
      */
     public static EnumSet<Square> bitboardToSqSet( long bitboard )
-            throws Exception {
+        throws Exception {
         // Extract the individual square bits from the bitboard
         Set<Long> setOfSquareBits
-                = splitBitboardIntoSetOfSquareBits( bitboard );
+            = splitBitboardIntoSetOfSquareBits( bitboard );
 
         // This creates an empty EnumSet
         EnumSet<Square> squareSet = EnumSet.noneOf( Square.class );
@@ -107,7 +107,7 @@ public class SUM {
      @throws Exception in case the parameter receives null
      */
     public static long squareSetToBitboard( EnumSet<Square> squareSet )
-            throws Exception {
+        throws Exception {
         // Allowing the method to be called with a null argument would
         // make no sense.
         if ( squareSet == null ) {
@@ -308,7 +308,7 @@ public class SUM {
      @throws Exception
      */
     public static Square adjacentSquare( Square square, Direction direction )
-            throws Exception {
+        throws Exception {
         long adjacentSquareBB; // BB, bitboard
         switch ( direction ) {
             case NORTH:
@@ -350,7 +350,7 @@ public class SUM {
             // The default case should be impossible
             default:
                 throw new Exception(
-                        "Executed supposedly impossible default case of switch" );
+                    "Executed supposedly impossible default case of switch" );
         }
     }
 
@@ -369,7 +369,7 @@ public class SUM {
             return null;
         }
         Colour pieceColor = ((pos.whiteArmy() & sq.bit()) != 0)
-                ? Colour.WHITE : Colour.BLACK;
+            ? Colour.WHITE : Colour.BLACK;
         if ( pieceColor == Colour.WHITE && pieceType == PieceType.PAWN ) {
             return Piece.WHITE_PAWN;
         } else if ( pieceColor == Colour.WHITE && pieceType == PieceType.BISHOP ) {
@@ -410,8 +410,8 @@ public class SUM {
         if ( piece == null ) { // Empty square
             return null;
         } else if ( piece == Piece.WHITE_PAWN || piece == Piece.WHITE_BISHOP
-                || piece == Piece.WHITE_KNIGHT || piece == Piece.WHITE_ROOK
-                || piece == Piece.WHITE_QUEEN || piece == Piece.WHITE_KING ) {
+            || piece == Piece.WHITE_KNIGHT || piece == Piece.WHITE_ROOK
+            || piece == Piece.WHITE_QUEEN || piece == Piece.WHITE_KING ) {
             return Colour.WHITE;
         } else {
             return Colour.BLACK;
@@ -428,30 +428,30 @@ public class SUM {
      @return the type of the chessman on the square
      */
     public static PieceType resolvePieceType(
-            Square square, Position position ) {
+        Square square, Position position ) {
         // Pawns
         if ( (square.bit() & position.whitePawns()) != 0
-                || (square.bit() & position.blackPawns()) != 0 ) {
+            || (square.bit() & position.blackPawns()) != 0 ) {
             return PieceType.PAWN;
         } // Bishops
         else if ( (square.bit() & position.whiteBishops()) != 0
-                || (square.bit() & position.blackBishops()) != 0 ) {
+            || (square.bit() & position.blackBishops()) != 0 ) {
             return PieceType.BISHOP;
         } // Knights
         else if ( (square.bit() & position.whiteKnights()) != 0
-                || (square.bit() & position.blackKnights()) != 0 ) {
+            || (square.bit() & position.blackKnights()) != 0 ) {
             return PieceType.KNIGHT;
         } // Rooks
         else if ( (square.bit() & position.whiteRooks()) != 0
-                || (square.bit() & position.blackRooks()) != 0 ) {
+            || (square.bit() & position.blackRooks()) != 0 ) {
             return PieceType.ROOK;
         } // Queens
         else if ( (square.bit() & position.whiteQueens()) != 0
-                || (square.bit() & position.blackQueens()) != 0 ) {
+            || (square.bit() & position.blackQueens()) != 0 ) {
             return PieceType.QUEEN;
         } // Kings
         else if ( (square.bit() & position.whiteKing()) != 0
-                || (square.bit() & position.blackKing()) != 0 ) {
+            || (square.bit() & position.blackKing()) != 0 ) {
             return PieceType.KING;
         }
         return null;
@@ -470,7 +470,7 @@ public class SUM {
             for ( int column = 0; column < 8; column++ ) {
                 Square square = tableCellToSquare( row, column );
                 table[ row ][ column ]
-                        = unicodeChessSymbolOfSquare( pos, square );
+                    = unicodeChessSymbolOfSquare( pos, square );
             }
         }
         return table;
@@ -488,49 +488,11 @@ public class SUM {
      */
     public static Square tableCellToSquare( int row, int col ) {
         char file = (char) ('A' + col),
-                rank = (char) ('8' - row);
+            rank = (char) ('8' - row);
         return Square.valueOf(
-                // Note the string concatenation. This is not about
-                // integer arithmetic.
-                (char) file + "" + (char) rank );
-    }
-
-    /**
-     Used to split a FEN string into its six constituent fields.
-
-     @param fEN the FEN string to split
-     @return a String array of six elements
-     @throws Exception
-     */
-    public static String[] splitFENIntoFields( String fEN ) throws Exception {
-        // Field separator: a sequence of one of more tabs or spaces
-        String[] fENFields = fEN.split( "\\p{Blank}++" );
-        if ( fENFields.length != 6 ) {
-            throw new Exception(
-                    "Invalid number of FEN fields: " + fENFields.length );
-        }
-        return fENFields;
-    }
-
-    /**
-     Splits the first field of a FEN string into eight parts. Each of these
-     parts represents a rank on the chessboard along with the pieces placed on
-     it. As an example consider the standard starting position:
-     <p>
-     rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
-
-     @param firstFENField the first field of a FEN string
-     @return a String array representing the eight ranks of the board
-     @throws Exception
-     */
-    public static String[] splitFirstFENField( String firstFENField )
-            throws Exception {
-        String[] fENRanks = firstFENField.split( "/" );
-        if ( fENRanks.length != 8 ) {
-            throw new Exception(
-                    "Invalid number of rank fields: " + fENRanks.length );
-        }
-        return fENRanks;
+            // Note the string concatenation. This is not about
+            // integer arithmetic.
+            (char) file + "" + (char) rank );
     }
 
     /**
@@ -544,7 +506,7 @@ public class SUM {
      @throws Exception
      */
     public static long[] fENRanksToBBArray( String[] fENRanks )
-            throws Exception {
+        throws Exception {
         long[] pieces = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         int bitIndexOfFirstColumn = 64;
         for ( String fENRank : fENRanks ) {
@@ -573,6 +535,8 @@ public class SUM {
      digits. Something like .../2p311/... doesn't make much sense.
      5. The "sum" of each of the subfields of the first field is 8. For
      example, 2p5 = 2 + 1 + 5, rnbqkbnr = 8 * 1 and 4P3 = 4 + 1 + 3.
+     6. There's exactly one king per color.
+     7. Validate the second field. It is always either 'w' or 'b'.
 
      The ordinal number of the tests correspond to the integer value
      returned by the method should the test fail. If all of the tests
@@ -584,31 +548,35 @@ public class SUM {
      --validateFENRecordReturns2()
      --validateFENRecordReturns3()
      --validateFENRecordReturns4()
+     --validateFENRecordReturns5()
      */
     public static int validateFENRecord( String fENRecord ) {
         String charClassPlus = "[pPnNbBrRqQkK1-8]+"; // Needed in test 3
 
         // Test 1
         if ( !Pattern.matches(
-                "^[abBcdefghkKnNpPrRqQw 0-9/-]+$", fENRecord ) ) {
+            "^[abBcdefghkKnNpPrRqQw 0-9/-]+$", fENRecord ) ) {
             return 1;
         } // Test 2
         else if ( !Pattern.matches(
-                "^[^ ]+ [^ ]+ [^ ]+ [^ ]+ [^ ]+ [^ ]+$", fENRecord ) ) {
+            "^[^ ]+ [^ ]+ [^ ]+ [^ ]+ [^ ]+ [^ ]+$", fENRecord ) ) {
             return 2;
         } // Test 3
         else if ( !Pattern.matches(
-                '^'
-                + charClassPlus + '/' + charClassPlus + '/'
-                + charClassPlus + '/' + charClassPlus + '/'
-                + charClassPlus + '/' + charClassPlus + '/'
-                + charClassPlus + '/' + charClassPlus + " [a-h 0-9kKqQw-]+$",
-                fENRecord ) ) {
+            '^'
+            + charClassPlus + '/' + charClassPlus + '/'
+            + charClassPlus + '/' + charClassPlus + '/'
+            + charClassPlus + '/' + charClassPlus + '/'
+            + charClassPlus + '/' + charClassPlus + " [a-h 0-9kKqQw-]+$",
+            fENRecord ) ) {
             return 3;
         } // Test 4. Note that the result of the match is not negated, i.e.,
         // a FEN record that matches the regex is invalid.
         else if ( Pattern.matches( "^[^ ]*[1-8]{2}[^ ]* .*$", fENRecord ) ) {
             return 4;
+        } // Test 5
+        else if ( !validateFENRecordRankSumsAreValid( fENRecord ) ) {
+            return 5;
         }
 
         return 0;
@@ -642,8 +610,45 @@ public class SUM {
     // ============================
     //
     //
+    private static boolean validateFENRecordRankSumsAreValid( String fENRecord ) {
+        String[] fENFields = fENRecord.split( " " );
+        if ( fENFields.length != 6 ) { // Serious error
+            System.out.println(
+                "ERROR: fENToPosition(): fENFields.length == "
+                + fENFields.length );
+            System.exit( 1 );
+        }
+
+        String[] fENRanks = fENFields[ 0 ].split( "/" );
+        if ( fENRanks.length != 8 ) { // Serious error
+            System.out.println(
+                "ERROR: fENToPosition(): fENRanks.length == "
+                + fENRanks.length );
+            System.exit( 1 );
+        }
+
+        for ( String s : fENRanks ) {
+            int sANPieceLetterCount = 0, sumOfDigits = 0;
+            for ( int i = 0; i < s.length(); i++ ) {
+                if ( Character.isLetter( s.charAt( i ) ) ) {
+                    ++sANPieceLetterCount;
+                } else { // The character is a digit
+                    // Declaration for java.lang.Character.digit() method
+                    // public static int digit( char ch, int radix );
+                    sumOfDigits += Character.digit( s.charAt( i ), 10 );
+                }
+            }
+            if ( sANPieceLetterCount + sumOfDigits != 8 ) {
+                // Invalid rank string detected
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private static void fENRanksToBBArrayHelper(
-            char[] fENRankCA, long[] pieces, long cursorSB ) {
+        char[] fENRankCA, long[] pieces, long cursorSB ) {
         for ( int i = 0; i < fENRankCA.length; i++ ) {
             char currentChar = fENRankCA[ i ];
             // A digit between 1 and 8 indicating the number of consecutive
@@ -685,7 +690,7 @@ public class SUM {
 
     // The following method deals with adjacent squares on diagonals.
     private static Square adjacentSquareOnDiagonal(
-            Square square, Direction direction ) throws Exception {
+        Square square, Direction direction ) throws Exception {
         // Call the private method for dealing with getting the single
         // diagonal square of a corner square
         if ( (square.bit() & CSS.CORNER_SQUARES) != 0 ) {
@@ -707,7 +712,7 @@ public class SUM {
     }
 
     private static Square adjacentSquareOnDiagonalOfSquareNotOnEdge(
-            Square square, Direction direction ) throws Exception {
+        Square square, Direction direction ) throws Exception {
         Square squareToReturn = null;
 
         switch ( direction ) {
@@ -727,8 +732,8 @@ public class SUM {
             // non-corner square; there are squares in every direction
             default:
                 throw new Exception(
-                        "Executed forbidden default case of switch with value "
-                        + direction );
+                    "Executed forbidden default case of switch with value "
+                    + direction );
         }
 
         return squareToReturn;
@@ -736,7 +741,7 @@ public class SUM {
 
     // Deals with non-corner squares on the a-file
     private static Square adjacentSquareOnDiagonalOfSquareOnFileA(
-            Square square, Direction direction ) throws Exception {
+        Square square, Direction direction ) throws Exception {
         Square squareToReturn = null;
         // The assumption is the square argument is always valid (is on
         // file A)
@@ -754,7 +759,7 @@ public class SUM {
 
     // Deals with non-corner squares on the h-file
     private static Square adjacentSquareOnDiagonalOfSquareOnFileH(
-            Square square, Direction direction ) throws Exception {
+        Square square, Direction direction ) throws Exception {
         Square squareToReturn = null;
         // The assumption is that the square argument is always valid
         // (is on file H)
@@ -772,7 +777,7 @@ public class SUM {
 
     // Deals with non-corner squares on the first rank
     private static Square adjacentSquareOnDiagonalOfSquareOnRank1(
-            Square square, Direction direction ) throws Exception {
+        Square square, Direction direction ) throws Exception {
         Square squareToReturn = null;
         // It is assumed the square argument is always valid (is on the
         // first rank)
@@ -793,7 +798,7 @@ public class SUM {
 
     // Deals with non-corner squares on the eighth rank
     private static Square adjacentSquareOnDiagonalOfSquareOnRank8(
-            Square square, Direction direction ) throws Exception {
+        Square square, Direction direction ) throws Exception {
         Square squareToReturn = null;
         // It is assumed the square argument is always valid (is on the
         // eighth rank)
@@ -811,7 +816,7 @@ public class SUM {
 
     // Gets the adjacent diagonal squares of the corner squares
     private static Square adjacentSquareOnDiagonalOfCornerSquare(
-            Square square, Direction direction ) throws Exception {
+        Square square, Direction direction ) throws Exception {
         // Let's assume the square argument is always valid (is a
         // corner square)
         Square squareToReturn = null;
@@ -843,7 +848,7 @@ public class SUM {
     }
 
     private static String unicodeChessSymbolOfSquare(
-            Position pos, Square sq ) {
+        Position pos, Square sq ) {
 
         if ( (pos.whiteKing() & sq.bit()) != 0 ) {
             return "\u2654";
@@ -875,14 +880,14 @@ public class SUM {
     }
 
     private static EnumSet<Square> pLegalAccessPawns( // p for pseudo
-            Square sq, Position pos, Colour activeColor ) throws Exception {
+        Square sq, Position pos, Colour activeColor ) throws Exception {
         EnumSet<Square> pawnsWithAccess = EnumSet.noneOf( Square.class );
 
         EnumSet<Square> pawnsSquares
-                = MoveGenerator.pawnsSquares( sq, resolvePieceColor( sq, pos ) );
+            = MoveGenerator.pawnsSquares( sq, resolvePieceColor( sq, pos ) );
         for ( Square pSq : pawnsSquares ) {
             if ( resolvePieceType( pSq, pos ) == PieceType.PAWN
-                    && resolvePieceColor( pSq, pos ) == activeColor ) {
+                && resolvePieceColor( pSq, pos ) == activeColor ) {
                 pawnsWithAccess.add( pSq );
             }
         }
@@ -891,11 +896,11 @@ public class SUM {
     }
 
     private static EnumSet<Square> pLegalAccessBishops( // p for pseudo
-            Square sq, Position pos, Colour activeColor, boolean queensInstead )
-            throws Exception {
+        Square sq, Position pos, Colour activeColor, boolean queensInstead )
+        throws Exception {
         // Search for queens instead of bishops?
         PieceType bishopOrQueen
-                = queensInstead ? PieceType.QUEEN : PieceType.BISHOP;
+            = queensInstead ? PieceType.QUEEN : PieceType.BISHOP;
 
         EnumSet<Square> bishopsWithAccess = EnumSet.noneOf( Square.class );
 
@@ -907,7 +912,7 @@ public class SUM {
                     break;
                 } else if ( resolvePieceType( nextSq, pos ) != null ) {
                     if ( resolvePieceType( nextSq, pos ) == bishopOrQueen
-                            && resolvePieceColor( nextSq, pos ) == activeColor ) {
+                        && resolvePieceColor( nextSq, pos ) == activeColor ) {
                         bishopsWithAccess.add( nextSq );
                     }
                     break;
@@ -919,13 +924,13 @@ public class SUM {
     }
 
     private static EnumSet<Square> pLegalAccessKnights( // p for pseudo
-            Square sq, Position pos, Colour activeColor ) throws Exception {
+        Square sq, Position pos, Colour activeColor ) throws Exception {
         EnumSet<Square> knightsWithAccess = EnumSet.noneOf( Square.class );
 
         EnumSet<Square> knightsSquares = MoveGenerator.knightsSquares( sq );
         for ( Square kSq : knightsSquares ) {
             if ( resolvePieceType( kSq, pos ) == PieceType.KNIGHT
-                    && resolvePieceColor( kSq, pos ) == activeColor ) {
+                && resolvePieceColor( kSq, pos ) == activeColor ) {
                 knightsWithAccess.add( kSq );
             }
         }
@@ -934,11 +939,11 @@ public class SUM {
     }
 
     private static EnumSet<Square> pLegalAccessRooks( // p for pseudo
-            Square sq, Position pos, Colour activeColor, boolean queensInstead )
-            throws Exception {
+        Square sq, Position pos, Colour activeColor, boolean queensInstead )
+        throws Exception {
         // Search for queens instead of rooks?
         PieceType rookOrQueen
-                = queensInstead ? PieceType.QUEEN : PieceType.ROOK;
+            = queensInstead ? PieceType.QUEEN : PieceType.ROOK;
 
         EnumSet<Square> rooksWithAccess = EnumSet.noneOf( Square.class );
 
@@ -950,7 +955,7 @@ public class SUM {
                     break;
                 } else if ( resolvePieceType( nextSq, pos ) != null ) {
                     if ( resolvePieceType( nextSq, pos ) == rookOrQueen
-                            && resolvePieceColor( nextSq, pos ) == activeColor ) {
+                        && resolvePieceColor( nextSq, pos ) == activeColor ) {
                         rooksWithAccess.add( nextSq );
                     }
                     break;
@@ -962,25 +967,25 @@ public class SUM {
     }
 
     private static EnumSet<Square> pLegalAccessQueens( // p for pseudo
-            Square sq, Position pos, Colour activeColor ) throws Exception {
+        Square sq, Position pos, Colour activeColor ) throws Exception {
         EnumSet<Square> queensWithAccess = EnumSet.noneOf( Square.class );
 
         queensWithAccess.addAll(
-                pLegalAccessBishops( sq, pos, activeColor, true ) );
+            pLegalAccessBishops( sq, pos, activeColor, true ) );
         queensWithAccess.addAll(
-                pLegalAccessRooks( sq, pos, activeColor, true ) );
+            pLegalAccessRooks( sq, pos, activeColor, true ) );
 
         return queensWithAccess;
     }
 
     private static EnumSet<Square> pLegalAccessKing( // p for pseudo
-            Square sq, Position pos, Colour activeColor ) throws Exception {
+        Square sq, Position pos, Colour activeColor ) throws Exception {
         EnumSet<Square> kingWithAccess = EnumSet.noneOf( Square.class );
 
         EnumSet<Square> kingsSquares = MoveGenerator.kingsSquares( sq );
         for ( Square kSq : kingsSquares ) {
             if ( resolvePieceType( kSq, pos ) == PieceType.KING
-                    && resolvePieceColor( kSq, pos ) == activeColor ) {
+                && resolvePieceColor( kSq, pos ) == activeColor ) {
                 kingWithAccess.add( kSq );
                 break; // There's only one king
             }
