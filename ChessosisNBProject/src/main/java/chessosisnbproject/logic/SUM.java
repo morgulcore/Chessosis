@@ -549,6 +549,8 @@ public class SUM {
      --validateFENRecordReturns3()
      --validateFENRecordReturns4()
      --validateFENRecordReturns5()
+     --validateFENRecordReturns6()
+     --validateFENRecordReturns7()
      */
     public static int validateFENRecord( String fENRecord ) {
         String charClassPlus = "[pPnNbBrRqQkK1-8]+"; // Needed in test 3
@@ -577,9 +579,37 @@ public class SUM {
         } // Test 5
         else if ( !validateFENRecordRankSumsAreValid( fENRecord ) ) {
             return 5;
+        } // Test 6
+        else if ( !validateFENRecordExactlyOneKingPerColor( fENRecord ) ) {
+            return 6;
+        } // Test 7
+        else if ( !validateFENRecordValidActiveColor( fENRecord ) ) {
+            return 7;
         }
 
         return 0;
+    }
+
+    /*
+     Splits a FEN record into its six constituent fields. The parameter
+     is the FEN record and the return type a String array of the fields.
+
+     It is assumed the FEN record has been validated before passing it
+     to this method.
+
+     JUNIT TESTS:
+     --splitFENRecordTest()
+     */
+    public static String[] splitFENRecord( String fENRecord ) {
+        String[] fENFields = fENRecord.split( " " );
+        if ( fENFields.length != 6 ) { // Serious error
+            System.out.println(
+                "ERROR: fENToPosition(): fENFields.length == "
+                + fENFields.length );
+            System.exit( 1 );
+        }
+
+        return fENFields;
     }
 
     /*
@@ -647,6 +677,7 @@ public class SUM {
     // ============================
     //
     //
+    // validateFENRecord() helper method
     private static boolean validateFENRecordRankSumsAreValid( String fENRecord ) {
         String[] fENRanks = splitFirstFENField( fENRecord );
 
@@ -668,6 +699,36 @@ public class SUM {
         }
 
         return true;
+    }
+
+    // validateFENRecord() helper method
+    private static boolean validateFENRecordExactlyOneKingPerColor(
+        String fENRecord ) {
+        int whiteKingCount = 0, blackKingCount = 0;
+
+        String[] fENRanks = splitFirstFENField( fENRecord );
+
+        for ( String s : fENRanks ) {
+            for ( int i = 0; i < s.length(); i++ ) {
+                if ( s.charAt( i ) == 'K' ) {
+                    ++whiteKingCount;
+                } else if ( s.charAt( i ) == 'k' ) {
+                    ++blackKingCount;
+                }
+            }
+        }
+
+        return whiteKingCount == 1 && blackKingCount == 1;
+    }
+
+    // validateFENRecord() helper method
+    private static boolean validateFENRecordValidActiveColor( String fENRecord ) {
+        String[] fENFields = splitFENRecord( fENRecord );
+        if ( fENFields[ 1 ].equals( "b" ) || fENFields[ 1 ].equals( "w" ) ) {
+            return true;
+        }
+
+        return false;
     }
 
     private static void fENRanksToBBArrayHelper(

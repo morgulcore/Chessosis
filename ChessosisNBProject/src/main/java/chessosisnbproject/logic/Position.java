@@ -437,15 +437,7 @@ public class Position {
      @throws Exception
      */
     public static Position fENToPosition( String fENRecord ) throws Exception {
-        // TODO: Create a method for the splitting operation
-        String[] fENFields = fENRecord.split( " " );
-        if ( fENFields.length != 6 ) { // Serious error
-            System.out.println(
-                "ERROR: fENToPosition(): fENFields.length == "
-                + fENFields.length );
-            System.exit( 1 );
-        }
-
+        String[] fENFields = SUM.splitFENRecord( fENRecord );
         String[] fENRanks = SUM.splitFirstFENField( fENRecord );
 
         long[] pieces = SUM.fENRanksToBBArray( fENRanks );

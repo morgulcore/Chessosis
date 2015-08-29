@@ -592,6 +592,91 @@ public class SUMTest {
     }
 
     /*
+     validateFENRecord(): Detection test of records with an invalid number
+     of kings (a valid record has exactly one king per color)
+     */
+    @Test
+    public void validateFENRecordReturns6() {
+        String[] invalidFENRecords = {
+            // Two white kings, no black king
+            "rnbq1bnr/ppp2ppp/3p4/4p3/4P3/5N2/PPPK1PPP/RNBQKB1R w KQkq - 0 3", // 2...d6
+            // Both kings missing
+            "rnbq1bnr/ppp2ppp/3p4/4p3/3PP3/5N2/PPP2PPP/RNBQ1B1R b KQkq d3 0 3", // 3.d4
+            // Extra black king
+            "rn1qkbnr/ppp2ppp/3p4/4p3/3PP1b1/5N1k/PPP2PPP/RNBQKB1R w KQkq - 1 4", // 3...Bg4
+            // Extra white king
+            "rn1qkbnr/ppp2ppp/3p4/3KP3/4P1b1/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 4", // 4.dxe5
+            // Missing black king
+            "rn1q1bnr/ppp2ppp/3p4/4P3/4P3/5b2/PPP2PPP/RNBQKB1R w KQkq - 0 5", // 4...Bxf3
+            // Missing white king
+            "rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5Q2/PPP2PPP/RNB2B1R b KQkq - 0 5", // 5.Qxf3
+        };
+
+        for ( String s : invalidFENRecords ) {
+            assertEquals( 6, SUM.validateFENRecord( s ) );
+        }
+    }
+
+    /*
+     validateFENRecord(): Detection test of invalid second field. A valid
+     second field is always either "b" or "w". Note that the characters
+     used in the tests for the active color field are in the set [a-h0-9kKqQw-].
+     If they weren't, validateFENRecord() would return 3.
+     */
+    @Test
+    public void validateFENRecordReturns7() {
+        String[] invalidFENRecords = {
+            // Invalid active color (IAC): '-'
+            "rnbqkbnr/ppp2ppp/3p4/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R - KQkq d3 0 3", // 3.d4
+            // IAC: 'a'
+            "rn1qkbnr/ppp2ppp/3p4/4p3/3PP1b1/5N2/PPP2PPP/RNBQKB1R a KQkq - 1 4", // 3...Bg4
+            // IAC: '0'
+            "rn1qkbnr/ppp2ppp/3p4/4P3/4P1b1/5N2/PPP2PPP/RNBQKB1R 0 KQkq - 0 4", // 4.dxe5
+        };
+
+        for ( String s : invalidFENRecords ) {
+            assertEquals( 7, SUM.validateFENRecord( s ) );
+        }
+    }
+
+    /*
+     splitFENRecord(): General test
+     */
+    @Test
+    public void splitFENRecordTest() {
+        String[] validFENRecords = {
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", // Std starting pos
+            "rnbqkbnr/ppp2ppp/3p4/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 3", // 2...d6
+            "rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5b2/PPP2PPP/RNBQKB1R w KQkq - 0 5" // 4...Bxf3
+        };
+
+        String[][] expectedFieldsOfSeveralFENRecords = {
+            { "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", "w", "KQkq", "-", "0", "1" },
+            { "rnbqkbnr/ppp2ppp/3p4/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R", "w", "KQkq", "-", "0", "3" },
+            { "rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5b2/PPP2PPP/RNBQKB1R", "w", "KQkq", "-", "0", "5" }
+        };
+
+        int validFENRecordsArrayIndex = -1;
+        for ( String[] expectedFields : expectedFieldsOfSeveralFENRecords ) {
+            ++validFENRecordsArrayIndex;
+
+            String[] actualFields = SUM.splitFENRecord(
+                validFENRecords[ validFENRecordsArrayIndex ] );
+            if ( actualFields.length != 6 ) {
+                System.out.println(
+                    "Invalid actualFENRanks.length: " + actualFields.length );
+                fail();
+            }
+
+            for ( int i = 0; i < 6; i++ ) {
+                //System.out.println(
+                //    expectedFields[ i ] + "  EQUALS  " + actualFields[ i ] );
+                assertEquals( expectedFields[ i ], actualFields[ i ] );
+            }
+        }
+    }
+
+    /*
      splitFirstFENField(): general test
      */
     @Test
