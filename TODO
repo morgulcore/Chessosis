@@ -1,7 +1,6 @@
---Create a method that accepts a FEN record and returns a String array of the ranks. Then seach for uses of split() and replace where necessary.
---More FENs into validateFENRecordReturns0() of SUMTest.java
 --Create tests 6 and 7 of validateFENRecord()
 --PositionTest.java:identicalPositions(): Isn't this the deepEquals() method I've been considering writing?
 --Position.java:fENToPosition(): Create the equivalent constructor in Position, then get rid of the method
 --Position.java:toString(): Override the method so that it becomes the inverse of fENToPosition()
---Figure out .gitignore
+--A method that takes a FEN record as its parameter along with an integer from 1 to 6 and returns the field indicated by the integer
+--Create 'public static String[] splitFENRecord( String fENRecord )', then seach for usages of String's split

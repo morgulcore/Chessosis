@@ -582,6 +582,43 @@ public class SUM {
         return 0;
     }
 
+    /*
+     Splits the first field of a FEN record into eight parts. Each of these
+     parts represents a rank on the chessboard along with the pieces placed
+     on it. As an example consider the standard starting position:
+     rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
+     With such input the method would return
+     { "rnbqkbnr", "pppppppp", "8", "8", "8", "8", "PPPPPPPP", "RNBQKBNR" }
+
+     The method parameter is a FEN record which is assumed to be already
+     validated. Even so, the method performs a couple of checks on String
+     array sizes.
+
+     JUNIT TESTS:
+     --splitFirstFENFieldTest()
+     */
+    public static String[] splitFirstFENField( String fENRecord ) {
+        String[] fENFields = fENRecord.split( " " );
+        // Probably redundant
+        if ( fENFields.length != 6 ) { // Serious error
+            System.out.println(
+                "ERROR: fENToPosition(): fENFields.length == "
+                + fENFields.length );
+            System.exit( 1 );
+        }
+
+        String[] fENRanks = fENFields[ 0 ].split( "/" );
+        // Probably redundant
+        if ( fENRanks.length != 8 ) { // Serious error
+            System.out.println(
+                "ERROR: fENToPosition(): fENRanks.length == "
+                + fENRanks.length );
+            System.exit( 1 );
+        }
+
+        return fENRanks;
+    }
+
     /**
      Returns the square bit at a particular bit index.
 
@@ -611,21 +648,7 @@ public class SUM {
     //
     //
     private static boolean validateFENRecordRankSumsAreValid( String fENRecord ) {
-        String[] fENFields = fENRecord.split( " " );
-        if ( fENFields.length != 6 ) { // Serious error
-            System.out.println(
-                "ERROR: fENToPosition(): fENFields.length == "
-                + fENFields.length );
-            System.exit( 1 );
-        }
-
-        String[] fENRanks = fENFields[ 0 ].split( "/" );
-        if ( fENRanks.length != 8 ) { // Serious error
-            System.out.println(
-                "ERROR: fENToPosition(): fENRanks.length == "
-                + fENRanks.length );
-            System.exit( 1 );
-        }
+        String[] fENRanks = splitFirstFENField( fENRecord );
 
         for ( String s : fENRanks ) {
             int sANPieceLetterCount = 0, sumOfDigits = 0;

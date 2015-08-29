@@ -432,26 +432,21 @@ public class Position {
      <p>
      https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
 
-     @param fEN a FEN string
+     @param fENRecord a FEN string
      @return the Position object created
      @throws Exception
      */
-    public static Position fENToPosition( String fEN ) throws Exception {
-        String[] fENFields = fEN.split( " " );
+    public static Position fENToPosition( String fENRecord ) throws Exception {
+        // TODO: Create a method for the splitting operation
+        String[] fENFields = fENRecord.split( " " );
         if ( fENFields.length != 6 ) { // Serious error
             System.out.println(
                 "ERROR: fENToPosition(): fENFields.length == "
                 + fENFields.length );
             System.exit( 1 );
         }
-        
-        String[] fENRanks = fENFields[ 0 ].split( "/" );
-        if ( fENRanks.length != 8 ) { // Serious error
-            System.out.println(
-                "ERROR: fENToPosition(): fENRanks.length == "
-                + fENRanks.length );
-            System.exit( 1 );
-        }
+
+        String[] fENRanks = SUM.splitFirstFENField( fENRecord );
 
         long[] pieces = SUM.fENRanksToBBArray( fENRanks );
 

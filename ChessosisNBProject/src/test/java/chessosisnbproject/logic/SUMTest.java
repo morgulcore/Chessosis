@@ -442,14 +442,16 @@ public class SUMTest {
         // Should contain each of the positions from Morhpy's
         // famous Opera Game
         String[] validFENRecords = {
-            // Standard starting position
             "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-            // After 1.e4
-            "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
-            // After 1...e5
-            "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2",
-            // After 2.Nf3
-            "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"
+            "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", // 1.e4
+            "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2", // 1...e5
+            "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2", // 2.Nf3
+            "rnbqkbnr/ppp2ppp/3p4/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 3", // 2...d6
+            "rnbqkbnr/ppp2ppp/3p4/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq d3 0 3", // 3.d4
+            "rn1qkbnr/ppp2ppp/3p4/4p3/3PP1b1/5N2/PPP2PPP/RNBQKB1R w KQkq - 1 4", // 3...Bg4
+            "rn1qkbnr/ppp2ppp/3p4/4P3/4P1b1/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 4", // 4.dxe5
+            "rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5b2/PPP2PPP/RNBQKB1R w KQkq - 0 5", // 4...Bxf3
+            "rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5Q2/PPP2PPP/RNB1KB1R b KQkq - 0 5", // 5.Qxf3
         };
 
         for ( String s : validFENRecords ) {
@@ -586,6 +588,50 @@ public class SUMTest {
 
         for ( String s : invalidFENRecords ) {
             assertEquals( 5, SUM.validateFENRecord( s ) );
+        }
+    }
+
+    /*
+     splitFirstFENField(): general test
+     */
+    @Test
+    public void splitFirstFENFieldTest() {
+        String[] validatedFENRecords = {
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
+            "6k1/r1q1b2n/6QP/p3R3/1p3p2/1P6/1PP2P2/2K4R b - - 1 35"
+        };
+        for ( String s : validatedFENRecords ) {
+            if ( SUM.validateFENRecord( s ) != 0 ) {
+                System.out.println( "splitFirstFENFieldTest(): "
+                    + "invalid FEN record detected: " + s );
+                fail();
+            }
+        }
+
+        String[][] expectedRankArrays = {
+            { "rnbqkbnr", "pppppppp", "8", "8", "8", "8", "PPPPPPPP", "RNBQKBNR" },
+            { "rnbqkbnr", "pp1ppppp", "8", "2p5", "4P3", "5N2", "PPPP1PPP", "RNBQKB1R" },
+            { "6k1", "r1q1b2n", "6QP", "p3R3", "1p3p2", "1P6", "1PP2P2", "2K4R" }
+        };
+
+        int validatedFENRecordsArrayIndex = -1;
+        for ( String[] expectedFENRanks : expectedRankArrays ) {
+            ++validatedFENRecordsArrayIndex;
+
+            String[] actualFENRanks = SUM.splitFirstFENField(
+                validatedFENRecords[ validatedFENRecordsArrayIndex ] );
+            if ( actualFENRanks.length != 8 ) {
+                System.out.println(
+                    "Invalid actualFENRanks.length: " + actualFENRanks.length );
+                fail();
+            }
+
+            for ( int i = 0; i < 8; i++ ) {
+                //System.out.println(
+                //    expectedFENRanks[ i ] + "  EQUALS  " + actualFENRanks[ i ] );
+                assertEquals( expectedFENRanks[ i ], actualFENRanks[ i ] );
+            }
         }
     }
 }
