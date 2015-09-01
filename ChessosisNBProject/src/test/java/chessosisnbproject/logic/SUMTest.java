@@ -683,19 +683,27 @@ public class SUMTest {
     public void validateFENRecordReturns9() {
         String[] inValidFENRecords = {
             // Invalid EPTS (en passant target square) "b"
-            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq b 0 1", //"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", // 1.e4
-        //"rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2", // 1...e5
-        //"rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2", // 2.Nf3
-        //"rnbqkbnr/ppp2ppp/3p4/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 3", // 2...d6
-        //"rnbqkbnr/ppp2ppp/3p4/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq d3 0 3", // 3.d4
-        //"rn1qkbnr/ppp2ppp/3p4/4p3/3PP1b1/5N2/PPP2PPP/RNBQKB1R w KQkq - 1 4", // 3...Bg4
-        //"rn1qkbnr/ppp2ppp/3p4/4P3/4P1b1/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 4", // 4.dxe5
-        //"rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5b2/PPP2PPP/RNBQKB1R w KQkq - 0 5", // 4...Bxf3
-        //"rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5Q2/PPP2PPP/RNB1KB1R b KQkq - 0 5", // 5.Qxf3
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq b 0 1",
+            // Invalid EPTS "e4"
+            "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e4 0 1", // 1.e4
+            // Invalid EPTS "d5"
+            "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d5 0 2", // 1...e5
+            // Invalid EPTS "--"
+            "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq -- 1 2", // 2.Nf3
+            // Invalid EPTS "w3"
+            "rnbqkbnr/ppp2ppp/3p4/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq w3 0 3", // 2...d6
+            // Invalid EPTS "a0"
+            "rnbqkbnr/ppp2ppp/3p4/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq a0 0 3", // 3.d4
+            // Invalid EPTS "h9"
+            "rn1qkbnr/ppp2ppp/3p4/4p3/3PP1b1/5N2/PPP2PPP/RNBQKB1R w KQkq h9 1 4", // 3...Bg4
+            // Invalid EPTS "ab1"
+            "rn1qkbnr/ppp2ppp/3p4/4P3/4P1b1/5N2/PPP2PPP/RNBQKB1R b KQkq ab1 0 4", // 4.dxe5
+            // Invalid EPTS "e34"
+            "rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5b2/PPP2PPP/RNBQKB1R w KQkq e34 0 5" // 4...Bxf3
         };
 
         for ( String s : inValidFENRecords ) {
-            System.out.println( "Test: " + s );
+            //System.out.println( "Test: " + s );
             assertEquals( 9, SUM.validateFENRecord( s ) );
         }
     }

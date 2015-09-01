@@ -1,4 +1,4 @@
---Create the remaining tests for validateFENRecord()
+--validateFENRecord(): Create test 10
 --PositionTest.java:identicalPositions(): Isn't this the deepEquals() method I've been considering writing?
 --Position.java:fENToPosition(): Create the equivalent constructor in Position, then get rid of the method
 --Position.java:toString(): Override the method so that it becomes the inverse of fENToPosition()
