@@ -537,6 +537,15 @@ public class SUM {
      example, 2p5 = 2 + 1 + 5, rnbqkbnr = 8 * 1 and 4P3 = 4 + 1 + 3.
      6. There's exactly one king per color.
      7. Validate the second field. It is always either 'w' or 'b'.
+     8. Validate the third field which is a string in the 16-element set
+     { "-", "K", "Q", "k", "q", "KQ", "Kk", "Kq", "Qk", "Qq", "kq",
+     "Qkq", "Kkq", "KQq", "KQk", "KQkq" }
+     9. Validate the fourth field (en passant target square). It is either
+     the one-character string "-" or a two-character string with the first
+     character being in the set [a-h] and the second [36].
+     10. Check that the fourth field is logically correct. If the rank
+     number of the en passant target square is 3 then the second field
+     must be "b"; if the rank number is 6 then the second field must be "w".
 
      The ordinal number of the tests correspond to the integer value
      returned by the method should the test fail. If all of the tests
@@ -551,6 +560,8 @@ public class SUM {
      --validateFENRecordReturns5()
      --validateFENRecordReturns6()
      --validateFENRecordReturns7()
+     --validateFENRecordReturns8()
+     --validateFENRecordReturns9()
      */
     public static int validateFENRecord( String fENRecord ) {
         String charClassPlus = "[pPnNbBrRqQkK1-8]+"; // Needed in test 3
@@ -585,6 +596,13 @@ public class SUM {
         } // Test 7
         else if ( !validateFENRecordValidActiveColor( fENRecord ) ) {
             return 7;
+        } // Test 8
+        else if ( !validateFENRecordValidCastlingAvailabilityString( fENRecord ) ) {
+            return 8;
+        } // Test 9
+        else if ( !Pattern.matches( "^-$|^[a-h]{1}[36]{1}$",
+            splitFENRecord( fENRecord )[ 3 ] ) ) {
+            return 9;
         }
 
         return 0;
@@ -726,6 +744,34 @@ public class SUM {
         String[] fENFields = splitFENRecord( fENRecord );
         if ( fENFields[ 1 ].equals( "b" ) || fENFields[ 1 ].equals( "w" ) ) {
             return true;
+        }
+
+        return false;
+    }
+
+    // validateFENRecord() helper method
+    private static boolean validateFENRecordValidCastlingAvailabilityString(
+        String fENRecord ) {
+        String[] validCastlingAvailabilityStrings = {
+            // Binomial Coefficient nCk
+            // Altogether there are 16 castling availability combinations
+            // 4C0 = 1
+            "-",
+            // 4C1 = 4
+            "K", "Q", "k", "q",
+            // 4C2 = 6
+            "KQ", "Kk", "Kq", "Qk", "Qq", "kq",
+            // 4C3 = 4
+            "Qkq", "Kkq", "KQq", "KQk",
+            // 4C4 = 1
+            "KQkq"
+        };
+
+        for ( String s : validCastlingAvailabilityStrings ) {
+            // A maximum of 16 string comparisons will be performed
+            if ( splitFENRecord( fENRecord )[ 2 ].equals( s ) ) {
+                return true;
+            }
         }
 
         return false;

@@ -640,6 +640,67 @@ public class SUMTest {
     }
 
     /*
+     validateFENRecord(): Detection test of invalid third field. The field
+     indicates castling availability and is a string in the set
+     { "-", "K", "Q", "k", "q", "KQ", "Kk", "Kq", "Qk", "Qq", "kq",
+     "Qkq", "Kkq", "KQq", "KQk", "KQkq" }
+     */
+    @Test
+    public void validateFENRecordReturns8() {
+        String[] invalidFENRecords = {
+            // Invalid character '0'
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w K0kq - 0 1",
+            // Characters in wrong order
+            "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b QKkq e3 0 1", // 1.e4
+            // Characters in wrong order
+            "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KkQq e6 0 2", // 1...e5
+            // Characters in wrong order
+            "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b qQkK - 1 2", // 2.Nf3
+            // Extra character
+            "rnbqkbnr/ppp2ppp/3p4/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w QKQkq - 0 3", // 2...d6
+            // Extra character
+            "rnbqkbnr/ppp2ppp/3p4/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R b -KQkq d3 0 3", // 3.d4
+            // Extra character
+            "rn1qkbnr/ppp2ppp/3p4/4p3/3PP1b1/5N2/PPP2PPP/RNBQKB1R w KQkqq - 1 4", // 3...Bg4
+            // Extra character
+            "rn1qkbnr/ppp2ppp/3p4/4P3/4P1b1/5N2/PPP2PPP/RNBQKB1R b KQkq0 - 0 4", // 4.dxe5
+            // Invalid one-character string
+            "rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5b2/PPP2PPP/RNBQKB1R w w - 0 5", // 4...Bxf3
+            // Invalid two-character string
+            "rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5Q2/PPP2PPP/RNB1KB1R b -- - 0 5", // 5.Qxf3
+        };
+
+        for ( String s : invalidFENRecords ) {
+            //System.out.println( "Test: " + s );
+            assertEquals( 8, SUM.validateFENRecord( s ) );
+        }
+    }
+
+    /*
+     validateFENRecord(): Detection test of invalid fourth field.
+     */
+    @Test
+    public void validateFENRecordReturns9() {
+        String[] inValidFENRecords = {
+            // Invalid EPTS (en passant target square) "b"
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq b 0 1", //"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", // 1.e4
+        //"rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2", // 1...e5
+        //"rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2", // 2.Nf3
+        //"rnbqkbnr/ppp2ppp/3p4/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 3", // 2...d6
+        //"rnbqkbnr/ppp2ppp/3p4/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq d3 0 3", // 3.d4
+        //"rn1qkbnr/ppp2ppp/3p4/4p3/3PP1b1/5N2/PPP2PPP/RNBQKB1R w KQkq - 1 4", // 3...Bg4
+        //"rn1qkbnr/ppp2ppp/3p4/4P3/4P1b1/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 4", // 4.dxe5
+        //"rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5b2/PPP2PPP/RNBQKB1R w KQkq - 0 5", // 4...Bxf3
+        //"rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5Q2/PPP2PPP/RNB1KB1R b KQkq - 0 5", // 5.Qxf3
+        };
+
+        for ( String s : inValidFENRecords ) {
+            System.out.println( "Test: " + s );
+            assertEquals( 9, SUM.validateFENRecord( s ) );
+        }
+    }
+
+    /*
      splitFENRecord(): General test
      */
     @Test
