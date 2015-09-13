@@ -1,6 +1,4 @@
---validateFENRecord(): Create test 13, a consistency check between the fifth and sixth fields of a FEN record. Example: it doesn't make sense if the halfmove clock is set to 50 and the fullmove number to 1.
 --Add more FEN records to validateFENRecordReturns0() of SUMTest.java
 --PositionTest.java:identicalPositions(): Isn't this the deepEquals() method I've been considering writing?
 --Position.java:fENToPosition(): Create the equivalent constructor in Position, then get rid of the method
 --Position.java:toString(): Override the method so that it becomes the inverse of fENToPosition()
---A method that takes a FEN record as its parameter along with an integer from 1 to 6 and returns the field indicated by the integer
