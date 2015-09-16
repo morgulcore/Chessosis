@@ -2,6 +2,7 @@ package chessosisnbproject.logic;
 
 import chessosisnbproject.data.CSS;
 import chessosisnbproject.data.Colour;
+import chessosisnbproject.data.Square;
 import java.util.Random;
 import org.junit.After;
 import org.junit.Before;
@@ -160,6 +161,72 @@ public class PositionTest {
         } while ( equalsCounter < 10 );
     }
 
+    /*
+     deepEquals(): Valid data test using a manually specified starting
+     position object and the supposedly identical object returned by Position's
+     no-argument constructor.
+     */
+    @Test
+    public void deepEqualsBasicReturnsTrueTest() {
+        Position pos1 = new Position();
+        // Manually specified starting position
+        Position pos2 = new Position(
+            // White pawns
+            CSS.A2 | CSS.B2 | CSS.C2 | CSS.D2 | CSS.E2 | CSS.F2 | CSS.G2 | CSS.H2,
+            // White bishops
+            CSS.C1 | CSS.F1,
+            // White knights
+            CSS.B1 | CSS.G1,
+            // White rooks
+            CSS.A1 | CSS.H1,
+            // White queen
+            CSS.D1,
+            // White king
+            CSS.E1,
+            // Black pawns
+            CSS.A7 | CSS.B7 | CSS.C7 | CSS.D7 | CSS.E7 | CSS.F7 | CSS.G7 | CSS.H7,
+            // Black bishops
+            CSS.C8 | CSS.F8,
+            // Black knights
+            CSS.B8 | CSS.G8,
+            // Black rooks
+            CSS.A8 | CSS.H8,
+            // Black queen
+            CSS.D8,
+            // Black king
+            CSS.E8,
+            // Active color
+            Colour.WHITE,
+            // The four castling rights (KQkq)
+            true, true, true, true,
+            // En passant target square
+            null,
+            // Halfmove clock and fullmove number
+            0, 1
+        );
+
+        assertEquals( true, pos1.deepEquals( pos2 ) );
+    }
+
+    /*
+     deepEquals(): Non-identical objects detection test. The test compares
+     objects returned by Position.randomDataPositionObject() which in
+     practical terms of probability should never be identical. The test
+     succeeds if all objects compared are found to be not identical.
+     */
+    @Test
+    public void deepEqualsReturnsFalse() {
+        for ( int i = 1; i <= 100000; i++ ) {
+            Position pos1 = Position.randomDataPositionObject();
+            //Position pos2 = pos1;
+            Position pos2 = Position.randomDataPositionObject();
+            //Position pos1 = new Position();
+            //Position pos2 = new Position();
+
+            assertEquals( false, pos1.deepEquals( pos2 ) );
+        }
+    }
+
     @Test
     public void fENToPositionConversionTest1() throws Exception {
         Position actualPos = Position.fENToPosition(
@@ -201,6 +268,8 @@ public class PositionTest {
     // Compares each and every field of two Position objects and returns
     // true if they are all equal. Note that the overridden equals() of
     // Position doesn't compare all fields.
+    //
+    // ___Position.deepEquals() does exactly the same job as this method.___
     private static boolean identicalPositions(
         Position first, Position second ) throws Exception {
         if ( first == second ) { // One and the same object
@@ -265,6 +334,9 @@ public class PositionTest {
     // =============================
     //
     //
+    // There's the similar method Position.randomDataPositionObject() that
+    // serves the same basic function as this method and contains much
+    // the same code.
     private static Position randomPositionObject(
         boolean makeCopy, int fullmove, Colour turn ) {
         Random rand = new Random();
@@ -276,25 +348,42 @@ public class PositionTest {
                 : ( rand.nextBoolean() ? Colour.WHITE : Colour.BLACK );
 
         Position randPos = new Position(
+            // White pawns
             rand.nextLong(),
+            // White bishops
             rand.nextLong(),
+            // White knights
             rand.nextLong(),
+            // White rooks
             rand.nextLong(),
+            // White queens
             rand.nextLong(),
+            // White king
             rand.nextLong(),
+            // Black pawns
             rand.nextLong(),
+            // Black bishops
             rand.nextLong(),
+            // Black knights
             rand.nextLong(),
+            // Black rooks
             rand.nextLong(),
+            // Black queens
             rand.nextLong(),
+            // Black king
             rand.nextLong(),
+            // Active color
             valueForTurn,
+            // The four castling rights
             rand.nextBoolean(),
             rand.nextBoolean(),
             rand.nextBoolean(),
             rand.nextBoolean(),
+            // En passant target square
             SUM.randomSquare(),
+            // Halfmove clock
             rand.nextInt(),
+            // Fullmove number
             valueForFullmoveNumber );
 
         return randPos;

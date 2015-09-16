@@ -1,3 +1,4 @@
+--Position.java: deepEquals(): line 438: figure out the problem
 --Add more FEN records to validateFENRecordReturns0() of SUMTest.java
 --PositionTest.java:identicalPositions(): Isn't this the deepEquals() method I've been considering writing?
 --Position.java:fENToPosition(): Create the equivalent constructor in Position, then get rid of the method
