@@ -2,80 +2,100 @@ package chessosisnbproject.logic;
 
 import chessosisnbproject.data.CSS;
 import chessosisnbproject.data.Colour;
-import chessosisnbproject.data.Square;
 import java.util.Random;
 import org.junit.After;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class PositionTest {
 
     // Reference for the standard starting position object
-    private Position standard;
+    private Position stdStartPos;
 
     // Sets up the test fixture (called before every test case method).
     @Before
     public void setUp() {
         // Should set up the standard starting position
-        standard = new Position();
+        stdStartPos = new Position();
     }
 
     // Tears down the test fixture (called after every test case method).
     @After
     public void tearDown() {
-        standard = null;
+        stdStartPos = null;
+    }
+
+    /*
+     Position( Position pos, boolean randomWhitePawnBB, ... ): Testing
+     Position's randomizing constructor. The test calls the constructor
+     with the boolean arguments all being false. Thus the constructor
+     should return an object identical to the first parameter.
+     */
+    @Test
+    public void randomizingPositionConstructorTest() {
+        Position identical
+            = new Position(
+                stdStartPos,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false );
+
+        assertEquals(true, stdStartPos.deepEquals( identical ) );
     }
 
     @Test
     public void pawnsOK() {
-        assertEquals( 0xff00000000ff00L,
-            standard.whitePawns() | standard.blackPawns() );
+        assertEquals(0xff00000000ff00L,
+            stdStartPos.whitePawns() | stdStartPos.blackPawns() );
     }
 
     @Test
     public void rooksOK() {
-        assertEquals( 0x8100000000000081L,
-            standard.whiteRooks() | standard.blackRooks() );
+        assertEquals(0x8100000000000081L,
+            stdStartPos.whiteRooks() | stdStartPos.blackRooks() );
     }
 
     @Test
     public void minorPiecesOK() {
-        assertEquals( 0x6600000000000066L,
-            standard.whiteKnights() | standard.whiteBishops()
-            | standard.blackKnights() | standard.blackBishops()
+        assertEquals(0x6600000000000066L,
+            stdStartPos.whiteKnights() | stdStartPos.whiteBishops()
+            | stdStartPos.blackKnights() | stdStartPos.blackBishops()
         );
     }
 
     @Test
     public void queensOK() {
-        assertEquals( 0x800000000000008L,
-            standard.whiteQueens() | standard.blackQueens() );
+        assertEquals(0x800000000000008L,
+            stdStartPos.whiteQueens() | stdStartPos.blackQueens() );
     }
 
     @Test
     public void kingsOK() {
-        assertEquals( 0x1000000000000010L,
-            standard.whiteKing() | standard.blackKing() );
+        assertEquals(0x1000000000000010L,
+            stdStartPos.whiteKing() | stdStartPos.blackKing() );
     }
 
     @Test
     public void activeColorOK() {
-        assertEquals( Colour.WHITE, standard.turn() );
+        assertEquals(Colour.WHITE, stdStartPos.turn() );
     }
 
     @Test
     public void castlingRightsOK() {
-        assertEquals( false,
-            !standard.whiteCanCastleKingside()
-            | !standard.whiteCanCastleQueenside()
-            | !standard.blackCanCastleKingside()
-            | !standard.blackCanCastleQueenside() );
+        assertEquals(false,
+            !stdStartPos.whiteCanCastleKingside()
+            | !stdStartPos.whiteCanCastleQueenside()
+            | !stdStartPos.blackCanCastleKingside()
+            | !stdStartPos.blackCanCastleQueenside() );
     }
 
     @Test
     public void bothArmiesMightBeOK() {
-        assertEquals( 0xffff00000000ffffL, standard.bothArmies() );
+        assertEquals(0xffff00000000ffffL, stdStartPos.bothArmies() );
     }
 
     /*
@@ -163,14 +183,15 @@ public class PositionTest {
 
     /*
      deepEquals(): Valid data test using a manually specified starting
-     position object and the supposedly identical object returned by Position's
+     position object and an identical object returned by Position's
+     no-argument constructor. Note that this also indirectly tests the
      no-argument constructor.
      */
     @Test
-    public void deepEqualsBasicReturnsTrueTest() {
-        Position pos1 = new Position();
+    public void deepEqualsReturnsTrue() {
+        Position stdStartPos = new Position();
         // Manually specified starting position
-        Position pos2 = new Position(
+        Position manuallySpecifiedPos = new Position(
             // White pawns
             CSS.A2 | CSS.B2 | CSS.C2 | CSS.D2 | CSS.E2 | CSS.F2 | CSS.G2 | CSS.H2,
             // White bishops
@@ -205,33 +226,107 @@ public class PositionTest {
             0, 1
         );
 
-        assertEquals( true, pos1.deepEquals( pos2 ) );
+        assertEquals( true, stdStartPos.deepEquals( manuallySpecifiedPos ) );
     }
 
     /*
-     deepEquals(): Non-identical objects detection test. The test compares
-     objects returned by Position.randomDataPositionObject() which in
-     practical terms of probability should never be identical. The test
-     succeeds if all objects compared are found to be not identical.
+     deepEquals(): Checks that Position's whitePawnBB field gets randomized
      */
     @Test
-    public void deepEqualsReturnsFalse() {
-        for ( int i = 1; i <= 100000; i++ ) {
-            Position pos1 = Position.randomDataPositionObject();
-            //Position pos2 = pos1;
-            Position pos2 = Position.randomDataPositionObject();
-            //Position pos1 = new Position();
-            //Position pos2 = new Position();
+    public void deepEqualsReturnsFalse1() {
+        Position pos
+            = new Position(
+                stdStartPos,
+                true, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false );
 
-            assertEquals( false, pos1.deepEquals( pos2 ) );
+        assertEquals(false, stdStartPos.whitePawns() == pos.whitePawns() );
+    }
+
+    /*
+     deepEquals(): Checks that Position's blackPawnBB field gets randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse7() {
+        Position pos
+            = new Position(
+                stdStartPos,
+                false, false, false, false, false,
+                false, true, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false );
+
+        assertEquals(false, stdStartPos.blackPawns() == pos.blackPawns() );
+    }
+
+    /*
+     deepEquals(): Checks that Position's turn field gets randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse13() {
+
+        boolean unequalTurnFieldsDetected = false;
+
+        // As the turn field can get only two values (excluding null),
+        // there's a 50 % chance that the randomized field will equal the
+        // original. That's why we'll try 20 times in a row to obtain
+        // differing field values.
+        for ( int i = 1; i <= 20; i++ ) {
+            Position pos
+                = new Position(
+                    stdStartPos,
+                    false, false, false, false, false,
+                    false, false, false, false, false,
+                    false, false, true, false, false,
+                    false, false, false, false, false );
+            if ( stdStartPos.turn() != pos.turn() ) {
+                unequalTurnFieldsDetected = true;
+                break;
+            }
         }
+
+        assertEquals( true, unequalTurnFieldsDetected );
+    }
+
+    /*
+     deepEquals(): Checks that Position's castling rights fields get
+     randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse14to17() {
+        boolean unequalCastlingRightsFieldsDetected = false;
+
+        // With only a single iteration there's a 1/16 chance that the
+        // test will fail. This is the case where the four randomized
+        // boolean castling rights fields happen to all equal their
+        // counterparts in the other Position object.
+        for ( int i = 1; i <= 10; i++ ) {
+            Position pos
+                = new Position(
+                    stdStartPos,
+                    false, false, false, false, false,
+                    false, false, false, false, false,
+                    false, false, false, true, true,
+                    true, true, false, false, false );
+            if ( stdStartPos.whiteCanCastleKingside() != pos.whiteCanCastleKingside()
+                || stdStartPos.whiteCanCastleQueenside() != pos.whiteCanCastleQueenside()
+                || stdStartPos.blackCanCastleKingside() != pos.blackCanCastleKingside()
+                || stdStartPos.blackCanCastleQueenside() != pos.blackCanCastleQueenside() ) {
+                unequalCastlingRightsFieldsDetected = true;
+                break;
+            }
+        }
+
+        assertEquals( true, unequalCastlingRightsFieldsDetected );
     }
 
     @Test
     public void fENToPositionConversionTest1() throws Exception {
         Position actualPos = Position.fENToPosition(
             "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" );
-        if ( !identicalPositions( standard, actualPos ) ) {
+        if ( !identicalPositions(stdStartPos, actualPos ) ) {
             fail();
         }
     }

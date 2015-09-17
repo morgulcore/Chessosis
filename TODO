@@ -1,5 +1,6 @@
---Position.java: deepEquals(): line 438: figure out the problem
---Add more FEN records to validateFENRecordReturns0() of SUMTest.java
---PositionTest.java:identicalPositions(): Isn't this the deepEquals() method I've been considering writing?
---Position.java:fENToPosition(): Create the equivalent constructor in Position, then get rid of the method
---Position.java:toString(): Override the method so that it becomes the inverse of fENToPosition()
+--Add the remaining JUNIT tests for deepEquals()
+--SUMTest.java: validateFENRecordReturns0: Add the remaining FEN records of the Opera Game
+--PositionTest.java: identicalPositions(): Search for usage, replace with deepEquals(), remove.
+--Position.java: fENToPosition(): Create the equivalent constructor in Position, then remove the method
+--Position.java: toString(): Override the method so that it returns the FEN record representation of the object
+--Study the proper use of Javadoc

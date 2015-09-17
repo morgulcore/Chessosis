@@ -196,6 +196,98 @@ public class Position {
         );
     }
 
+    /*
+     A randomizing constructor needed for testing purposes. The first parameter
+     is an existing Position object. The object created by the constructor
+     will be the same as the first parameter except for the randomized fields.
+     The 20 boolean parameters are used to specify which fields are to be
+     randomized. Note that in most cases randomizing a field of a Position
+     object is likely to produce inconsistent data. In other words, this
+     constructor doesn't produce a random chess position but rather an object
+     with junk contents.
+
+     JUNIT TEST: randomizingPositionConstructorTest()
+     */
+    public Position(
+        Position pos,
+        boolean randomWhitePawnBB,
+        boolean randomWhiteBishopBB,
+        boolean randomWhiteKnightBB,
+        boolean randomWhiteRookBB,
+        boolean randomWhiteQueenBB,
+        boolean randomWhiteKingBB,
+        boolean randomBlackPawnBB,
+        boolean randomBlackBishopBB,
+        boolean randomBlackKnightBB,
+        boolean randomBlackRookBB,
+        boolean randomBlackQueenBB,
+        boolean randomBlackKingBB,
+        boolean randomTurn,
+        boolean randomWhiteCanCastleKingside,
+        boolean randomWhiteCanCastleQueenside,
+        boolean randomBlackCanCastleKingside,
+        boolean randomBlackCanCastleQueenside,
+        boolean randomEnPassantTargetSquare,
+        boolean randomHalfmoveClock,
+        boolean randomFullmoveNumber
+    ) {
+        Random rand = new Random();
+
+        // Initialize white chessmen
+        this.whitePawnBB
+            = randomWhitePawnBB ? rand.nextLong() : pos.whitePawns();
+        this.whiteBishopBB
+            = randomWhiteBishopBB ? rand.nextLong() : pos.whiteBishops();
+        this.whiteKnightBB
+            = randomWhiteKnightBB ? rand.nextLong() : pos.whiteKnights();
+        this.whiteRookBB
+            = randomWhiteRookBB ? rand.nextLong() : pos.whiteRooks();
+        this.whiteQueenBB
+            = randomWhiteQueenBB ? rand.nextLong() : pos.whiteQueens();
+        this.whiteKingBB
+            = randomWhiteKingBB ? rand.nextLong() : pos.whiteKing();
+        // Initialize black chessmen
+        this.blackPawnBB
+            = randomBlackPawnBB ? rand.nextLong() : pos.blackPawns();
+        this.blackBishopBB
+            = randomBlackBishopBB ? rand.nextLong() : pos.blackBishops();
+        this.blackKnightBB
+            = randomBlackKnightBB ? rand.nextLong() : pos.blackKnights();
+        this.blackRookBB
+            = randomBlackRookBB ? rand.nextLong() : pos.blackRooks();
+        this.blackQueenBB
+            = randomBlackQueenBB ? rand.nextLong() : pos.blackQueens();
+        this.blackKingBB
+            = randomBlackKingBB ? rand.nextLong() : pos.blackKing();
+        // Set the active color
+        this.turn = randomTurn
+            ? ( rand.nextBoolean() ? Colour.WHITE : Colour.BLACK )
+            : pos.turn();
+        // Set castling rights
+        this.whiteCanCastleKingside
+            = randomWhiteCanCastleKingside
+                ? rand.nextBoolean() : pos.whiteCanCastleKingside();
+        this.whiteCanCastleQueenside
+            = randomWhiteCanCastleQueenside
+                ? rand.nextBoolean() : pos.whiteCanCastleQueenside();
+        this.blackCanCastleKingside
+            = randomBlackCanCastleKingside
+                ? rand.nextBoolean() : pos.blackCanCastleKingside();
+        this.blackCanCastleQueenside
+            = randomBlackCanCastleQueenside
+                ? rand.nextBoolean() : pos.blackCanCastleQueenside();
+        // Initialize the three remaining fields of the Position object.
+        // Note that there's a 50 % chance of the en passant target square
+        // being null.
+        this.enPassantTargetSquare = randomEnPassantTargetSquare
+            ? ( rand.nextBoolean() ? null : SUM.randomSquare() )
+            : pos.enPassantTargetSquare();
+        this.halfmoveClock = randomHalfmoveClock
+            ? rand.nextInt() : pos.halfmoveClock();
+        this.fullmoveNumber = randomFullmoveNumber
+            ? rand.nextInt() : pos.fullmoveNumber();
+    }
+
     public long whitePawns() {
         return this.whitePawnBB;
     }
@@ -380,13 +472,13 @@ public class Position {
      a new Position object is added into the set. Also, every time a piece is
      moved, this.turn gets toggled; every other time a piece gets moved,
      this.fullmoveNumber gets incremented.
-    
+
      JUNIT TESTS:
      --equalsSymmetryTest()
      --equalsReflexivityTest()
      --equalsTransitivityTest()
      --equalsConsistencyWithHashCodeTest()
-    
+
      On the first four JUnit tests:
      http://www.ibm.com/developerworks/library/j-jtp05273/
      */
@@ -411,10 +503,13 @@ public class Position {
      objects (the other being 'this') and returns true if and only if
      they are all identical. Note that the check performed by the overridden
      equals() is much more shallow.
-    
+
      JUNIT TESTS:
-     --deepEqualsBasicReturnsTrueTest()
-     --deepEqualsReturnsFalse()
+     --deepEqualsReturnsTrue()
+     --deepEqualsReturnsFalse1()
+     --deepEqualsReturnsFalse7()
+     --deepEqualsReturnsFalse13()
+     --deepEqualsReturnsFalse14to17()
      */
     public boolean deepEquals( Object obj ) {
         // First the overridden equals() method is called
@@ -433,9 +528,7 @@ public class Position {
             || this.whiteRooks() != otherPos.whiteRooks()
             || this.whiteQueens() != otherPos.whiteQueens()
             || this.whiteKing() != otherPos.whiteKing() ) {
-            // SOMETHING WRONG HERE! CAN COMMENT OUT THE RETURN STATEMENT
-            // AND THE JUNIT TESTS STILL SUCCEED!
-            //return false;
+            return false;
         } // Compare the bitboards of the black pieces
         else if ( this.blackPawns() != otherPos.blackPawns()
             || this.blackBishops() != otherPos.blackBishops()
@@ -537,60 +630,6 @@ public class Position {
             enPassantTSq, // En passant target square
             Integer.parseInt( fENFields[ 4 ] ),
             Integer.parseInt( fENFields[ 5 ] ) );
-    }
-
-    /*
-     Returns a Position object with all its fields consisting of completely
-     random data. Thus it is highly unlikely that any object returned by the
-     method would contain meaningful or consistent position data. The method
-     is obviously for testing purposes only.
-    
-     JUNIT TESTS: none
-     */
-    public static Position randomDataPositionObject() {
-        Random rand = new Random();
-
-        Position randPos = new Position(
-            // White pawns
-            rand.nextLong(),
-            // White bishops
-            rand.nextLong(),
-            // White knights
-            rand.nextLong(),
-            // White rooks
-            rand.nextLong(),
-            // White queens
-            rand.nextLong(),
-            // White king
-            rand.nextLong(),
-            // Black pawns
-            rand.nextLong(),
-            // Black bishops
-            rand.nextLong(),
-            // Black knights
-            rand.nextLong(),
-            // Black rooks
-            rand.nextLong(),
-            // Black queens
-            rand.nextLong(),
-            // Black king
-            rand.nextLong(),
-            // Active color
-            rand.nextBoolean() ? Colour.WHITE : Colour.BLACK,
-            // The four castling rights
-            rand.nextBoolean(),
-            rand.nextBoolean(),
-            rand.nextBoolean(),
-            rand.nextBoolean(),
-            // En passant target square. In the unlikely case the value
-            // will be null, in the likely a Square object
-            ( rand.nextInt( 65 ) == 0 ) ? null : SUM.randomSquare(),
-            // Halfmove clock
-            rand.nextInt(),
-            // Fullmove number
-            rand.nextInt() );
-
-        return randPos;
     }
 
     //
