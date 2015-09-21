@@ -44,24 +44,24 @@ public class PositionTest {
                 false, false, false, false, false,
                 false, false, false, false, false );
 
-        assertEquals(true, stdStartPos.deepEquals( identical ) );
+        assertEquals( true, stdStartPos.deepEquals( identical ) );
     }
 
     @Test
     public void pawnsOK() {
-        assertEquals(0xff00000000ff00L,
+        assertEquals( 0xff00000000ff00L,
             stdStartPos.whitePawns() | stdStartPos.blackPawns() );
     }
 
     @Test
     public void rooksOK() {
-        assertEquals(0x8100000000000081L,
+        assertEquals( 0x8100000000000081L,
             stdStartPos.whiteRooks() | stdStartPos.blackRooks() );
     }
 
     @Test
     public void minorPiecesOK() {
-        assertEquals(0x6600000000000066L,
+        assertEquals( 0x6600000000000066L,
             stdStartPos.whiteKnights() | stdStartPos.whiteBishops()
             | stdStartPos.blackKnights() | stdStartPos.blackBishops()
         );
@@ -69,24 +69,24 @@ public class PositionTest {
 
     @Test
     public void queensOK() {
-        assertEquals(0x800000000000008L,
+        assertEquals( 0x800000000000008L,
             stdStartPos.whiteQueens() | stdStartPos.blackQueens() );
     }
 
     @Test
     public void kingsOK() {
-        assertEquals(0x1000000000000010L,
+        assertEquals( 0x1000000000000010L,
             stdStartPos.whiteKing() | stdStartPos.blackKing() );
     }
 
     @Test
     public void activeColorOK() {
-        assertEquals(Colour.WHITE, stdStartPos.turn() );
+        assertEquals( Colour.WHITE, stdStartPos.turn() );
     }
 
     @Test
     public void castlingRightsOK() {
-        assertEquals(false,
+        assertEquals( false,
             !stdStartPos.whiteCanCastleKingside()
             | !stdStartPos.whiteCanCastleQueenside()
             | !stdStartPos.blackCanCastleKingside()
@@ -95,7 +95,7 @@ public class PositionTest {
 
     @Test
     public void bothArmiesMightBeOK() {
-        assertEquals(0xffff00000000ffffL, stdStartPos.bothArmies() );
+        assertEquals( 0xffff00000000ffffL, stdStartPos.bothArmies() );
     }
 
     /*
@@ -189,7 +189,6 @@ public class PositionTest {
      */
     @Test
     public void deepEqualsReturnsTrue() {
-        Position stdStartPos = new Position();
         // Manually specified starting position
         Position manuallySpecifiedPos = new Position(
             // White pawns
@@ -242,7 +241,93 @@ public class PositionTest {
                 false, false, false, false, false,
                 false, false, false, false, false );
 
-        assertEquals(false, stdStartPos.whitePawns() == pos.whitePawns() );
+        assertEquals( false, stdStartPos.whitePawns() == pos.whitePawns() );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
+    }
+
+    /*
+     deepEquals(): Checks that Position's whiteBishopBB field gets randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse2() {
+        Position pos
+            = new Position(
+                stdStartPos,
+                false, true, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false );
+
+        assertEquals( false, stdStartPos.whiteBishops() == pos.whiteBishops() );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
+    }
+
+    /*
+     deepEquals(): Checks that Position's whiteKnightBB field gets randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse3() {
+        Position pos
+            = new Position(
+                stdStartPos,
+                false, false, true, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false );
+
+        assertEquals( false, stdStartPos.whiteKnights() == pos.whiteKnights() );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
+    }
+
+    /*
+     deepEquals(): Checks that Position's whiteRookBB field gets randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse4() {
+        Position pos
+            = new Position(
+                stdStartPos,
+                false, false, false, true, false,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false );
+
+        assertEquals( false, stdStartPos.whiteRooks() == pos.whiteRooks() );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
+    }
+
+    /*
+     deepEquals(): Checks that Position's whiteQueenBB field gets randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse5() {
+        Position pos
+            = new Position(
+                stdStartPos,
+                false, false, false, false, true,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false );
+
+        assertEquals( false, stdStartPos.whiteQueens() == pos.whiteQueens() );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
+    }
+
+    /*
+     deepEquals(): Checks that Position's whiteKingBB field gets randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse6() {
+        Position pos
+            = new Position(
+                stdStartPos,
+                false, false, false, false, false,
+                true, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false );
+
+        assertEquals( false, stdStartPos.whiteKing() == pos.whiteKing() );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
     }
 
     /*
@@ -258,7 +343,93 @@ public class PositionTest {
                 false, false, false, false, false,
                 false, false, false, false, false );
 
-        assertEquals(false, stdStartPos.blackPawns() == pos.blackPawns() );
+        assertEquals( false, stdStartPos.blackPawns() == pos.blackPawns() );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
+    }
+
+    /*
+     deepEquals(): Checks that Position's blackBishopBB field gets randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse8() {
+        Position pos
+            = new Position(
+                stdStartPos,
+                false, false, false, false, false,
+                false, false, true, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false );
+
+        assertEquals( false, stdStartPos.blackBishops() == pos.blackBishops() );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
+    }
+
+    /*
+     deepEquals(): Checks that Position's blackKnightBB field gets randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse9() {
+        Position pos
+            = new Position(
+                stdStartPos,
+                false, false, false, false, false,
+                false, false, false, true, false,
+                false, false, false, false, false,
+                false, false, false, false, false );
+
+        assertEquals( false, stdStartPos.blackKnights() == pos.blackKnights() );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
+    }
+
+    /*
+     deepEquals(): Checks that Position's blackRookBB field gets randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse10() {
+        Position pos
+            = new Position(
+                stdStartPos,
+                false, false, false, false, false,
+                false, false, false, false, true,
+                false, false, false, false, false,
+                false, false, false, false, false );
+
+        assertEquals( false, stdStartPos.blackRooks() == pos.blackRooks() );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
+    }
+
+    /*
+     deepEquals(): Checks that Position's blackQueenBB field gets randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse11() {
+        Position pos
+            = new Position(
+                stdStartPos,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                true, false, false, false, false,
+                false, false, false, false, false );
+
+        assertEquals( false, stdStartPos.blackQueens() == pos.blackQueens() );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
+    }
+
+    /*
+     deepEquals(): Checks that Position's blackKingBB field gets randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse12() {
+        Position pos
+            = new Position(
+                stdStartPos,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, true, false, false, false,
+                false, false, false, false, false );
+
+        assertEquals( false, stdStartPos.blackKing() == pos.blackKing() );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
     }
 
     /*
@@ -268,19 +439,19 @@ public class PositionTest {
     public void deepEqualsReturnsFalse13() {
 
         boolean unequalTurnFieldsDetected = false;
+        Position pos = null;
 
         // As the turn field can get only two values (excluding null),
         // there's a 50 % chance that the randomized field will equal the
         // original. That's why we'll try 20 times in a row to obtain
         // differing field values.
         for ( int i = 1; i <= 20; i++ ) {
-            Position pos
-                = new Position(
-                    stdStartPos,
-                    false, false, false, false, false,
-                    false, false, false, false, false,
-                    false, false, true, false, false,
-                    false, false, false, false, false );
+            pos = new Position(
+                stdStartPos,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, true, false, false,
+                false, false, false, false, false );
             if ( stdStartPos.turn() != pos.turn() ) {
                 unequalTurnFieldsDetected = true;
                 break;
@@ -288,6 +459,7 @@ public class PositionTest {
         }
 
         assertEquals( true, unequalTurnFieldsDetected );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
     }
 
     /*
@@ -297,19 +469,19 @@ public class PositionTest {
     @Test
     public void deepEqualsReturnsFalse14to17() {
         boolean unequalCastlingRightsFieldsDetected = false;
+        Position pos = null;
 
         // With only a single iteration there's a 1/16 chance that the
         // test will fail. This is the case where the four randomized
         // boolean castling rights fields happen to all equal their
         // counterparts in the other Position object.
         for ( int i = 1; i <= 10; i++ ) {
-            Position pos
-                = new Position(
-                    stdStartPos,
-                    false, false, false, false, false,
-                    false, false, false, false, false,
-                    false, false, false, true, true,
-                    true, true, false, false, false );
+            pos = new Position(
+                stdStartPos,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, true, true,
+                true, true, false, false, false );
             if ( stdStartPos.whiteCanCastleKingside() != pos.whiteCanCastleKingside()
                 || stdStartPos.whiteCanCastleQueenside() != pos.whiteCanCastleQueenside()
                 || stdStartPos.blackCanCastleKingside() != pos.blackCanCastleKingside()
@@ -320,13 +492,77 @@ public class PositionTest {
         }
 
         assertEquals( true, unequalCastlingRightsFieldsDetected );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
+    }
+
+    /*
+     deepEquals(): Checks that Position's en passant target square field
+     gets randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse18() {
+        boolean unequalEnPassantTargetSquareFieldsDetected = false;
+        Position pos = null;
+
+        for ( int i = 1; i <= 20; i++ ) {
+            pos = new Position(
+                stdStartPos,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, true, false, false );
+            if ( stdStartPos.enPassantTargetSquare() != pos.enPassantTargetSquare() ) {
+                unequalEnPassantTargetSquareFieldsDetected = true;
+                break;
+            }
+        }
+
+        assertEquals(
+            true, unequalEnPassantTargetSquareFieldsDetected );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
+    }
+
+    /*
+     deepEquals(): Checks that Position's halfmove clock field gets randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse19() {
+        Position pos
+            = new Position(
+                stdStartPos,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, true, false );
+
+        assertEquals(
+            false, stdStartPos.halfmoveClock() == pos.halfmoveClock() );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
+    }
+
+    /*
+     deepEquals(): Checks that Position's fullmove number field gets randomized
+     */
+    @Test
+    public void deepEqualsReturnsFalse20() {
+        Position pos
+            = new Position(
+                stdStartPos,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, true );
+
+        assertEquals(
+            false, stdStartPos.fullmoveNumber() == pos.fullmoveNumber() );
+        assertEquals( false, stdStartPos.deepEquals( pos ) );
     }
 
     @Test
     public void fENToPositionConversionTest1() throws Exception {
         Position actualPos = Position.fENToPosition(
             "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" );
-        if ( !identicalPositions(stdStartPos, actualPos ) ) {
+        if ( !identicalPositions( stdStartPos, actualPos ) ) {
             fail();
         }
     }

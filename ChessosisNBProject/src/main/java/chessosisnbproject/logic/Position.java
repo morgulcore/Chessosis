@@ -507,9 +507,22 @@ public class Position {
      JUNIT TESTS:
      --deepEqualsReturnsTrue()
      --deepEqualsReturnsFalse1()
+     --deepEqualsReturnsFalse2()
+     --deepEqualsReturnsFalse3()
+     --deepEqualsReturnsFalse4()
+     --deepEqualsReturnsFalse5()
+     --deepEqualsReturnsFalse6()
      --deepEqualsReturnsFalse7()
+     --deepEqualsReturnsFalse8()
+     --deepEqualsReturnsFalse9()
+     --deepEqualsReturnsFalse10()
+     --deepEqualsReturnsFalse11()
+     --deepEqualsReturnsFalse12()
      --deepEqualsReturnsFalse13()
      --deepEqualsReturnsFalse14to17()
+     --deepEqualsReturnsFalse18()
+     --deepEqualsReturnsFalse19()
+     --deepEqualsReturnsFalse20()
      */
     public boolean deepEquals( Object obj ) {
         // First the overridden equals() method is called
@@ -556,80 +569,6 @@ public class Position {
         // As no unequal fields were found and all fields were compared,
         // all the fields of the two objects must be equal
         return true;
-    }
-
-    /**
-     * The means to make or execute a move. The result of the operation is a new
-     * Position object.
-     *
-     * @param move the move to make
-     * @return the position that resulted from making the move in the previous
-     * position
-     * @throws Exception
-     */
-    public static Position makeMove( Move move ) throws Exception {
-        if ( move.context() == null ) {
-            throw new Exception( "Received Move object with null context" );
-        }
-
-        // Kingside castling
-        if ( isKingsideCastlingMove( move ) ) {
-            return makeKingsideCastlingMove( move.context() );
-        } // Queenside castling
-        else if ( isQueensideCastlingMove( move ) ) {
-            return makeQueensideCastlingMove( move.context() );
-        } // Non-castling move
-
-        return makeRegularMove( move );
-    }
-
-    /**
-     * Converts a FEN string into a Position object. FEN strings and Position
-     * objects are interchangable in the sense that they both contain the same
-     * information. Initializing new Position objects from FEN strings can be
-     * convenient. The reason why I created the FEN string to Position object
-     * mechanism was to facilitate testing of class MoveGenerator.
-     * <p>
-     * For now the conversion mechanism takes the form of this static method.
-     * However, a more natural approach would probably be a Position constructor
-     * that would accept as its parameter a single FEN string.
-     * <p>
-     * More on FEN strings:
-     * <p>
-     * https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
-     *
-     * @param fENRecord a FEN string
-     * @return the Position object created
-     * @throws Exception
-     */
-    public static Position fENToPosition( String fENRecord ) throws Exception {
-        String[] fENFields = SUM.splitFENRecord( fENRecord );
-        String[] fENRanks = SUM.splitFirstFENField( fENRecord );
-
-        long[] pieces = SUM.fENRanksToBBArray( fENRanks );
-
-        Colour turn = fENActiveColor( fENFields[ 1 ] );
-
-        boolean whiteCanCastleKS = fENCastlingRights( fENFields[ 2 ], 'K' ),
-            whiteCanCastleQS = fENCastlingRights( fENFields[ 2 ], 'Q' ),
-            blackCanCastleKS = fENCastlingRights( fENFields[ 2 ], 'k' ),
-            blackCanCastleQS = fENCastlingRights( fENFields[ 2 ], 'q' );
-
-        Square enPassantTSq;
-        if ( fENFields[ 3 ].equals( "-" ) ) {
-            enPassantTSq = null;
-        } else {
-            enPassantTSq = Square.valueOf( fENFields[ 3 ].toUpperCase() );
-        }
-
-        return fENToPositionInit(
-            pieces,
-            turn,
-            whiteCanCastleKS, whiteCanCastleQS,
-            blackCanCastleKS, blackCanCastleQS,
-            enPassantTSq, // En passant target square
-            Integer.parseInt( fENFields[ 4 ] ),
-            Integer.parseInt( fENFields[ 5 ] ) );
     }
 
     //
@@ -892,5 +831,85 @@ public class Position {
         }
 
         return pieceIndex;
+    }
+
+    //
+    // ===========================
+    // == Public static methods ==
+    // ===========================
+    //
+    //
+    /**
+     * Converts a FEN string into a Position object. FEN strings and Position
+     * objects are interchangable in the sense that they both contain the same
+     * information. Initializing new Position objects from FEN strings can be
+     * convenient. The reason why I created the FEN string to Position object
+     * mechanism was to facilitate testing of class MoveGenerator.
+     * <p>
+     * For now the conversion mechanism takes the form of this static method.
+     * However, a more natural approach would probably be a Position constructor
+     * that would accept as its parameter a single FEN string.
+     * <p>
+     * More on FEN strings:
+     * <p>
+     * https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+     *
+     * @param fENRecord a FEN string
+     * @return the Position object created
+     * @throws Exception
+     */
+    public static Position fENToPosition( String fENRecord ) throws Exception {
+        String[] fENFields = SUM.splitFENRecord( fENRecord );
+        String[] fENRanks = SUM.splitFirstFENField( fENRecord );
+
+        long[] pieces = SUM.fENRanksToBBArray( fENRanks );
+
+        Colour turn = fENActiveColor( fENFields[ 1 ] );
+
+        boolean whiteCanCastleKS = fENCastlingRights( fENFields[ 2 ], 'K' ),
+            whiteCanCastleQS = fENCastlingRights( fENFields[ 2 ], 'Q' ),
+            blackCanCastleKS = fENCastlingRights( fENFields[ 2 ], 'k' ),
+            blackCanCastleQS = fENCastlingRights( fENFields[ 2 ], 'q' );
+
+        Square enPassantTSq;
+        if ( fENFields[ 3 ].equals( "-" ) ) {
+            enPassantTSq = null;
+        } else {
+            enPassantTSq = Square.valueOf( fENFields[ 3 ].toUpperCase() );
+        }
+
+        return fENToPositionInit(
+            pieces,
+            turn,
+            whiteCanCastleKS, whiteCanCastleQS,
+            blackCanCastleKS, blackCanCastleQS,
+            enPassantTSq, // En passant target square
+            Integer.parseInt( fENFields[ 4 ] ),
+            Integer.parseInt( fENFields[ 5 ] ) );
+    }
+
+    /**
+     * The means to make or execute a move. The result of the operation is a new
+     * Position object.
+     *
+     * @param move the move to make
+     * @return the position that resulted from making the move in the previous
+     * position
+     * @throws Exception
+     */
+    public static Position makeMove( Move move ) throws Exception {
+        if ( move.context() == null ) {
+            throw new Exception( "Received Move object with null context" );
+        }
+
+        // Kingside castling
+        if ( isKingsideCastlingMove( move ) ) {
+            return makeKingsideCastlingMove( move.context() );
+        } // Queenside castling
+        else if ( isQueensideCastlingMove( move ) ) {
+            return makeQueensideCastlingMove( move.context() );
+        } // Non-castling move
+
+        return makeRegularMove( move );
     }
 }
