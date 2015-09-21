@@ -1,15 +1,18 @@
 package chessosisnbproject.logic;
 
-import chessosisnbproject.data.PieceType;
-import chessosisnbproject.data.Direction;
-import chessosisnbproject.data.Colour;
 import chessosisnbproject.data.CSS;
+import chessosisnbproject.data.Colour;
+import chessosisnbproject.data.Direction;
+import chessosisnbproject.data.PieceType;
 import chessosisnbproject.data.Square;
 import java.util.EnumSet;
 import java.util.Random;
 import java.util.Set;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class SUMTest {
 
@@ -940,6 +943,55 @@ public class SUMTest {
                 //System.out.println(
                 //    expectedFENRanks[ i ] + "  EQUALS  " + actualFENRanks[ i ] );
                 assertEquals( expectedFENRanks[ i ], actualFENRanks[ i ] );
+            }
+        }
+    }
+
+    /*
+     extractPiecesFromFENRanks(): Testing with the standard starting position
+     */
+    @Test
+    public void extractPiecesFromFENRanksWorksWithStdStartPos() {
+        String stdStartPosFENRecord
+            = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+        // Just to be sure
+        if ( SUM.validateFENRecord( stdStartPosFENRecord ) != 0 ) {
+            System.out.println( "Invalid FEN record: " + stdStartPosFENRecord );
+            fail();
+        }
+
+        String[] the12ExpectedStrings = {
+            "8/8/8/8/8/8/PPPPPPPP/8",
+            "8/8/8/8/8/8/8/2B2B2",
+            "8/8/8/8/8/8/8/1N4N1",
+            "8/8/8/8/8/8/8/R6R",
+            "8/8/8/8/8/8/8/3Q4",
+            "8/8/8/8/8/8/8/4K3",
+            "8/pppppppp/8/8/8/8/8/8",
+            "2b2b2/8/8/8/8/8/8/8",
+            "1n4n1/8/8/8/8/8/8/8",
+            "r6r/8/8/8/8/8/8/8",
+            "3q4/8/8/8/8/8/8/8",
+            "4k3/8/8/8/8/8/8/8"
+        };
+
+        String[] the12ActualStrings
+            = SUM.extractPiecesFromFENRanks( stdStartPosFENRecord );
+
+        if ( the12ActualStrings.length != 12 ) {
+            System.out.println(
+                "Invalid array length of 'the12ActualStrings': "
+                + the12ActualStrings.length );
+            fail();
+        }
+
+        for ( int i = 0; i < 12; i++ ) {
+            if ( !the12ExpectedStrings[ i ].equals( the12ActualStrings[ i ] ) ) {
+                System.out.println(
+                    "Strings not equal:\n" + the12ExpectedStrings[ i ]
+                    + "\n" + the12ActualStrings[ i ] );
+                fail();
             }
         }
     }

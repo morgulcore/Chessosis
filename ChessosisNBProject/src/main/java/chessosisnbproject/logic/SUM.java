@@ -1,10 +1,10 @@
 package chessosisnbproject.logic;
 
-import chessosisnbproject.data.PieceType;
-import chessosisnbproject.data.Direction;
 import chessosisnbproject.data.CSS;
 import chessosisnbproject.data.Colour;
+import chessosisnbproject.data.Direction;
 import chessosisnbproject.data.Piece;
+import chessosisnbproject.data.PieceType;
 import chessosisnbproject.data.Square;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
@@ -517,6 +517,140 @@ public class SUM {
         }
 
         return pieces;
+    }
+
+    /*
+     Divides the first field of a FEN record (AKA the FEN ranks) into 12
+     strings with the same syntactic structure as the first field. The
+     division is done based on piece type and color. As an example, let us
+     consider the first field of the FEN record that represents the standard
+     starting position:
+     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+
+     With that as input, the method would return a 12-element string array
+     consisting of the following strings, in this order:
+     "8/8/8/8/8/8/PPPPPPPP/8"   [ 0] White pawns
+     "8/8/8/8/8/8/8/2B2B2"      [ 1] White bishops
+     "8/8/8/8/8/8/8/1N4N1"      [ 2] White knights
+     "8/8/8/8/8/8/8/R6R"        [ 3] White rooks
+     "8/8/8/8/8/8/8/3Q4"        [ 4] White queens
+     "8/8/8/8/8/8/8/4K3"        [ 5] White king
+     "8/pppppppp/8/8/8/8/8/8"   [ 6] Black pawns
+     "2b2b2/8/8/8/8/8/8/8"      [ 7] Black bishops
+     "1n4n1/8/8/8/8/8/8/8"      [ 8] Black knights
+     "r6r/8/8/8/8/8/8/8"        [ 9] Black rooks
+     "3q4/8/8/8/8/8/8/8"        [10] Black queens
+     "4k3/8/8/8/8/8/8/8"        [11] Black king
+
+     The string array returned by the method contains exactly the same
+     information as the first field of the FEN record parameter but divided
+     into 12 "layers".
+
+     Calling this method can be a useful first step in converting FEN ranks
+     into bitboards representing the placement of the 12 types of chess pieces
+     in a given position.
+
+     JUNIT TESTS:
+     */
+    public static String[] extractPiecesFromFENRanks( String fENRecord ) {
+        if ( SUM.validateFENRecord( fENRecord ) != 0 ) { // Serious error
+            System.out.println( "ERROR: Invalid FEN record: " + fENRecord );
+            System.exit( 1 );
+        }
+
+        String[] fENRanks = SUM.splitFirstFENField( fENRecord );
+
+        String[] extractedPieces = {
+            null, null, null, null, null, null,
+            null, null, null, null, null, null
+        };
+
+        char[] the12TypesOfPieces = {
+            'P', 'B', 'N', 'R', 'Q', 'K',
+            'p', 'b', 'n', 'r', 'q', 'k'
+        };
+
+        // 12 iterations, one for each type of piece
+        for ( int pieceTypeIndex = 0; pieceTypeIndex < 12; pieceTypeIndex++ ) {
+            String individualPieceTypeRanks = "";
+
+            // Eight iterations, one for each rank starting from the 8th,
+            // ending in the 1st. Note that the index of the 8th rank
+            // is zero.
+            for ( int fENRanksArrayIndex = 0; fENRanksArrayIndex < 8;
+                ++fENRanksArrayIndex ) {
+                String currentRank = fENRanks[ fENRanksArrayIndex ];
+                String currentRankOfCurrentTypeOfPiece
+                    = extractPiecesFromFENRanksInnermostLoop( currentRank, the12TypesOfPieces[ pieceTypeIndex ] );
+
+                // Append "/" after the newly constructed rank so as to
+                // separate it from the other ranks -- assuming it is not
+                // the last rank in the string
+                if ( fENRanksArrayIndex != 7 ) {
+                    currentRankOfCurrentTypeOfPiece += "/";
+                }
+
+                individualPieceTypeRanks += currentRankOfCurrentTypeOfPiece;
+            }
+
+            extractedPieces[ pieceTypeIndex ] = individualPieceTypeRanks;
+        }
+
+        return extractedPieces;
+    }
+
+    /*
+     Helper method for extractPiecesFromFENRanks(). It should be called
+     from no other method. The method takes as its input a single rank
+     from the first field of a FEN record and a character specifying the
+     identity (type and color) of a piece. The rank is then scanned for
+     pieces with the specified identity. The return string is a rank
+     similar to the rank parameter but contains only empty squares and
+     pieces with the specified identity.
+
+     Example: the method call
+     extractPiecesFromFENRanksInnermostLoop( "RNBQKBNR", 'K' )
+     would return "4K3".
+     */
+    private static String extractPiecesFromFENRanksInnermostLoop(
+        String rank, char pieceIdentity ) {
+        String extractedPiecesRank = ""; // The string var to be returned
+        int inBetweenSquareCount = 0;
+
+        // There will be one to eight iterations, depending on the length
+        // of the string representing an individual rank
+        for ( int i = 0; i < rank.length(); ++i ) {
+            char currentChar = rank.charAt( i );
+
+            if ( currentChar == pieceIdentity ) {
+                if ( inBetweenSquareCount > 0 ) {
+                    // Append the in between ("empty") square count digit
+                    // (which is between 1 and 8, inclusive) to the rank
+                    // being constructed
+                    extractedPiecesRank += inBetweenSquareCount;
+                }
+
+                inBetweenSquareCount = 0; // Reset the counter
+                extractedPiecesRank += pieceIdentity;
+            } // Tests if the current character is a digit between 1 to 8
+            else if ( currentChar >= '1' && currentChar <= '8' ) {
+                // The expression on the right produces an integer between
+                // 1 and 8, inclusive. The value produced corresponds to
+                // the digit in currentChar.
+                inBetweenSquareCount += (int) ( currentChar - '0' );
+            } // currentChar contains a piece with an identity different
+            // to the one specified in the method call
+            else {
+                ++inBetweenSquareCount;
+            }
+        }
+
+        // Append any trailing "in between" squares to the rank before
+        // returning it
+        extractedPiecesRank
+            += ( inBetweenSquareCount > 0 ) ? inBetweenSquareCount : "";
+
+        return extractedPiecesRank;
     }
 
     /*
