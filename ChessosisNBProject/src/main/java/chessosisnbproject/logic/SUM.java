@@ -551,12 +551,13 @@ public class SUM {
      in a given position.
 
      JUNIT TESTS:
+     --extractPiecesFromFENRanksWorksWithStdStartPos()
      */
     public static String[] extractPiecesFromFENRanks( String fENRecord ) {
-        if ( SUM.validateFENRecord( fENRecord ) != 0 ) { // Serious error
-            System.out.println( "ERROR: Invalid FEN record: " + fENRecord );
-            System.exit( 1 );
-        }
+        // An invalid FEN record will stop execution of Chessosis
+        SUM.bugtrap( SUM.validateFENRecord( fENRecord ) != 0,
+            "extractPiecesFromFENRanks()",
+            "Invalid FEN record: " + fENRecord );
 
         String[] fENRanks = SUM.splitFirstFENField( fENRecord );
 
@@ -623,14 +624,14 @@ public class SUM {
             char currentChar = rank.charAt( i );
 
             if ( currentChar == pieceIdentity ) {
-                if ( inBetweenSquareCount > 0 ) {
-                    // Append the in between ("empty") square count digit
-                    // (which is between 1 and 8, inclusive) to the rank
-                    // being constructed
-                    extractedPiecesRank += inBetweenSquareCount;
-                }
-
+                // Append the in between ("empty") square count digit
+                // (which is between 1 and 8, inclusive) to the rank
+                // being constructed
+                extractedPiecesRank
+                    += ( inBetweenSquareCount > 0 ) ? inBetweenSquareCount : "";
                 inBetweenSquareCount = 0; // Reset the counter
+                // Append the piece identity character to the rank
+                // being constructed
                 extractedPiecesRank += pieceIdentity;
             } // Tests if the current character is a digit between 1 to 8
             else if ( currentChar >= '1' && currentChar <= '8' ) {
@@ -650,7 +651,72 @@ public class SUM {
         extractedPiecesRank
             += ( inBetweenSquareCount > 0 ) ? inBetweenSquareCount : "";
 
+        // Program execution will be terminated if the square count of
+        // 'extractedPiecesRank' doesn't add up to eight or if it contains
+        // other characters than digits and the one specified by the
+        // second parameter.
+        extractPiecesFromFENRanksInnermostLoopRankSumCheck(
+            extractedPiecesRank, pieceIdentity );
+
         return extractedPiecesRank;
+    }
+
+    /*
+     Verifies that the square count of a rank adds up to eight. As an example,
+     consider the rank "1p2p2p". The three black pawns in it add up to three
+     and the three sequences of empty squares add up to five. Therefore it
+     is a valid rank (square count of eight).
+
+     The method should only be called from
+     extractPiecesFromFENRanksInnermostLoop(). The pieceIdentity parameter
+     specifies the allowed type and color of piece(s) on the rank. If
+     problems are detected, program execution is terminated.
+     */
+    private static void extractPiecesFromFENRanksInnermostLoopRankSumCheck(
+        String rank, char pieceIdentity ) {
+        int squareCount = 0;
+
+        for ( int i = 0; i < rank.length(); i++ ) {
+            char currentChar = rank.charAt( i );
+            if ( currentChar == pieceIdentity ) {
+                ++squareCount;
+            } else if ( currentChar >= '1' && currentChar <= '8' ) {
+                // Produces an integer value between 1 to 8
+                squareCount += (int) ( currentChar - '0' );
+            } else {
+                SUM.bugtrap( true,
+                    "extractPiecesFromFENRanksInnermostLoopRankSumCheck()",
+                    "Invalid piece identity: " + currentChar );
+            }
+        }
+
+        SUM.bugtrap( squareCount != 8,
+            "extractPiecesFromFENRanksInnermostLoopRankSumCheck()",
+            "Rank sum check produced invalid value instead of 8: "
+            + squareCount );
+    }
+
+    /*
+     Used to stop program execution when unacceptable flaws in program logic
+     are detected. The point is to alert the developer of programming errors
+     rather than letting them go undetected.
+
+     The first parameter is the error condition. It's important to note that
+     program execution is stopped only if the condition evaluates to true.
+     The second parameter specifies where the error occured. This should
+     usually be a method name. The third parameter specifies the error
+     message to display.
+
+     JUNIT TESTS: (none)
+     */
+    public static void bugtrap(
+        boolean errorCondition, String source, String errorMsg ) {
+        if ( !errorCondition ) {
+            return;
+        }
+
+        System.out.println( "CRITICAL ERROR: " + source + ": " + errorMsg );
+        System.exit( 1 );
     }
 
     /*
@@ -794,12 +860,10 @@ public class SUM {
      */
     public static String[] splitFENRecord( String fENRecord ) {
         String[] fENFields = fENRecord.split( " " );
-        if ( fENFields.length != 6 ) { // Serious error
-            System.out.println(
-                "ERROR: fENToPosition(): fENFields.length == "
-                + fENFields.length );
-            System.exit( 1 );
-        }
+
+        SUM.bugtrap( fENFields.length != 6, // Abort if true
+            "splitFENRecord()", "Invalid fENFields.length: "
+            + fENFields.length );
 
         return fENFields;
     }
@@ -821,22 +885,17 @@ public class SUM {
      */
     public static String[] splitFirstFENField( String fENRecord ) {
         String[] fENFields = fENRecord.split( " " );
-        // Probably redundant
-        if ( fENFields.length != 6 ) { // Serious error
-            System.out.println(
-                "ERROR: fENToPosition(): fENFields.length == "
-                + fENFields.length );
-            System.exit( 1 );
-        }
+
+        // Abort execution if the first argument is true
+        SUM.bugtrap( fENFields.length != 6, "splitFirstFENField()",
+            "Invalid fENFields.length: " + fENFields.length );
 
         String[] fENRanks = fENFields[ 0 ].split( "/" );
-        // Probably redundant
-        if ( fENRanks.length != 8 ) { // Serious error
-            System.out.println(
-                "ERROR: fENToPosition(): fENRanks.length == "
-                + fENRanks.length );
-            System.exit( 1 );
-        }
+
+        // Abort execution if the first argument is true
+        SUM.bugtrap( fENRanks.length != 8,
+            "splitFirstFENField()",
+            "Invalid fENRanks.length: " + fENRanks.length );
 
         return fENRanks;
     }

@@ -1,11 +1,10 @@
---Continue by having a final look at extractPiecesFromFENRanksInnermostLoop()
---Add stopExecutionWithErrorMessage() to SUM.java; then search for usages for System.exit() and replace
---Create 'public static String[][] extractPiecesFromFENRecordsFirstField( String fENRecord );'; then add a single JUnit test for it with the standard starting position
+--Create 'private static String extractPiecesFromFENRanksSecondInnermostLoop( String[] fENRanks, char pieceIdentity )'
+--Arrange the methods in SUM.java
 --SUMTest.java: validateFENRecordReturns0: Add the remaining FEN records of the Opera Game
 --PositionTest.java: identicalPositions(): Search for usage, replace with deepEquals(), remove.
 --Position.java: fENToPosition(): Create the equivalent constructor in Position, then remove the method
 --Position.java: toString(): Override the method so that it returns the FEN record representation of the object
 --Study the proper use of Javadoc
 --Implement makeMove() as a Position constructor
---Piece type vs. piece identity. Is the square color of a bishop part of its identity?
---Move moveGenerator() to Move.java
+--Relocate moveGenerator() to Position.java; then change it to a (private?) instance method
+--Consider the issue of piece type vs. piece identity
