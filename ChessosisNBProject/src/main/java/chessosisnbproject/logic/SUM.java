@@ -552,6 +552,9 @@ public class SUM {
 
      JUNIT TESTS:
      --extractPiecesFromFENRanksWorksWithStdStartPos()
+
+     Most of the JUnit testing of the method is done indirectly while testing
+     the Position( String fENRecord ) constructor.
      */
     public static String[] extractPiecesFromFENRanks( String fENRecord ) {
         // An invalid FEN record will stop execution of Chessosis
@@ -559,6 +562,8 @@ public class SUM {
             "extractPiecesFromFENRanks()",
             "Invalid FEN record: " + fENRecord );
 
+        // The method call verifies that the size of the array
+        // returned is eight
         String[] fENRanks = SUM.splitFirstFENField( fENRecord );
 
         String[] extractedPieces = {
@@ -566,134 +571,21 @@ public class SUM {
             null, null, null, null, null, null
         };
 
-        char[] the12TypesOfPieces = {
+        // A piece identity means the color and type of a piece, for
+        // example, a black bishop
+        char[] pieceIdentities = {
             'P', 'B', 'N', 'R', 'Q', 'K',
             'p', 'b', 'n', 'r', 'q', 'k'
         };
 
-        // 12 iterations, one for each type of piece
-        for ( int pieceTypeIndex = 0; pieceTypeIndex < 12; pieceTypeIndex++ ) {
-            String individualPieceTypeRanks = "";
-
-            // Eight iterations, one for each rank starting from the 8th,
-            // ending in the 1st. Note that the index of the 8th rank
-            // is zero.
-            for ( int fENRanksArrayIndex = 0; fENRanksArrayIndex < 8;
-                ++fENRanksArrayIndex ) {
-                String currentRank = fENRanks[ fENRanksArrayIndex ];
-                String currentRankOfCurrentTypeOfPiece
-                    = extractPiecesFromFENRanksInnermostLoop( currentRank, the12TypesOfPieces[ pieceTypeIndex ] );
-
-                // Append "/" after the newly constructed rank so as to
-                // separate it from the other ranks -- assuming it is not
-                // the last rank in the string
-                if ( fENRanksArrayIndex != 7 ) {
-                    currentRankOfCurrentTypeOfPiece += "/";
-                }
-
-                individualPieceTypeRanks += currentRankOfCurrentTypeOfPiece;
-            }
-
-            extractedPieces[ pieceTypeIndex ] = individualPieceTypeRanks;
+        // 12 iterations, one for each piece identity
+        for ( int index = 0; index < pieceIdentities.length; index++ ) {
+            extractedPieces[ index ]
+                = extractPiecesFromFENRanksSecondInnermostLoop(
+                    fENRanks, pieceIdentities[ index ] );
         }
 
         return extractedPieces;
-    }
-
-    /*
-     Helper method for extractPiecesFromFENRanks(). It should be called
-     from no other method. The method takes as its input a single rank
-     from the first field of a FEN record and a character specifying the
-     identity (type and color) of a piece. The rank is then scanned for
-     pieces with the specified identity. The return string is a rank
-     similar to the rank parameter but contains only empty squares and
-     pieces with the specified identity.
-
-     Example: the method call
-     extractPiecesFromFENRanksInnermostLoop( "RNBQKBNR", 'K' )
-     would return "4K3".
-     */
-    private static String extractPiecesFromFENRanksInnermostLoop(
-        String rank, char pieceIdentity ) {
-        String extractedPiecesRank = ""; // The string var to be returned
-        int inBetweenSquareCount = 0;
-
-        // There will be one to eight iterations, depending on the length
-        // of the string representing an individual rank
-        for ( int i = 0; i < rank.length(); ++i ) {
-            char currentChar = rank.charAt( i );
-
-            if ( currentChar == pieceIdentity ) {
-                // Append the in between ("empty") square count digit
-                // (which is between 1 and 8, inclusive) to the rank
-                // being constructed
-                extractedPiecesRank
-                    += ( inBetweenSquareCount > 0 ) ? inBetweenSquareCount : "";
-                inBetweenSquareCount = 0; // Reset the counter
-                // Append the piece identity character to the rank
-                // being constructed
-                extractedPiecesRank += pieceIdentity;
-            } // Tests if the current character is a digit between 1 to 8
-            else if ( currentChar >= '1' && currentChar <= '8' ) {
-                // The expression on the right produces an integer between
-                // 1 and 8, inclusive. The value produced corresponds to
-                // the digit in currentChar.
-                inBetweenSquareCount += (int) ( currentChar - '0' );
-            } // currentChar contains a piece with an identity different
-            // to the one specified in the method call
-            else {
-                ++inBetweenSquareCount;
-            }
-        }
-
-        // Append any trailing "in between" squares to the rank before
-        // returning it
-        extractedPiecesRank
-            += ( inBetweenSquareCount > 0 ) ? inBetweenSquareCount : "";
-
-        // Program execution will be terminated if the square count of
-        // 'extractedPiecesRank' doesn't add up to eight or if it contains
-        // other characters than digits and the one specified by the
-        // second parameter.
-        extractPiecesFromFENRanksInnermostLoopRankSumCheck(
-            extractedPiecesRank, pieceIdentity );
-
-        return extractedPiecesRank;
-    }
-
-    /*
-     Verifies that the square count of a rank adds up to eight. As an example,
-     consider the rank "1p2p2p". The three black pawns in it add up to three
-     and the three sequences of empty squares add up to five. Therefore it
-     is a valid rank (square count of eight).
-
-     The method should only be called from
-     extractPiecesFromFENRanksInnermostLoop(). The pieceIdentity parameter
-     specifies the allowed type and color of piece(s) on the rank. If
-     problems are detected, program execution is terminated.
-     */
-    private static void extractPiecesFromFENRanksInnermostLoopRankSumCheck(
-        String rank, char pieceIdentity ) {
-        int squareCount = 0;
-
-        for ( int i = 0; i < rank.length(); i++ ) {
-            char currentChar = rank.charAt( i );
-            if ( currentChar == pieceIdentity ) {
-                ++squareCount;
-            } else if ( currentChar >= '1' && currentChar <= '8' ) {
-                // Produces an integer value between 1 to 8
-                squareCount += (int) ( currentChar - '0' );
-            } else {
-                SUM.bugtrap( true,
-                    "extractPiecesFromFENRanksInnermostLoopRankSumCheck()",
-                    "Invalid piece identity: " + currentChar );
-            }
-        }
-
-        SUM.bugtrap( squareCount != 8,
-            "extractPiecesFromFENRanksInnermostLoopRankSumCheck()",
-            "Rank sum check produced invalid value instead of 8: "
-            + squareCount );
     }
 
     /*
@@ -928,6 +820,133 @@ public class SUM {
     // ============================
     //
     //
+    /*
+     Helper method for extractPiecesFromFENRanks(). The method makes eight
+     calls to extractPiecesFromFENRanksInnermostLoop() per invocation,
+     resulting in a string similar to the first field of a FEN record but
+     containing only a single type of piece. For example, if the first
+     parameter corresponds to the standard starting position and the second
+     to the character 'K', the method would return the string
+     "8/8/8/8/8/8/8/4K3".
+     */
+    private static String extractPiecesFromFENRanksSecondInnermostLoop(
+        String[] fENRanks, char pieceIdentity ) {
+        // Piece identity means the color and type of a piece, for example,
+        // black bishop. A piece identity board is similar in idea to a
+        // bitboard describing the placement of a particular type of piece
+        // (or a particular piece identity).
+        String pieceIdentityBoard = "";
+
+        // Eight iterations, one for each rank
+        for ( int index = 0; index < fENRanks.length; index++ ) {
+            pieceIdentityBoard
+                += extractPiecesFromFENRanksInnermostLoop( fENRanks[ index ], pieceIdentity );
+
+            // The '/' character separates the ranks but is not found
+            // after the final rank
+            if ( index != 7 ) {
+                pieceIdentityBoard += "/";
+            }
+        }
+
+        return pieceIdentityBoard;
+    }
+
+    /*
+     Helper method for extractPiecesFromFENRanks(). The method takes as
+     its input a single rank from the first field of a FEN record and a
+     character specifying the identity (type and color) of a piece. The
+     rank is then scanned for pieces with the specified identity. The
+     return string is a rank similar to the rank parameter but contains
+     only empty squares and pieces with the specified identity.
+
+     Example: the method call
+     extractPiecesFromFENRanksInnermostLoop( "RNBQKBNR", 'K' )
+     would return "4K3".
+     */
+    private static String extractPiecesFromFENRanksInnermostLoop(
+        String rank, char pieceIdentity ) {
+        String extractedPiecesRank = ""; // The string var to be returned
+        int inBetweenSquareCount = 0;
+
+        // There will be one to eight iterations, depending on the length
+        // of the string representing an individual rank
+        for ( int i = 0; i < rank.length(); ++i ) {
+            char currentChar = rank.charAt( i );
+
+            if ( currentChar == pieceIdentity ) {
+                // Append the in between ("empty") square count digit
+                // (which is between 1 and 8, inclusive) to the rank
+                // being constructed
+                extractedPiecesRank
+                    += ( inBetweenSquareCount > 0 ) ? inBetweenSquareCount : "";
+                inBetweenSquareCount = 0; // Reset the counter
+                // Append the piece identity character to the rank
+                // being constructed
+                extractedPiecesRank += pieceIdentity;
+            } // Tests if the current character is a digit between 1 to 8
+            else if ( currentChar >= '1' && currentChar <= '8' ) {
+                // The expression on the right produces an integer between
+                // 1 and 8, inclusive. The value produced corresponds to
+                // the digit in currentChar.
+                inBetweenSquareCount += (int) ( currentChar - '0' );
+            } // currentChar contains a piece with an identity different
+            // to the one specified in the method call
+            else {
+                ++inBetweenSquareCount;
+            }
+        }
+
+        // Append any trailing "in between" squares to the rank before
+        // returning it
+        extractedPiecesRank
+            += ( inBetweenSquareCount > 0 ) ? inBetweenSquareCount : "";
+
+        // Program execution will be terminated if the square count of
+        // 'extractedPiecesRank' doesn't add up to eight or if it contains
+        // other characters than digits and the one specified by the
+        // second parameter.
+        extractPiecesFromFENRanksInnermostLoopRankSumCheck(
+            extractedPiecesRank, pieceIdentity );
+
+        return extractedPiecesRank;
+    }
+
+    /*
+     Verifies that the square count of a rank adds up to eight. As an example,
+     consider the rank "1p2p2p". The three black pawns in it add up to three
+     and the three sequences of empty squares add up to five. Therefore it
+     is a valid rank (square count of eight).
+
+     The method should only be called from
+     extractPiecesFromFENRanksInnermostLoop(). The pieceIdentity parameter
+     specifies the allowed type and color of piece(s) on the rank. If
+     problems are detected, program execution is terminated.
+     */
+    private static void extractPiecesFromFENRanksInnermostLoopRankSumCheck(
+        String rank, char pieceIdentity ) {
+        int squareCount = 0;
+
+        for ( int i = 0; i < rank.length(); i++ ) {
+            char currentChar = rank.charAt( i );
+            if ( currentChar == pieceIdentity ) {
+                ++squareCount;
+            } else if ( currentChar >= '1' && currentChar <= '8' ) {
+                // Produces an integer value between 1 to 8
+                squareCount += (int) ( currentChar - '0' );
+            } else {
+                SUM.bugtrap( true,
+                    "extractPiecesFromFENRanksInnermostLoopRankSumCheck()",
+                    "Invalid piece identity: " + currentChar );
+            }
+        }
+
+        SUM.bugtrap( squareCount != 8,
+            "extractPiecesFromFENRanksInnermostLoopRankSumCheck()",
+            "Rank sum check produced invalid value instead of 8: "
+            + squareCount );
+    }
+
     // validateFENRecord() helper method
     private static boolean validateFENRecordRankSumsAreValid( String fENRecord ) {
         String[] fENRanks = splitFirstFENField( fENRecord );
