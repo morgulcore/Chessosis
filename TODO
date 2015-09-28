@@ -1,6 +1,6 @@
---String[] layeredFENRanksToStringBasedBB( String[] layeredFENRanks )
---String-based bitboard, strBB
+--Create: long stringBasedBBToIntegerBB( String stringBasedBB )
 --Position.java: fENToPosition(): Create the equivalent constructor in Position, then remove the method
+--Checking for two or more pieces on a square
 --SUMTest.java: validateFENRecordReturns0: Add the remaining FEN records of the Opera Game
 --PositionTest.java: identicalPositions(): Search for usage, replace with deepEquals(), remove.
 --Position.java: toString(): Override the method so that it returns the FEN record representation of the object

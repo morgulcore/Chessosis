@@ -306,6 +306,10 @@ public class Position {
         String[] layeredFENRanks = SUM.extractPiecesFromFENRanks( fENRecord );
         String[] stringBasedBBs
             = Position.layeredFENRanksToStringBasedBBs( layeredFENRanks );
+
+        for ( String s : stringBasedBBs ) {
+            System.out.println( s );
+        }
     }
 
     public long whitePawns() {
@@ -628,6 +632,12 @@ public class Position {
      */
     private static String[] layeredFENRanksToStringBasedBBs(
         String[] layeredFENRanks ) {
+        // The string array to return
+        String[] stringBasedBBs = {
+            null, null, null, null, null, null,
+            null, null, null, null, null, null
+        };
+
         // A piece identity means the color and type of a piece, for
         // example, a black bishop
         char[] pieceIdentities = {
@@ -658,10 +668,19 @@ public class Position {
             firstRankFirst = layeredFENRanksToStringBasedBBsAddUpDigits(
                 firstRankFirst );
 
-            System.out.println( firstRankFirst );
+            int squareCountCheck
+                = layeredFENRanksToStringBasedBBsSquareCount( firstRankFirst );
+
+            SUM.bugtrap( // Abort execution is the square count is not 64
+                squareCountCheck != 64,
+                "layeredFENRanksToStringBasedBBs()",
+                "Invalid square count: " + firstRankFirst + ": "
+                + squareCountCheck );
+
+            stringBasedBBs[ index ] = firstRankFirst;
         }
 
-        return null;
+        return stringBasedBBs;
     }
 
     /*
@@ -738,6 +757,39 @@ public class Position {
             ? emptySquareSequenceCounter : "";
 
         return updatedFirstRankFirst;
+    }
+
+    /*
+     Helper method for layeredFENRanksToStringBasedBBs(). Counts the squares
+     of a string-based BB. The count should always be 64. Any other value
+     means the string is invalid.
+     */
+    private static int layeredFENRanksToStringBasedBBsSquareCount(
+        String firstRankFirst ) {
+        int squareCount = 0;
+
+        // First we count the number of the 'x' characters in the string
+        for ( int index = 0; index < firstRankFirst.length(); ++index ) {
+            char currentChar = firstRankFirst.charAt( index );
+            if ( currentChar == 'x' ) {
+                ++squareCount;
+            }
+        }
+
+        // Then we split up the string with the 'x' characters as
+        // separators. This should result in a string array containing
+        // empty strings and strings that can be parsed into positive
+        // integers.
+        String[] intsAndEmptyStrings = firstRankFirst.split( "x" );
+
+        for ( String s : intsAndEmptyStrings ) {
+            if ( !s.equals( "" ) ) {
+                // Add the integer to 'squareCount'
+                squareCount += Integer.parseInt( s );
+            }
+        }
+
+        return squareCount;
     }
 
     private static boolean fENCastlingRights(
