@@ -596,6 +596,16 @@ public class PositionTest {
         }
     }
 
+    /*
+     Position( String fENRecord ): Tests the constructor with the standard
+     starting position
+     */
+    @Test
+    public void fENRecordConstructorStdStartPos() {
+        stdStartPos = new Position(
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" );
+    }
+
     // Compares each and every field of two Position objects and returns
     // true if they are all equal. Note that the overridden equals() of
     // Position doesn't compare all fields.

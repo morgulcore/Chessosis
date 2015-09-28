@@ -288,6 +288,26 @@ public class Position {
             ? rand.nextInt() : pos.fullmoveNumber();
     }
 
+    /*
+     JUNIT TESTS:
+     --fENRecordConstructorStdStartPos()
+     */
+    public Position( String fENRecord ) {
+        this();
+
+        int exitStatus = SUM.validateFENRecord( fENRecord );
+
+        SUM.bugtrap( // Abort program in case of invalid FEN record
+            exitStatus != 0,
+            "Position( String fENRecord )",
+            "FEN record validation failed with error code "
+            + exitStatus );
+
+        String[] layeredFENRanks = SUM.extractPiecesFromFENRanks( fENRecord );
+        String[] stringBasedBBs
+            = Position.layeredFENRanksToStringBasedBBs( layeredFENRanks );
+    }
+
     public long whitePawns() {
         return this.whitePawnBB;
     }
@@ -577,6 +597,149 @@ public class Position {
     // =============================
     //
     //
+    /*
+     Converts the layered FEN record ranks returned by
+     extractPiecesFromFENRanks() into 12 string-based bitboards. This is
+     an intermediate stage in converting a FEN record's piece placement data
+     (its first field) into a set of 12 64-bit integers. A string-based
+     bitboard indicates empty square sequences with positive integers and
+     squares occupied by a piece with a lowercase 'x'. If every square
+     were occupied by the type of piece indicated by the 'x', the
+     string-based BB would be 64 characters long, its character at index 0
+     would correspond to the least significant bit of a Java long-based BB
+     and its character at index 63 to the most significant bit (consult
+     the board diagram at the beginning of CSS.java to see the bit index
+     to square mappings used in Chessosis).
+
+     Here's an example of a string-based BB: There are eight pieces of the
+     piece identity (type) in question and they are all to be found on the
+     second rank. Here's what the string-based BB would look like:
+     "8xxxxxxxx48".
+
+     The method returns an array of 12 strings. The index of a string in the
+     array determines the identity of the pieces recorded in it. Here are
+     the array index to piece identity mappings:
+     [00] white pawns               [01] white bishops
+     [02] white knights             [03] white rooks
+     [04] white queens              [05] white king
+     [06] black pawns               [07] black bishops
+     [08] black knights             [09] black rooks
+     [10] black queens              [11] black king
+     */
+    private static String[] layeredFENRanksToStringBasedBBs(
+        String[] layeredFENRanks ) {
+        // A piece identity means the color and type of a piece, for
+        // example, a black bishop
+        char[] pieceIdentities = {
+            'P', 'B', 'N', 'R', 'Q', 'K',
+            'p', 'b', 'n', 'r', 'q', 'k'
+        };
+
+        for ( int index = 0; index < pieceIdentities.length; ++index ) {
+            // Splits a string such as "8/8/8/8/8/8/8/1N4N1" into eight
+            // strings: "8", "8", ..., "1N4N1"
+            String[] ranksOfCurrentLayer
+                = layeredFENRanks[ index ].split( "/" );
+            // Combine the ranks back into a single string without the
+            // '/' separator and with the first rank at the beginning
+            // of the string
+            String firstRankFirst
+                = ranksOfCurrentLayer[ 7 ] + ranksOfCurrentLayer[ 6 ]
+                + ranksOfCurrentLayer[ 5 ] + ranksOfCurrentLayer[ 4 ]
+                + ranksOfCurrentLayer[ 3 ] + ranksOfCurrentLayer[ 2 ]
+                + ranksOfCurrentLayer[ 1 ] + ranksOfCurrentLayer[ 0 ];
+
+            // Replace the piece identity char with 'x'
+            firstRankFirst
+                = layeredFENRanksToStringBasedBBsReplacePieceIdentityWithX(
+                    firstRankFirst );
+
+            // Add up the individual digits
+            firstRankFirst = layeredFENRanksToStringBasedBBsAddUpDigits(
+                firstRankFirst );
+
+            System.out.println( firstRankFirst );
+        }
+
+        return null;
+    }
+
+    /*
+     Helper method for layeredFENRanksToStringBasedBBs(). Replaces the piece
+     identity character with a lowercase 'x' so that something like
+     "8PPPPPPPP888888" becomes "8xxxxxxxx888888".
+     */
+    private static String layeredFENRanksToStringBasedBBsReplacePieceIdentityWithX(
+        String firstRankFirst ) {
+        String modifiedFirstRankFirst = "";
+
+        for ( int index = 0; index < firstRankFirst.length(); ++index ) {
+            char currentChar = firstRankFirst.charAt( index );
+            // In case the current character is a valid piece identity...
+            if ( currentChar == 'P'
+                || currentChar == 'B'
+                || currentChar == 'N'
+                || currentChar == 'R'
+                || currentChar == 'Q'
+                || currentChar == 'K'
+                || currentChar == 'p'
+                || currentChar == 'b'
+                || currentChar == 'n'
+                || currentChar == 'r'
+                || currentChar == 'q'
+                || currentChar == 'k' ) {
+                // ...then append an 'x' to the string to be returned
+                modifiedFirstRankFirst += 'x';
+            } // Otherwise...
+            else {
+                // ...append the current character as it is
+                modifiedFirstRankFirst += currentChar;
+            }
+        }
+
+        return modifiedFirstRankFirst;
+    }
+
+    /*
+     Helper method for layeredFENRanksToStringBasedBBs(). Adds up the digits
+     in the string parameter so that something like "1N4N18888888"
+     becomes "1N4N57".
+     */
+    private static String layeredFENRanksToStringBasedBBsAddUpDigits(
+        String firstRankfirst ) {
+        String updatedFirstRankFirst = "";
+        int emptySquareSequenceCounter = 0;
+
+        for ( int index = 0; index < firstRankfirst.length(); ++index ) {
+            char currentChar = firstRankfirst.charAt( index );
+            if ( currentChar >= '1' && currentChar <= '8' ) {
+                // The expression on the right yields the integer value
+                // indicated by the digit, e.g., 5 for '5'
+                emptySquareSequenceCounter += (int) ( currentChar - '0' );
+            } else if ( currentChar == 'x' ) {
+                // No point in appending the value of
+                // 'emptySquareSequenceCounter' if it equals zero
+                updatedFirstRankFirst
+                    += ( emptySquareSequenceCounter > 0 )
+                        ? emptySquareSequenceCounter : "";
+                emptySquareSequenceCounter = 0;
+                updatedFirstRankFirst += 'x';
+            } else {
+                SUM.bugtrap( // An invalid character was detected
+                    true,
+                    "layeredFENRanksToStringBasedBBsAddUpDigits()",
+                    "Invalid character detected: " + currentChar );
+            }
+        }
+
+        // Append the remaining count of empty squares to the string,
+        // if greater than zero
+        updatedFirstRankFirst += ( emptySquareSequenceCounter > 0 )
+            ? emptySquareSequenceCounter : "";
+
+        return updatedFirstRankFirst;
+    }
+
     private static boolean fENCastlingRights(
         String rights, char colorAndSide ) {
         if ( rights.equals( "-" ) ) {

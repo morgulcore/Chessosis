@@ -1,3 +1,5 @@
+--String[] layeredFENRanksToStringBasedBB( String[] layeredFENRanks )
+--String-based bitboard, strBB
 --Position.java: fENToPosition(): Create the equivalent constructor in Position, then remove the method
 --SUMTest.java: validateFENRecordReturns0: Add the remaining FEN records of the Opera Game
 --PositionTest.java: identicalPositions(): Search for usage, replace with deepEquals(), remove.
@@ -6,3 +8,4 @@
 --Implement makeMove() as a Position constructor
 --Relocate moveGenerator() to Position.java; then change it to a (private?) instance method
 --Consider the issue of piece type vs. piece identity
+--Consider renaming extractPiecesFromFENRanks() to layeredFENRanks()
