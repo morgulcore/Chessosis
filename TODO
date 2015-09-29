@@ -1,4 +1,3 @@
---Create: long stringBasedBBToIntegerBB( String stringBasedBB )
 --Position.java: fENToPosition(): Create the equivalent constructor in Position, then remove the method
 --Checking for two or more pieces on a square
 --SUMTest.java: validateFENRecordReturns0: Add the remaining FEN records of the Opera Game
@@ -8,4 +7,3 @@
 --Implement makeMove() as a Position constructor
 --Relocate moveGenerator() to Position.java; then change it to a (private?) instance method
 --Consider the issue of piece type vs. piece identity
---Consider renaming extractPiecesFromFENRanks() to layeredFENRanks()

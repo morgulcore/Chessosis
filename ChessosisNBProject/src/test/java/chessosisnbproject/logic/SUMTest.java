@@ -948,10 +948,10 @@ public class SUMTest {
     }
 
     /*
-     extractPiecesFromFENRanks(): Testing with the standard starting position
+     layeredFENRanks(): Testing with the standard starting position
      */
     @Test
-    public void extractPiecesFromFENRanksWorksWithStdStartPos() {
+    public void layeredFENRanksWorksWithStdStartPos() {
         String stdStartPosFENRecord
             = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -977,7 +977,7 @@ public class SUMTest {
         };
 
         String[] the12ActualStrings
-            = SUM.extractPiecesFromFENRanks( stdStartPosFENRecord );
+            = SUM.layeredFENRanks( stdStartPosFENRecord );
 
         if ( the12ActualStrings.length != 12 ) {
             System.out.println(

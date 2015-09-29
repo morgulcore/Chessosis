@@ -602,8 +602,10 @@ public class PositionTest {
      */
     @Test
     public void fENRecordConstructorStdStartPos() {
-        stdStartPos = new Position(
+        Position pos = new Position(
             "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" );
+
+        assertEquals( true, pos.deepEquals( new Position() ) );
     }
 
     // Compares each and every field of two Position objects and returns

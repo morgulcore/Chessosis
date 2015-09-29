@@ -7,6 +7,7 @@ import chessosisnbproject.data.Piece;
 import chessosisnbproject.data.Square;
 import java.util.Objects;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 /**
  * The instances of class Position contain information about positions. The
@@ -293,8 +294,6 @@ public class Position {
      --fENRecordConstructorStdStartPos()
      */
     public Position( String fENRecord ) {
-        this();
-
         int exitStatus = SUM.validateFENRecord( fENRecord );
 
         SUM.bugtrap( // Abort program in case of invalid FEN record
@@ -303,13 +302,49 @@ public class Position {
             "FEN record validation failed with error code "
             + exitStatus );
 
-        String[] layeredFENRanks = SUM.extractPiecesFromFENRanks( fENRecord );
+        String[] layeredFENRanks = SUM.layeredFENRanks( fENRecord );
         String[] stringBasedBBs
             = Position.layeredFENRanksToStringBasedBBs( layeredFENRanks );
+        long[] longBasedBBs
+            = Position.stringBasedBBsToLongBasedBBs( stringBasedBBs );
 
-        for ( String s : stringBasedBBs ) {
-            System.out.println( s );
-        }
+        // White pawn BB
+        this.whitePawnBB = longBasedBBs[ Position.WHITE_PAWNS ];
+        // White bishop BB
+        this.whiteBishopBB = longBasedBBs[ Position.WHITE_BISHOPS ];
+        // White knight BB
+        this.whiteKnightBB = longBasedBBs[ Position.WHITE_KNIGHTS ];
+        // White rook BB
+        this.whiteRookBB = longBasedBBs[ Position.WHITE_ROOKS ];
+        // White queen BB
+        this.whiteQueenBB = longBasedBBs[ Position.WHITE_QUEEN ];
+        // White king BB
+        this.whiteKingBB = longBasedBBs[ Position.WHITE_KING ];
+        // Black pawn BB
+        this.blackPawnBB = longBasedBBs[ Position.BLACK_PAWNS ];
+        // Black bishop BB
+        this.blackBishopBB = longBasedBBs[ Position.BLACK_BISHOPS ];
+        // Black knight BB
+        this.blackKnightBB = longBasedBBs[ Position.BLACK_KNIGHTS ];
+        // Black rook BB
+        this.blackRookBB = longBasedBBs[ Position.BLACK_ROOKS ];
+        // Black queen BB
+        this.blackQueenBB = longBasedBBs[ Position.BLACK_QUEEN ];
+        // Black king BB
+        this.blackKingBB = longBasedBBs[ Position.BLACK_KING ];
+
+        this.turn = Colour.WHITE;
+
+        this.whiteCanCastleKingside = true;
+        this.whiteCanCastleQueenside = true;
+        this.blackCanCastleKingside = true;
+        this.blackCanCastleQueenside = true;
+
+        this.enPassantTargetSquare = null;
+
+        this.halfmoveClock = 0;
+
+        this.fullmoveNumber = 1;
     }
 
     public long whitePawns() {
@@ -602,8 +637,79 @@ public class Position {
     //
     //
     /*
+     Converts the 12 string-based bitboards returned by
+     Position.layeredFENRanksToStringBasedBBs into the usual Java long-based
+     bitboards.
+     */
+    private static long[] stringBasedBBsToLongBasedBBs(
+        String[] stringBasedBBs ) {
+        // The long array to return
+        long[] longBasedBBs = new long[ 12 ];
+
+        for ( int index = 0; index < 12; ++index ) {
+            longBasedBBs[ index ] = stringBasedBBsToLongBasedBBsWorkhorse(
+                stringBasedBBs[ index ] );
+        }
+
+        return longBasedBBs;
+    }
+
+    /*
+     Helper method for stringBasedBBsToLongBasedBBs(). Does the actual work
+     of converting a string-based bitboard into its Java long equivalent.
+     */
+    private static long stringBasedBBsToLongBasedBBsWorkhorse(
+        String stringBasedBB ) {
+        // The return value
+        long bitboard = 0;
+        // A long value with a single bit set. To start with, it is the
+        // least significant bit that is set. The value is then left-shifted
+        // until it is the most significant bit that is set. Note that
+        // left-shifting the bit by a single position is the same as
+        // multiplying the long value by two.
+        long currentBit = 1;
+        // A string-based bitboard such as "8xxxxxxxx48" contains sequences
+        // of digits representing the number of empty squares before, between
+        // or after pieces. Each occurence of such a sequence gets recorded
+        // digit by digit in the following variable.
+        String digitSequence = "";
+
+        for ( int index = 0; index < stringBasedBB.length(); ++index ) {
+            char currentChar = stringBasedBB.charAt( index );
+            if ( currentChar == 'x' ) {
+                int numberOfBitPositionsToLeftShift
+                    = digitSequence.equals( "" )
+                        ? 0 : Integer.parseInt( digitSequence );
+                digitSequence = "";
+                currentBit <<= numberOfBitPositionsToLeftShift;
+                bitboard |= currentBit;
+                currentBit <<= 1;
+            } else if ( currentChar >= '0' && currentChar <= '9' ) {
+                digitSequence += currentChar;
+                // The digit sequence string consists of one or two characters.
+                // If it is one characters long, then it is a digit between
+                // 1 to 9; if it is two characters long, the first character
+                // is between 1 to 6 and the second between 0 to 9. Note
+                // that when converted to an integer, the value of the
+                // digit sequence should never exceed 64.
+                SUM.bugtrap(
+                    !Pattern.matches( "^[1-9]$|^[1-6][0-9]$", digitSequence ),
+                    "stringBasedBBsToLongBasedBBsWorkhorse()",
+                    "Invalid digitSequence string: " + digitSequence );
+            } else {
+                SUM.bugtrap(
+                    true,
+                    "stringBasedBBsToLongBasedBBsWorkhorse()",
+                    "Invalid character detected: " + currentChar );
+            }
+        }
+
+        return bitboard;
+    }
+
+    /*
      Converts the layered FEN record ranks returned by
-     extractPiecesFromFENRanks() into 12 string-based bitboards. This is
+     layeredFENRanks() into 12 string-based bitboards. This is
      an intermediate stage in converting a FEN record's piece placement data
      (its first field) into a set of 12 64-bit integers. A string-based
      bitboard indicates empty square sequences with positive integers and

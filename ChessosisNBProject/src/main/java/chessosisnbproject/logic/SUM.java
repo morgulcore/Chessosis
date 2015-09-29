@@ -551,22 +551,22 @@ public class SUM {
      in a given position.
 
      JUNIT TESTS:
-     --extractPiecesFromFENRanksWorksWithStdStartPos()
+     --layeredFENRanksWorksWithStdStartPos()
 
      Most of the JUnit testing of the method is done indirectly while testing
      the Position( String fENRecord ) constructor.
      */
-    public static String[] extractPiecesFromFENRanks( String fENRecord ) {
+    public static String[] layeredFENRanks( String fENRecord ) {
         // An invalid FEN record will stop execution of Chessosis
         SUM.bugtrap( SUM.validateFENRecord( fENRecord ) != 0,
-            "extractPiecesFromFENRanks()",
+            "layeredFENRanks()",
             "Invalid FEN record: " + fENRecord );
 
         // The method call verifies that the size of the array
         // returned is eight
         String[] fENRanks = SUM.splitFirstFENField( fENRecord );
 
-        String[] extractedPieces = {
+        String[] layers = {
             null, null, null, null, null, null,
             null, null, null, null, null, null
         };
@@ -580,12 +580,12 @@ public class SUM {
 
         // 12 iterations, one for each piece identity
         for ( int index = 0; index < pieceIdentities.length; index++ ) {
-            extractedPieces[ index ]
-                = extractPiecesFromFENRanksSecondInnermostLoop(
+            layers[ index ]
+                = layeredFENRanksSecondInnermostLoop(
                     fENRanks, pieceIdentities[ index ] );
         }
 
-        return extractedPieces;
+        return layers;
     }
 
     /*
@@ -821,7 +821,7 @@ public class SUM {
     //
     //
     /*
-     Helper method for extractPiecesFromFENRanks(). The method makes eight
+     Helper method for layeredFENRanks(). The method makes eight
      calls to extractPiecesFromFENRanksInnermostLoop() per invocation,
      resulting in a string similar to the first field of a FEN record but
      containing only a single type of piece. For example, if the first
@@ -829,7 +829,7 @@ public class SUM {
      to the character 'K', the method would return the string
      "8/8/8/8/8/8/8/4K3".
      */
-    private static String extractPiecesFromFENRanksSecondInnermostLoop(
+    private static String layeredFENRanksSecondInnermostLoop(
         String[] fENRanks, char pieceIdentity ) {
         // Piece identity means the color and type of a piece, for example,
         // black bishop. A piece identity board is similar in idea to a
@@ -840,7 +840,7 @@ public class SUM {
         // Eight iterations, one for each rank
         for ( int index = 0; index < fENRanks.length; index++ ) {
             pieceIdentityBoard
-                += extractPiecesFromFENRanksInnermostLoop( fENRanks[ index ], pieceIdentity );
+                += layeredFENRanksInnermostLoop( fENRanks[ index ], pieceIdentity );
 
             // The '/' character separates the ranks but is not found
             // after the final rank
@@ -853,7 +853,7 @@ public class SUM {
     }
 
     /*
-     Helper method for extractPiecesFromFENRanks(). The method takes as
+     Helper method for layeredFENRanks(). The method takes as
      its input a single rank from the first field of a FEN record and a
      character specifying the identity (type and color) of a piece. The
      rank is then scanned for pieces with the specified identity. The
@@ -861,10 +861,10 @@ public class SUM {
      only empty squares and pieces with the specified identity.
 
      Example: the method call
-     extractPiecesFromFENRanksInnermostLoop( "RNBQKBNR", 'K' )
+     layeredFENRanksInnermostLoop( "RNBQKBNR", 'K' )
      would return "4K3".
      */
-    private static String extractPiecesFromFENRanksInnermostLoop(
+    private static String layeredFENRanksInnermostLoop(
         String rank, char pieceIdentity ) {
         String extractedPiecesRank = ""; // The string var to be returned
         int inBetweenSquareCount = 0;
